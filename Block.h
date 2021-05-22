@@ -17,6 +17,7 @@ public:
 
 	void getMerklePath(void);
 	void getMerkleRoot(void);
+	std::string getBlockId(void);
 
 	//Setters
 

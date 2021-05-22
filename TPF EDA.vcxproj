@@ -140,14 +140,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Block.cpp" />
+    <ClCompile Include="InTx.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Node.cpp" />
+    <ClCompile Include="OutTx.cpp" />
     <ClCompile Include="Tx.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseNode.h" />
     <ClInclude Include="Block.h" />
+    <ClInclude Include="InTx.h" />
     <ClInclude Include="Node.h" />
+    <ClInclude Include="OutTx.h" />
     <ClInclude Include="Tx.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
