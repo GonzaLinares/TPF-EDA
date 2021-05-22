@@ -2,11 +2,12 @@
 
 class Gui
 {
-	Gui();
+	public:
 
-	void init();
-	void read();
-	void destroy();
+		void init();
+		void run();
+		void destroy();
 	
+	private:
 };
 

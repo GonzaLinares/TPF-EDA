@@ -15,7 +15,7 @@ static ALLEGRO_DISPLAY* display;
 static ALLEGRO_EVENT_QUEUE* queue;
 
 void Gui::init() {
-
+	
 	//Inicializamos allegro y sus principales addons
 	if (!al_init()) {
 		throw exception("Error al inicializar allegro");
@@ -52,7 +52,16 @@ void Gui::init() {
 		throw exception("Error al crear la ventana");
 	}
 
-	al_set_new_display_flags(ALLEGRO_RESIZABLE);
+	queue = al_create_event_queue();
+	if (queue == nullptr)
+	{
+		throw exception("Error al crear la cola de eventos");
+	}
+
+	al_register_event_source(queue, al_get_display_event_source(display));
+	al_register_event_source(queue, al_get_keyboard_event_source());
+	al_register_event_source(queue, al_get_mouse_event_source());
+
 	al_set_window_title(display, "Blockchain");
 
 	// Setup Dear ImGui context
@@ -67,7 +76,7 @@ void Gui::init() {
 	ImGui_ImplAllegro5_Init(display);
 }
 
-void Gui::read() {
+void Gui::run() {
 
     bool show_demo_window = true;
     bool show_another_window = false;
@@ -81,28 +90,16 @@ void Gui::read() {
         while (al_get_next_event(queue, &ev))
         {
             ImGui_ImplAllegro5_ProcessEvent(&ev);
-            if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
-                running = false;
-            if (ev.type == ALLEGRO_EVENT_DISPLAY_RESIZE)
-            {
-                ImGui_ImplAllegro5_InvalidateDeviceObjects();
-                al_acknowledge_resize(display);
-                ImGui_ImplAllegro5_CreateDeviceObjects();
-            }
+			if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
+				running = false;
+			}
         }
 
         // Start the Dear ImGui frame
         ImGui_ImplAllegro5_NewFrame();
         ImGui::NewFrame();
 
-        // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-        if (show_demo_window) {
-            ImGui::ShowDemoWindow(&show_demo_window);
-        }
-
         ImGui::Begin("Blockchain Explorer");                          // Create a window called "Hello, world!" and append into it.
-
-        ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
 
         ImGui::End();
 
@@ -120,6 +117,7 @@ void Gui::destroy()
 	// Cleanup
 	ImGui_ImplAllegro5_Shutdown();
 	ImGui::DestroyContext();
+	al_destroy_event_queue(queue);
 	al_destroy_display(display);
 
 }
