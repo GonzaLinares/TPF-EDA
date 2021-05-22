@@ -31,13 +31,18 @@ Block * Node::getBlock(std::string id)
 	return salida;
 }
 
-std::vector<std::string> Node::getBlocksID(int numOfBlocks, int offset)
+std::vector<std::string> Node::getBlocksID(int numOfBlocks, int offset)	//TODO: Que verga pasaba si numOfBlocks es 0 
 {
 	std::vector <std::string> temp;
 
 	std::vector<Block>::iterator it = blockchain.begin();
 
 	it = it + offset;
+
+	for (int i = 1; i <= numOfBlocks ; it++, i++) {
+
+		temp.push_back(it->getBlockId());
+	}
 
 	return temp;
 }
