@@ -13,75 +13,33 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Source Files\DearImgGUI">
-      <UniqueIdentifier>{c9c2e66c-70cd-4044-86ed-0ed4950bc397}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\DearImgGUI">
-      <UniqueIdentifier>{ad314de7-3c21-4f41-ae46-77a364fb10ca}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Gui.cpp">
+    <ClCompile Include="Node.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ImGui\example.cpp">
-      <Filter>Source Files\DearImgGUI</Filter>
+    <ClCompile Include="Block.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ImGui\imgui.cpp">
-      <Filter>Source Files\DearImgGUI</Filter>
-    </ClCompile>
-    <ClCompile Include="ImGui\imgui_demo.cpp">
-      <Filter>Source Files\DearImgGUI</Filter>
-    </ClCompile>
-    <ClCompile Include="ImGui\imgui_draw.cpp">
-      <Filter>Source Files\DearImgGUI</Filter>
-    </ClCompile>
-    <ClCompile Include="ImGui\imgui_impl_allegro5.cpp">
-      <Filter>Source Files\DearImgGUI</Filter>
-    </ClCompile>
-    <ClCompile Include="ImGui\imgui_stdlib.cpp">
-      <Filter>Source Files\DearImgGUI</Filter>
-    </ClCompile>
-    <ClCompile Include="ImGui\imgui_tables.cpp">
-      <Filter>Source Files\DearImgGUI</Filter>
-    </ClCompile>
-    <ClCompile Include="ImGui\imgui_widgets.cpp">
-      <Filter>Source Files\DearImgGUI</Filter>
+    <ClCompile Include="Tx.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Gui.h">
+    <ClInclude Include="Node.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ImGui\imconfig.h">
-      <Filter>Header Files\DearImgGUI</Filter>
+    <ClInclude Include="Block.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ImGui\imconfig_allegro5.h">
-      <Filter>Header Files\DearImgGUI</Filter>
+    <ClInclude Include="Tx.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ImGui\imgui.h">
-      <Filter>Header Files\DearImgGUI</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGui\imgui_impl_allegro5.h">
-      <Filter>Header Files\DearImgGUI</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGui\imgui_internal.h">
-      <Filter>Header Files\DearImgGUI</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGui\imgui_stdlib.h">
-      <Filter>Header Files\DearImgGUI</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGui\imstb_rectpack.h">
-      <Filter>Header Files\DearImgGUI</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGui\imstb_textedit.h">
-      <Filter>Header Files\DearImgGUI</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGui\imstb_truetype.h">
-      <Filter>Header Files\DearImgGUI</Filter>
+    <ClInclude Include="BaseNode.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
