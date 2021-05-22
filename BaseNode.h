@@ -17,13 +17,13 @@ public:
 
 	virtual void createBlockchainFromFile(void) = 0;
 
-	virtual void getBlock(std::string id) = 0;
-	virtual void getBlocksID(int numOfBlocks = 0, int offset = 0) = 0;
-	virtual void getBlockQuant(void) = 0;
+	virtual Block * getBlock(std::string id) = 0;
+	virtual std::vector<std::string> getBlocksID(int numOfBlocks = 0, int offset = 0) = 0;
+	virtual int getBlockQuant(void) = 0;
 
-private:
+	
+protected:
 
 	std::vector <Block> blockchain;
-
 };
 
