@@ -13,6 +13,7 @@ public:
 
 	bool push_vin(InTx&);
 	bool push_vout(OutTx&);
+	std::string getId(void);
 
 private:
 

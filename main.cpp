@@ -8,7 +8,6 @@ int main(int argc, char** argv) {
 	std::string path = "json.json";
 	nodo.createBlockchainFromFile(path);
 
-
 	menu.init();
 
 	while (menu.getState()) {

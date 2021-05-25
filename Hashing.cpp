@@ -1,5 +1,4 @@
 #include <iostream>
-#include <string>
 
 using namespace std;
 
@@ -21,6 +20,11 @@ const char* codeMap[16] =
 "E",
 "F", };
 
+string hash(char* str) {
+
+    return hexCodedAscii(generateID(str));
+}
+
 unsigned int generateID(char* str)
 {
     unsigned int ID = 0;
@@ -35,9 +39,9 @@ unsigned int generateID(char* str)
 string hexCodedAscii(unsigned int asd)
 {
     string output = "";
-    for (size_t i = sizeof(int)*2; i > 0; i--)
+    for (size_t i = sizeof(int) * 2; i > 0; i--)
     {
-        int temp = ((asd & (0xF << (i-1) * 4)) >> (i-1) * 4);
+        int temp = ((asd & (0xF << (i - 1) * 4)) >> (i - 1) * 4);
         output.append(codeMap[temp]);
     }
 
@@ -45,6 +49,10 @@ string hexCodedAscii(unsigned int asd)
 
 }
 
+/*
+*       
+*       Old debug main. TODO: sacarlo
+* 
 int main(int, char**)
 {
     string penelope("000009EB");
@@ -55,3 +63,4 @@ int main(int, char**)
 
     return 0;
 }
+*/

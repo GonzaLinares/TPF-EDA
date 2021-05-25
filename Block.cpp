@@ -23,7 +23,22 @@ void Block::getMerklePath(void)
 
 void Block::getMerkleRoot(void)
 {
+	
+	std::vector<std::string> tempTree;	//Aca voy a ir metiendo los strings a medida que los calcule
+	std::string tempString;
 
+	bool esPar = false;
+
+
+	for (std::vector<Tx>::iterator it = txs.begin(); it != txs.end(); it++) {
+
+		if (esPar == false) {
+
+			tempString = it->getId();
+
+
+		}
+	}
 
 }
 

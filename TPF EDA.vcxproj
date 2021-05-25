@@ -141,6 +141,7 @@
   <ItemGroup>
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="Gui.cpp" />
+    <ClCompile Include="Hashing.cpp" />
     <ClCompile Include="ImGui\imgui.cpp" />
     <ClCompile Include="ImGui\imgui_demo.cpp" />
     <ClCompile Include="ImGui\imgui_draw.cpp" />
@@ -150,6 +151,8 @@
     <ClCompile Include="ImGui\imgui_widgets.cpp" />
     <ClCompile Include="InTx.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MerkleNode.cpp" />
+    <ClCompile Include="MerkleTree.cpp" />
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="OutTx.cpp" />
     <ClCompile Include="Tx.cpp" />
@@ -159,6 +162,7 @@
     <ClInclude Include="Block.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="Gui.h" />
+    <ClInclude Include="Hashing.h" />
     <ClInclude Include="ImGui\imconfig.h" />
     <ClInclude Include="ImGui\imconfig_allegro5.h" />
     <ClInclude Include="ImGui\imgui.h" />
@@ -169,12 +173,11 @@
     <ClInclude Include="ImGui\imstb_textedit.h" />
     <ClInclude Include="ImGui\imstb_truetype.h" />
     <ClInclude Include="InTx.h" />
+    <ClInclude Include="MerkleNode.h" />
+    <ClInclude Include="MerkleTree.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="OutTx.h" />
     <ClInclude Include="Tx.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="Source.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

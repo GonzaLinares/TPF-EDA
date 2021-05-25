@@ -21,3 +21,8 @@ bool Tx::push_vout(OutTx& newOutTx)
 
 	return true;
 }
+
+std::string Tx::getId(void)
+{
+	return txid;
+}
