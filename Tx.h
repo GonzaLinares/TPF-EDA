@@ -7,6 +7,12 @@
 
 class Tx
 {
+public:
+
+	Tx(std::string txid_, unsigned int nTxin_, unsigned int nTxout_);
+
+	bool push_vin(InTx&);
+	bool push_vout(OutTx&);
 
 private:
 
