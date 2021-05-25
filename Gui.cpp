@@ -1,13 +1,14 @@
 #include "Gui.h"
 #include "config.h"
+#include "ImGui/imgui.h"
+#include "ImGui/imgui_impl_allegro5.h"
+#include "ImGui/imgui_stdlib.h"
 #include <stdexcept> 
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_primitives.h>      
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h> 
-#include "ImGui/imgui.h"
-#include "ImGui/imgui_impl_allegro5.h"
-#include "ImGui/imgui_stdlib.h"
+#include <filesystem>
 
 using namespace std;
 
@@ -76,40 +77,76 @@ void Gui::init() {
 	ImGui_ImplAllegro5_Init(display);
 }
 
-void Gui::run() {
+void Gui::update() {
 
-    bool show_demo_window = true;
-    bool show_another_window = false;
-    ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-    bool running = true;
+	ALLEGRO_EVENT ev;
+	string filename;
+	const ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
+	ImGuiWindowFlags window_flags = 0;
+	ImGuiCond window_cond = 0;
+	ImGuiTabBarFlags tab_bar_flags = 0;
 
-    while (running)
+	window_flags |= ImGuiWindowFlags_NoTitleBar;
+	window_flags |= ImGuiWindowFlags_NoMove;
+	//window_flags |= ImGuiWindowFlags_NoResize;
+	window_flags |= ImGuiWindowFlags_NoCollapse;
+	//window_cond |= ImGuiCond_FirstUseEver;
+	tab_bar_flags |= ImGuiTabBarFlags_None;
+
+    while (al_get_next_event(queue, &ev))
     {
-        ALLEGRO_EVENT ev;
-        while (al_get_next_event(queue, &ev))
-        {
-            ImGui_ImplAllegro5_ProcessEvent(&ev);
-			if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
-				running = false;
-			}
-        }
-
-        // Start the Dear ImGui frame
-        ImGui_ImplAllegro5_NewFrame();
-        ImGui::NewFrame();
-
-        ImGui::Begin("Blockchain Explorer");                          // Create a window called "Hello, world!" and append into it.
-
-        ImGui::End();
-
-        // Rendering
-        ImGui::Render();
-        al_clear_to_color(al_map_rgba_f(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w));
-        ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
-        al_flip_display();
+        ImGui_ImplAllegro5_ProcessEvent(&ev);
+		if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
+			state = CLOSEPROGRAMM;
+		}
     }
 
+    // Start the Dear ImGui frame
+    ImGui_ImplAllegro5_NewFrame();
+    ImGui::NewFrame();
+
+	ImGui::SetNextWindowPos(ImVec2(0, 0), window_cond);
+	ImGui::SetNextWindowSize(ImVec2(SCREENWIDTH, SCREENHEIGHT), window_cond);
+	ImGui::Begin("Blockchain Explorer", NULL, window_flags);
+
+	ImGui::Spacing();
+	ImGui::Spacing();
+	ImGui::Text("Choose a file");
+	ImGui::Spacing();
+	ImGui::InputText(" ", &filename);
+	ImGui::SameLine();
+	ImGui::Button("Load file");
+	ImGui::Spacing();
+	ImGui::Spacing();
+
+	if (ImGui::BeginTabBar("Options", tab_bar_flags))
+	{
+		if (ImGui::BeginTabItem("Blocks"))
+		{
+			showBlocksTab();
+			ImGui::EndTabItem();
+		}
+		if (ImGui::BeginTabItem("Coming Soon"))
+		{
+			ImGui::EndTabItem();
+		}
+		ImGui::EndTabBar();
+	}
+    ImGui::End();
+
+	
+
+    // Rendering
+    ImGui::Render();
+	al_clear_to_color(al_map_rgba_f(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w));
+    ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
+    al_flip_display();
+
+}
+
+int Gui::getState() {
+	return state;
 }
 
 void Gui::destroy()
@@ -119,5 +156,88 @@ void Gui::destroy()
 	ImGui::DestroyContext();
 	al_destroy_event_queue(queue);
 	al_destroy_display(display);
+
+}
+
+void Gui::showBlocksTab() {
+
+	int openedNodes = 0;
+	const int cols = 2;
+	const int rows = 10;
+	bool checkbox = true;
+
+	ImGui::SetNextItemWidth(ImGui::GetFontSize() * 8);
+	ImGui::Columns(cols, NULL, true);
+	ImGui::SetColumnWidth(0, 631);
+
+	for (int i = 0; i < rows; i++){
+		for (int j = 0; j < cols; j++) {
+
+			if (ImGui::GetColumnIndex() == 0) {
+				ImGui::Separator();
+			}
+
+			ImGui::Text("Block %d", (j+1) + i*cols);
+			ImGui::Spacing();
+			ImGui::Text("current block hash: %s", "0000000000000000000a6fb67004af665a3d5d9acaa7265dd44a61ee619b19f9");
+			ImGui::Text("previous block hash: %s", "0000000000000000000a6fb67004af66jfowehoifweoifdd44a61ee619b4g485");
+			ImGui::Text("number of transactions: %s", "1396");
+			ImGui::Text("nonce: %s", "393983482");
+			ImGui::Text("merkle root: %s", "d52c9f6fd4ea571ae30cd0973fa2a4fac282888cda19ecc20f6919bcf49fcbf0");
+			ImGui::Button("calculate merkle");
+			ImGui::Text("calculated: %s", "d52c9f6fd4ea571ae30cd0973fa2a4fac282888cda19ecc20f6919bcf49fcbf0");
+			ImGui::SameLine();
+			ImGui::Checkbox("", &checkbox);
+			
+
+			if (ImGui::TreeNode((void*)(intptr_t)(openedNodes), "merkle tree"))
+			{
+				if (ImGui::TreeNode((void*)(intptr_t)(openedNodes), "root")) {
+					ImGui::Text("d52c9f6fd4ea571ae30cd0973fa2a4fac282888cda19ecc20f6919bcf49fcbf0");
+ 
+					openSubTreeNode(4, openedNodes);
+
+					ImGui::TreePop();
+				}
+
+				ImGui::TreePop();
+			}
+			
+			openedNodes++;
+
+			ImGui::Spacing();
+
+			//ImGui::Text("Width %.2f", ImGui::GetColumnWidth());
+			//ImGui::Text("Avail %.2f", ImGui::GetContentRegionAvail().x);
+			//ImGui::Text("Offset %.2f", ImGui::GetColumnOffset());
+			//ImGui::Text("Long text that is likely to clip");
+			//ImGui::Button("Button", ImVec2(-FLT_MIN, 0.0f));
+
+			ImGui::NextColumn();
+			openedNodes = 0;
+		}
+	}
+
+	ImGui::Columns(1);
+}
+
+void Gui::openSubTreeNode(int n, int q) {
+
+	if (n == 0) {
+		if (ImGui::TreeNode((void*)(intptr_t)(n), "leaf %d", n)) {
+			ImGui::Text("d52c9f6fd4ea571ae30cd0973fa2a4fac282888cda19ecc20f6919bcf49fcbf0");
+			ImGui::TreePop();
+		}
+	}
+	else {
+		if (ImGui::TreeNode((void*)(intptr_t)(q), "right %d", n)) {
+			openSubTreeNode(n-1, q);
+			ImGui::TreePop();
+		}
+		if (ImGui::TreeNode((void*)(intptr_t)(q+1), "left %d", n)) {
+			openSubTreeNode(n-1, q);
+			ImGui::TreePop();
+		}
+	}
 
 }

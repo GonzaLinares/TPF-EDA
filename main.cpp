@@ -8,7 +8,9 @@ int main(int argc, char** argv) {
 
 	menu.init();
 
-	menu.run();
+	while (menu.getState()) {
+		menu.update();
+	}
 
 	menu.destroy();
 
