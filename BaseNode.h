@@ -15,7 +15,7 @@ public:
 	virtual void commSend(void) = 0;
 	virtual void commReceive(void) = 0;
 
-	virtual void createBlockchainFromFile(void) = 0;
+	virtual void createBlockchainFromFile(std::string&) = 0;
 
 	virtual Block * getBlock(std::string id) = 0;
 	virtual std::vector<std::string> getBlocksID(int numOfBlocks = 0, int offset = 0) = 0;

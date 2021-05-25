@@ -11,11 +11,11 @@ class Block
 public:
 
 	//Constructor
-	Block(std::string jsonBlock);
+	Block(std::string blockid_, unsigned int height_, std::string merkleRoot_, unsigned int nTx_, int nonce_, std::string prevblockid_);
 
 	//Getters
-
-	void getMerklePath(void);
+	bool push_transaction(Tx);
+	void getMerklePath(void);		//TODO: Que reciba txid
 	void getMerkleRoot(void);
 	std::string getBlockId(void);
 
