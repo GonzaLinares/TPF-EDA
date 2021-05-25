@@ -2,8 +2,9 @@
 
 #include <iostream>
 
-struct MerkleNode {
+class MerkleNode {
 
+    public:
     std::string hash;
     MerkleNode* left;
     MerkleNode* right;
