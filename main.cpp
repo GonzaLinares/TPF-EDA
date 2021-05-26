@@ -8,6 +8,8 @@ int main(int argc, char** argv) {
 
 	Gui menu;
 	Node nodo;
+
+	/*
 	std::string path("json.json");
 	nodo.createBlockchainFromFile(path);
 	std::vector<std::string> buffer;
@@ -16,7 +18,7 @@ int main(int argc, char** argv) {
 	buffer.clear();
 	path = "6A808C27";
 	arbolito.getMerklePath(path, buffer);
-
+	*/
 
 	while (menu.getState() == RUNNING) {
 		menu.update(nodo);
