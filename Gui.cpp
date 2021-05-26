@@ -161,7 +161,6 @@ void Gui::showBlocksTab(Node& node) {
 
 	int openedNodes = 0;
 	const int cols = 2;
-	const int rows = 10;
 	bool checkbox = true;
 	int blocksQuant = 0;
 	int pageSize = cols*2;
@@ -182,7 +181,7 @@ void Gui::showBlocksTab(Node& node) {
 			ImGui::Separator();
 		}
 
-		ImGui::Text("Block %d", i+1);
+		ImGui::Text("Block %d", 1+i+blockPage);
 		ImGui::Spacing();
 		ImGui::Text("current block hash: %s", currentBlock->getId().c_str());
 		ImGui::Text("previous block hash: %s", currentBlock->getPrevBlockId().c_str());
@@ -223,13 +222,14 @@ void Gui::showBlocksTab(Node& node) {
 	ImGui::Columns(1);
 
 	if (ImGui::Button("Prev")) {
-		if (pageSize < blockPage) {
+		if (pageSize <= blockPage) {
 			blockPage -= pageSize;
 		}
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("Next")) {
-		if (blocksQuant/pageSize < blockPage) {
+
+		if (blockPage+pageSize < node.getBlockQuant()) {
 			blockPage += pageSize;
 		}
 	}
