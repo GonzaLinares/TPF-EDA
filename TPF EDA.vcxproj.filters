@@ -63,9 +63,6 @@
     <ClCompile Include="Gui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MerkleTree.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="MerkleNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
