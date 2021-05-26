@@ -63,7 +63,7 @@ bool Block::getTxsID(std::vector<std::string>& buffer, int numOfTxs, int offset)
         numOfTxs = txs.size() - offset;
     }
 
-    std::vector<Block>::reverse_iterator it = txs.rbegin();
+    std::vector<Tx>::reverse_iterator it = txs.rbegin();
 
     if (numOfTxs == 0 && offset == 0)
     {
