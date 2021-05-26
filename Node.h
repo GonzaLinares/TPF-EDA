@@ -22,7 +22,7 @@ public:
 
 	virtual Block * getBlock(std::string id) override;
 
-	virtual std::vector<std::string> getBlocksID(int numOfBlocks = 0, int offset = 0) override;
+	virtual bool getBlocksID(std::vector<std::string>& buffer, int numOfBlocks = 0, int offset = 0) override;
 
 	virtual int getBlockQuant(void) override;
 
