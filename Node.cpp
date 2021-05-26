@@ -38,7 +38,15 @@ Block * Node::getBlock(std::string id)
 
 bool Node::getBlocksID(std::vector<std::string>& buffer, int numOfBlocks, int offset)	//TODO: Que verga pasaba si numOfBlocks es 0 
 {
+    if (blockchain.size() == 0)
+    {
+        return false;
+    }
 
+    if (blockchain.size() - offset > numOfBlocks)
+    {
+        numOfBlocks = blockchain.size() - offset;
+    }
 
     std::vector<Block>::reverse_iterator it = blockchain.rbegin();
 

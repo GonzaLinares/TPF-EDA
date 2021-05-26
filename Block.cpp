@@ -51,3 +51,29 @@ unsigned int Block::getnTx(void)
 	return txs.size();
 }
 
+bool Block::getTxsID(std::vector<std::string>& buffer, int numOfTxs, int offset)	//TODO: Que verga pasaba si numOfBlocks es 0 
+{
+
+
+    std::vector<Block>::reverse_iterator it = txs.rbegin();
+
+    if (numOfTxs == 0 && offset == 0)
+    {
+        for (int i = 1; i <= txs.size(); it++, i++) {
+
+            buffer.push_back(it->getId());
+        }
+    }
+    else
+    {
+        it += offset;
+
+        for (int i = 1; i <= numOfTxs; it++, i++) {
+
+            buffer.push_back(it->getId());
+        }
+    }
+
+
+    return true;
+}

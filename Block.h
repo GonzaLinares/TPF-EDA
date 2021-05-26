@@ -25,6 +25,8 @@ public:
 	std::string getPrevBlockId(void);
 	unsigned int getnTx(void);
 
+	bool getTxsID(std::vector<std::string>& buffer, int numOfTxs = 0, int offset = 0);
+
 	//Setters
 
 
