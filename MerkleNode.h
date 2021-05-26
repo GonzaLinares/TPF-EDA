@@ -5,11 +5,9 @@
 
 class MerkleNode {
 
-    public:             //TODO: privatizar
-
+public:             
 
     MerkleNode(std::string data);
-    ~MerkleNode();
     std::string getHash();
     MerkleNode*& Left(void);
     MerkleNode*& Right(void);
