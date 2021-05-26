@@ -27,7 +27,7 @@ Block * Node::getBlock(std::string id)
     Block* salida = nullptr;
     for (std::vector<Block>::iterator it = blockchain.begin(); it != blockchain.end(); it++) {
 
-        if ((it->getBlockId()) == id) {
+        if ((it->getId()) == id) {
 
             salida = &(*it);
         }
@@ -46,7 +46,7 @@ bool Node::getBlocksID(std::vector<std::string>& buffer, int numOfBlocks, int of
     {
         for (int i = 1; i <= blockchain.size(); it++, i++) {
 
-            buffer.push_back(it->getBlockId());
+            buffer.push_back(it->getId());
         }
     }
     else
@@ -55,7 +55,7 @@ bool Node::getBlocksID(std::vector<std::string>& buffer, int numOfBlocks, int of
 
         for (int i = 1; i <= numOfBlocks ; it++, i++) {
 
-            buffer.push_back(it->getBlockId());
+            buffer.push_back(it->getId());
         }
     }
     
