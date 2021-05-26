@@ -152,6 +152,7 @@
     <ClCompile Include="InTx.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MerkleNode.cpp" />
+    <ClCompile Include="MerkleTree.cpp" />
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="OutTx.cpp" />
     <ClCompile Include="Tx.cpp" />

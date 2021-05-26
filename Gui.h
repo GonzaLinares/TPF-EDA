@@ -5,8 +5,11 @@
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_primitives.h>      
 #include <allegro5/allegro_font.h>
-#include <allegro5/allegro_ttf.h> 
+#include <allegro5/allegro_ttf.h>
+#include <map>
 #include "Node.h"
+#include "Hashing.h"
+#include "MerkleTree.h"
 
 enum STATES {CLOSEPROGRAM, RUNNING};
 
@@ -28,8 +31,10 @@ class Gui
 		std::string filename;
 		ALLEGRO_DISPLAY* display;
 		ALLEGRO_EVENT_QUEUE* queue;
+		std::map<std::string, MerkleTree<hash32>> merkleTrees;
 
 		void showBlocksTab(Node& node);
 		void openSubTreeNode(int n, int q);
+		
 };
 
