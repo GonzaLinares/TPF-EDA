@@ -16,5 +16,6 @@ public:
 private:
 
 	MerkleNode* root;
+	std::vector<MerkleNode*> blocks;
 
 };
