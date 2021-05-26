@@ -11,6 +11,7 @@ MerkleNode::MerkleNode(std::string data) {
 
 MerkleNode::~MerkleNode()
 {
+    /*
     if (left != nullptr)
     {
         delete left;
@@ -19,6 +20,7 @@ MerkleNode::~MerkleNode()
     {
         delete right;
     }
+    */
 }
 
 std::string MerkleNode::getHash()
