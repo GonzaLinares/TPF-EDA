@@ -2,4 +2,4 @@
 
 #include <string>
 
-std::string hash(char* str);
+std::string hash(std::string& str);

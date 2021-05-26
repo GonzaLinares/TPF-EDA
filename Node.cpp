@@ -43,7 +43,7 @@ bool Node::getBlocksID(std::vector<std::string>& buffer, int numOfBlocks, int of
         return false;
     }
 
-    if (blockchain.size() - offset > numOfBlocks)
+    if (blockchain.size() - offset < numOfBlocks)
     {
         numOfBlocks = blockchain.size() - offset;
     }
