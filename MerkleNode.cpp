@@ -9,18 +9,6 @@ MerkleNode::MerkleNode(std::string data) {
     left = nullptr;
 }
 
-MerkleNode::~MerkleNode()
-{
-    if (left)
-    {
-        delete left;
-    }
-    if (right)
-    {
-        delete right;
-    }
-
-}
 
 std::string MerkleNode::getHash()
 {
