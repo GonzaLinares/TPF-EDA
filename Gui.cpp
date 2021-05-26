@@ -118,6 +118,7 @@ void Gui::update(Node& node) {
 	if (ImGui::Button("Load file")) {
 		node.createBlockchainFromFile(filename);
 	}
+
 	ImGui::Spacing();
 	ImGui::Spacing();
 
@@ -165,58 +166,60 @@ void Gui::showBlocksTab(Node& node) {
 	const int cols = 2;
 	const int rows = 10;
 	bool checkbox = true;
+	int blocksQuant = 0;
 
 	ImGui::SetNextItemWidth(ImGui::GetFontSize() * 8);
 	ImGui::Columns(cols, NULL, true);
 	ImGui::SetColumnWidth(0, 631);
 
-	std::vector<std::string> blockIDs = node.getBlocksID();
+	std::vector<std::string> blockIDs;
+	node.getBlocksID(blockIDs);
+	blocksQuant = blockIDs.size();
 
-	for (int i = 0; i < blockIDs.size(); i++){
-		for (int j = 0; j < cols; j++) {
+	for (int i = 0; i < blocksQuant; i++){
 
-			Block* currentBlock = node.getBlock(blockIDs[]);
+		Block* currentBlock = node.getBlock(blockIDs[i]);
 
-			if (ImGui::GetColumnIndex() == 0) {
-				ImGui::Separator();
-			}
+		if (ImGui::GetColumnIndex() == 0) {
+			ImGui::Separator();
+		}
 
-			ImGui::Text("Block %d", (j+1) + i*cols);
-			ImGui::Spacing();
-			ImGui::Text("current block hash: %s", "0000000000000000000a6fb67004af665a3d5d9acaa7265dd44a61ee619b19f9");
-			ImGui::Text("previous block hash: %s", "0000000000000000000a6fb67004af66jfowehoifweoifdd44a61ee619b4g485");
-			ImGui::Text("number of transactions: %s", "1396");
-			ImGui::Text("nonce: %s", "393983482");
-			ImGui::Text("merkle root: %s", "d52c9f6fd4ea571ae30cd0973fa2a4fac282888cda19ecc20f6919bcf49fcbf0");
-			ImGui::Button("calculate merkle");
-			ImGui::Text("calculated: %s", "d52c9f6fd4ea571ae30cd0973fa2a4fac282888cda19ecc20f6919bcf49fcbf0");
-			ImGui::SameLine();
-			ImGui::Checkbox("", &checkbox);
-			
+		ImGui::Text("Block %d", i+1);
+		ImGui::Spacing();
+		ImGui::Text("current block hash: %s", currentBlock->getBlockId().c_str());
+		ImGui::Text("previous block hash: %s", "fdg");
+		ImGui::Text("number of transactions: %s", "1396");
+		ImGui::Text("nonce: %s", "393983482");
+		ImGui::Text("merkle root: %s", "d52c9f6fd4ea571ae30cd0973fa2a4fac282888cda19ecc20f6919bcf49fcbf0");
+		if (ImGui::Button("calculate merkle")) {
 
-			if (ImGui::TreeNode((void*)(intptr_t)(0), "merkle tree"))
-			{
-				if (ImGui::TreeNode((void*)(intptr_t)(1), "root")) {
-					ImGui::Text("d52c9f6fd4ea571ae30cd0973fa2a4fac282888cda19ecc20f6919bcf49fcbf0");
- 
-					openSubTreeNode(4, openedNodes);
+		}
+		ImGui::Text("calculated: %s", "d52c9f6fd4ea571ae30cd0973fa2a4fac282888cda19ecc20f6919bcf49fcbf0");
+		ImGui::SameLine();
+		ImGui::Checkbox("", &checkbox);
 
-					ImGui::TreePop();
-				}
+		if (ImGui::TreeNode((void*)(intptr_t)(0), "merkle tree"))
+		{
+			if (ImGui::TreeNode((void*)(intptr_t)(1), "root")) {
+				ImGui::Text("d52c9f6fd4ea571ae30cd0973fa2a4fac282888cda19ecc20f6919bcf49fcbf0");
+
+				openSubTreeNode(4, openedNodes);
 
 				ImGui::TreePop();
 			}
 
-			ImGui::Spacing();
-
-			//ImGui::Text("Width %.2f", ImGui::GetColumnWidth());
-			//ImGui::Text("Avail %.2f", ImGui::GetContentRegionAvail().x);
-			//ImGui::Text("Offset %.2f", ImGui::GetColumnOffset());
-			//ImGui::Text("Long text that is likely to clip");
-			//ImGui::Button("Button", ImVec2(-FLT_MIN, 0.0f));
-
-			ImGui::NextColumn();
+			ImGui::TreePop();
 		}
+
+		ImGui::Spacing();
+
+		//ImGui::Text("Width %.2f", ImGui::GetColumnWidth());
+		//ImGui::Text("Avail %.2f", ImGui::GetContentRegionAvail().x);
+		//ImGui::Text("Offset %.2f", ImGui::GetColumnOffset());
+		//ImGui::Text("Long text that is likely to clip");
+		//ImGui::Button("Button", ImVec2(-FLT_MIN, 0.0f));
+		
+		ImGui::NextColumn();
 	}
 
 	ImGui::Columns(1);
