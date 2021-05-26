@@ -13,6 +13,7 @@ Gui::Gui() {
 	state = RUNNING;
 	blockPage = 0;
 	filename = "";
+	merkleTrees.clear();
 
 	//Inicializamos allegro y sus principales addons
 	if (!al_init()) {
@@ -165,20 +166,17 @@ void Gui::showBlocksTab(Node& node) {
 	bool checkbox = false;
 	int blocksQuant = 0;
 
+	std::vector<std::string> currentPageBlockIDs;
+	node.getBlocksID(currentPageBlockIDs, pageSize, blockPage);
+	blocksQuant = currentPageBlockIDs.size();
+
 	ImGui::SetNextItemWidth(ImGui::GetFontSize() * 8);
 	ImGui::Columns(cols, NULL, true);
 	ImGui::SetColumnWidth(0, SCREENWIDTH/cols);
 
-	//TODO: Ver
-	std::vector<std::string> blockIDs;
-	node.getBlocksID(blockIDs, pageSize, blockPage);
-	blocksQuant = blockIDs.size();
-
-
-
 	for (int i = 0; i < blocksQuant; i++){
 
-		Block* currentBlock = node.getBlock(blockIDs[i]);
+		Block* currentBlock = node.getBlock(currentPageBlockIDs[i]);
 		string currentID = currentBlock->getId();
 
 		if (ImGui::GetColumnIndex() == 0) {
@@ -193,22 +191,23 @@ void Gui::showBlocksTab(Node& node) {
 		ImGui::Text("nonce: %d", currentBlock->getNonce());
 		ImGui::Text("merkle root: %s", currentBlock->getMerkleRoot().c_str());
 		if (ImGui::Button("calculate merkle")) {
-			
+
 			std::vector<std::string> currentTrxs;
 			currentBlock->getTxsID(currentTrxs);
-			MerkleTree<hash32> arbol(currentTrxs);
-			merkleTrees[currentID] = arbol;
+			//MerkleTree<hash32> arbol(currentTrxs);
+			//merkleTrees.insert(pair<string, MerkleTree<hash32>>(currentID, arbol));
 		}
 
 		if (merkleTrees.count(currentID) > 0) {
+			cout << merkleTrees.count(currentID) << endl;
 			checkbox = true;
 		}
 
-		ImGui::Text("calculated: %s", merkleTrees[currentID]);
-		ImGui::SameLine();
+		//ImGui::Text("calculated: %s", merkleTrees[currentID].getMerkleRoot().c_str());
+		//ImGui::SameLine();
 		ImGui::Checkbox("", &checkbox);
 
-		if (ImGui::TreeNode((void*)(intptr_t)(0), "merkle tree"))
+		if (ImGui::TreeNode("###merkleTree", "merkle tree", i))
 		{
 			if (ImGui::TreeNode((void*)(intptr_t)(1), "root")) {
 				ImGui::Text("d52c9f6fd4ea571ae30cd0973fa2a4fac282888cda19ecc20f6919bcf49fcbf0");
@@ -234,7 +233,7 @@ void Gui::showBlocksTab(Node& node) {
 	ImGui::Columns(1);
 
 	if (blocksQuant > 0) {
-		ImGui::SetCursorPos(ImVec2(SCREENWIDTH - 2.5f*ImGui::GetItemRectSize().x, 20));
+		ImGui::SetCursorPos(ImVec2(SCREENWIDTH - 300, 20));
 		if (ImGui::Button("Prev", ImVec2(100, 50))) {
 			if (pageSize <= blockPage) {
 				blockPage -= pageSize;

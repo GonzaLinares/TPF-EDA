@@ -35,5 +35,6 @@ class Gui
 
 		void showBlocksTab(Node& node);
 		void openSubTreeNode(int n, int q);
+		
 };
 
