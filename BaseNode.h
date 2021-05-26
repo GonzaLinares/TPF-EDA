@@ -18,7 +18,7 @@ public:
 	virtual void createBlockchainFromFile(std::string&) = 0;
 
 	virtual Block * getBlock(std::string id) = 0;
-	virtual std::vector<std::string> getBlocksID(int numOfBlocks = 0, int offset = 0) = 0;
+	virtual bool getBlocksID(std::vector<std::string>& buffer, int numOfBlocks = 0, int offset = 0) = 0;
 	virtual int getBlockQuant(void) = 0;
 
 	
