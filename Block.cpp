@@ -53,7 +53,15 @@ unsigned int Block::getnTx(void)
 
 bool Block::getTxsID(std::vector<std::string>& buffer, int numOfTxs, int offset)	//TODO: Que verga pasaba si numOfBlocks es 0 
 {
+    if (txs.size() == 0)
+    {
+        return false;
+    }
 
+    if (txs.size() - offset > numOfTxs)
+    {
+        numOfTxs = txs.size() - offset;
+    }
 
     std::vector<Block>::reverse_iterator it = txs.rbegin();
 
