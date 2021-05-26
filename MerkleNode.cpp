@@ -65,6 +65,7 @@ void MerkleNode::getMerklePath(std::string& txid, std::vector<std::string>& merk
     return;
 }
 
+/*
 void MerkleNode::printNode(int indent) {
         if (left) {
             left->printNode(indent + 4);
@@ -77,3 +78,4 @@ void MerkleNode::printNode(int indent) {
         }
         std::cout << n->hash[0] << "\n ";
 }
+*/
