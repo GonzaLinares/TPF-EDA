@@ -77,10 +77,9 @@ void Gui::init() {
 	ImGui_ImplAllegro5_Init(display);
 }
 
-void Gui::update() {
+void Gui::update(Node& node) {
 
 	ALLEGRO_EVENT ev;
-	string filename;
 	const ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
 	ImGuiWindowFlags window_flags = 0;
@@ -116,7 +115,9 @@ void Gui::update() {
 	ImGui::Spacing();
 	ImGui::InputText(" ", &filename);
 	ImGui::SameLine();
-	ImGui::Button("Load file");
+	if (ImGui::Button("Load file")) {
+		node.createBlockchainFromFile(filename);
+	}
 	ImGui::Spacing();
 	ImGui::Spacing();
 
@@ -124,7 +125,7 @@ void Gui::update() {
 	{
 		if (ImGui::BeginTabItem("Blocks"))
 		{
-			showBlocksTab();
+			showBlocksTab(node);
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Coming Soon"))
@@ -156,10 +157,9 @@ void Gui::destroy()
 	ImGui::DestroyContext();
 	al_destroy_event_queue(queue);
 	al_destroy_display(display);
-
 }
 
-void Gui::showBlocksTab() {
+void Gui::showBlocksTab(Node& node) {
 
 	int openedNodes = 0;
 	const int cols = 2;
@@ -170,8 +170,12 @@ void Gui::showBlocksTab() {
 	ImGui::Columns(cols, NULL, true);
 	ImGui::SetColumnWidth(0, 631);
 
-	for (int i = 0; i < rows; i++){
+	std::vector<std::string> blockIDs = node.getBlocksID();
+
+	for (int i = 0; i < blockIDs.size(); i++){
 		for (int j = 0; j < cols; j++) {
+
+			Block* currentBlock = node.getBlock(blockIDs[]);
 
 			if (ImGui::GetColumnIndex() == 0) {
 				ImGui::Separator();
@@ -190,9 +194,9 @@ void Gui::showBlocksTab() {
 			ImGui::Checkbox("", &checkbox);
 			
 
-			if (ImGui::TreeNode((void*)(intptr_t)(openedNodes), "merkle tree"))
+			if (ImGui::TreeNode((void*)(intptr_t)(0), "merkle tree"))
 			{
-				if (ImGui::TreeNode((void*)(intptr_t)(openedNodes), "root")) {
+				if (ImGui::TreeNode((void*)(intptr_t)(1), "root")) {
 					ImGui::Text("d52c9f6fd4ea571ae30cd0973fa2a4fac282888cda19ecc20f6919bcf49fcbf0");
  
 					openSubTreeNode(4, openedNodes);
@@ -202,8 +206,6 @@ void Gui::showBlocksTab() {
 
 				ImGui::TreePop();
 			}
-			
-			openedNodes++;
 
 			ImGui::Spacing();
 
@@ -214,7 +216,6 @@ void Gui::showBlocksTab() {
 			//ImGui::Button("Button", ImVec2(-FLT_MIN, 0.0f));
 
 			ImGui::NextColumn();
-			openedNodes = 0;
 		}
 	}
 
@@ -224,20 +225,19 @@ void Gui::showBlocksTab() {
 void Gui::openSubTreeNode(int n, int q) {
 
 	if (n == 0) {
-		if (ImGui::TreeNode((void*)(intptr_t)(n), "leaf %d", n)) {
+		if (ImGui::TreeNode((void*)(intptr_t)(q), "leaf %d", n)) {
 			ImGui::Text("d52c9f6fd4ea571ae30cd0973fa2a4fac282888cda19ecc20f6919bcf49fcbf0");
 			ImGui::TreePop();
 		}
 	}
 	else {
 		if (ImGui::TreeNode((void*)(intptr_t)(q), "right %d", n)) {
-			openSubTreeNode(n-1, q);
+			openSubTreeNode(n - 1, q + 1);
 			ImGui::TreePop();
 		}
-		if (ImGui::TreeNode((void*)(intptr_t)(q+1), "left %d", n)) {
-			openSubTreeNode(n-1, q);
+		if (ImGui::TreeNode((void*)(intptr_t)(-q), "left %d", n)) {
+			openSubTreeNode(n - 1, q - 1);
 			ImGui::TreePop();
 		}
 	}
-
 }
