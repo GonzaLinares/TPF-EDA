@@ -21,7 +21,7 @@ void Block::getMerklePath(void)
 
 }
 
-void Block::getMerkleRoot(void)
+std::string Block::getMerkleRoot(void)
 {
 	
 	std::vector<std::string> tempTree;	//Aca voy a ir metiendo los strings a medida que los calcule
@@ -40,6 +40,7 @@ void Block::getMerkleRoot(void)
 		}
 	}
 
+	return "Falta implementar"; //TODO: Terminar funcion
 }
 
 std::string Block::getId(void)

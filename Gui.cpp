@@ -4,19 +4,16 @@
 #include "ImGui/imgui_impl_allegro5.h"
 #include "ImGui/imgui_stdlib.h"
 #include <stdexcept> 
-#include <allegro5/allegro_image.h>
-#include <allegro5/allegro_primitives.h>      
-#include <allegro5/allegro_font.h>
-#include <allegro5/allegro_ttf.h> 
 #include <filesystem>
 
 using namespace std;
 
-static ALLEGRO_DISPLAY* display;
-static ALLEGRO_EVENT_QUEUE* queue;
-
-void Gui::init() {
+Gui::Gui() {
 	
+	state = RUNNING;
+	blockPage = 0;
+	filename = "";
+
 	//Inicializamos allegro y sus principales addons
 	if (!al_init()) {
 		throw exception("Error al inicializar allegro");
@@ -77,6 +74,15 @@ void Gui::init() {
 	ImGui_ImplAllegro5_Init(display);
 }
 
+Gui::~Gui()
+{
+	// Cleanup
+	ImGui_ImplAllegro5_Shutdown();
+	ImGui::DestroyContext();
+	al_destroy_event_queue(queue);
+	al_destroy_display(display);
+}
+
 void Gui::update(Node& node) {
 
 	ALLEGRO_EVENT ev;
@@ -97,7 +103,7 @@ void Gui::update(Node& node) {
     {
         ImGui_ImplAllegro5_ProcessEvent(&ev);
 		if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
-			state = CLOSEPROGRAMM;
+			state = CLOSEPROGRAM;
 		}
     }
 
@@ -151,15 +157,6 @@ int Gui::getState() {
 	return state;
 }
 
-void Gui::destroy()
-{
-	// Cleanup
-	ImGui_ImplAllegro5_Shutdown();
-	ImGui::DestroyContext();
-	al_destroy_event_queue(queue);
-	al_destroy_display(display);
-}
-
 void Gui::showBlocksTab(Node& node) {
 
 	int openedNodes = 0;
@@ -167,13 +164,14 @@ void Gui::showBlocksTab(Node& node) {
 	const int rows = 10;
 	bool checkbox = true;
 	int blocksQuant = 0;
+	int pageSize = cols*2;
 
 	ImGui::SetNextItemWidth(ImGui::GetFontSize() * 8);
 	ImGui::Columns(cols, NULL, true);
-	ImGui::SetColumnWidth(0, 631);
+	ImGui::SetColumnWidth(0, SCREENWIDTH/cols);
 
 	std::vector<std::string> blockIDs;
-	node.getBlocksID(blockIDs);
+	node.getBlocksID(blockIDs, pageSize, blockPage);
 	blocksQuant = blockIDs.size();
 
 	for (int i = 0; i < blocksQuant; i++){
@@ -186,11 +184,11 @@ void Gui::showBlocksTab(Node& node) {
 
 		ImGui::Text("Block %d", i+1);
 		ImGui::Spacing();
-		ImGui::Text("current block hash: %s", currentBlock->getBlockId().c_str());
-		ImGui::Text("previous block hash: %s", "fdg");
-		ImGui::Text("number of transactions: %s", "1396");
-		ImGui::Text("nonce: %s", "393983482");
-		ImGui::Text("merkle root: %s", "d52c9f6fd4ea571ae30cd0973fa2a4fac282888cda19ecc20f6919bcf49fcbf0");
+		ImGui::Text("current block hash: %s", currentBlock->getId().c_str());
+		ImGui::Text("previous block hash: %s", currentBlock->getPrevBlockId().c_str());
+		ImGui::Text("number of transactions: %d", currentBlock->getnTx());
+		ImGui::Text("nonce: %d", currentBlock->getNonce());
+		ImGui::Text("merkle root: %s", currentBlock->getMerkleRoot().c_str());
 		if (ImGui::Button("calculate merkle")) {
 
 		}
@@ -223,6 +221,18 @@ void Gui::showBlocksTab(Node& node) {
 	}
 
 	ImGui::Columns(1);
+
+	if (ImGui::Button("Prev")) {
+		if (pageSize < blockPage) {
+			blockPage -= pageSize;
+		}
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Next")) {
+		if (blocksQuant/pageSize < blockPage) {
+			blockPage += pageSize;
+		}
+	}
 }
 
 void Gui::openSubTreeNode(int n, int q) {
