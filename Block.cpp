@@ -42,7 +42,28 @@ void Block::getMerkleRoot(void)
 
 }
 
-std::string Block::getBlockId(void)
+std::string Block::getId(void)
 {
-	return blockId;
+	return blockId;;
 }
+
+unsigned int Block::getHeight(void)
+{
+	return height;
+}
+
+unsigned int Block::getNonce(void)
+{
+	return nonce;
+}
+
+std::string Block::getPrevBlockId(void)
+{
+	return previousBlockId;
+}
+
+unsigned int Block::getnTx(void)
+{
+	return txs.size();
+}
+
