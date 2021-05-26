@@ -3,7 +3,7 @@
     "blockid": "13878957",
     "height": 0,
     "merkleroot": "80EEF9F8",
-    "nTx": 4,
+    "nTx": 5,
     "nonce": 4733,
     "previousblockid": "00000000",
     "tx": [
@@ -118,6 +118,150 @@
         "nTxin": 4,
         "nTxout": 1,
         "txid": "391C912C",
+        "vin": [
+          {
+            "blockid": "00000EAE",
+            "outputIndex": 3,
+            "signature": "00000679",
+            "txid": "00000A4B"
+          },
+          {
+            "blockid": "00000FB5",
+            "outputIndex": 0,
+            "signature": "00000902",
+            "txid": "00000D86"
+          },
+          {
+            "blockid": "00001060",
+            "outputIndex": 1,
+            "signature": "000011E1",
+            "txid": "000004AF"
+          },
+          {
+            "blockid": "00000375",
+            "outputIndex": 0,
+            "signature": "00000A9B",
+            "txid": "000006E1"
+          }
+        ],
+        "vout": [
+          {
+            "amount": 1,
+            "publicid": "91218912199121891218"
+          }
+        ]
+      },
+      {
+        "nTxin": 1,
+        "nTxout": 4,
+        "txid": "ABCDEFAD",
+        "vin": [
+          {
+            "blockid": "0000084D",
+            "outputIndex": 2,
+            "signature": "00000077",
+            "txid": "0000007E"
+          }
+        ],
+        "vout": [
+          {
+            "amount": 0,
+            "publicid": "91218912199121891218"
+          },
+          {
+            "amount": 1,
+            "publicid": "91218912199121891218"
+          },
+          {
+            "amount": 2,
+            "publicid": "91218912199121891218"
+          },
+          {
+            "amount": 1,
+            "publicid": "91218912199121891218"
+          }
+        ]
+      },
+      {
+        "nTxin": 3,
+        "nTxout": 2,
+        "txid": "ABCDEFAC",
+        "vin": [
+          {
+            "blockid": "00000709",
+            "outputIndex": 4,
+            "signature": "00000A7B",
+            "txid": "000009EB"
+          },
+          {
+            "blockid": "00000F84",
+            "outputIndex": 3,
+            "signature": "00000D35",
+            "txid": "000004E5"
+          },
+          {
+            "blockid": "000005D4",
+            "outputIndex": 1,
+            "signature": "00000F92",
+            "txid": "0000042A"
+          }
+        ],
+        "vout": [
+          {
+            "amount": 2,
+            "publicid": "91218912199121891218"
+          },
+          {
+            "amount": 2,
+            "publicid": "91218912199121891218"
+          }
+        ]
+      },
+      {
+        "nTxin": 2,
+        "nTxout": 5,
+        "txid": "ABCDEFAB",
+        "vin": [
+          {
+            "blockid": "00000BA8",
+            "outputIndex": 0,
+            "signature": "00001265",
+            "txid": "00000B2F"
+          },
+          {
+            "blockid": "0000031F",
+            "outputIndex": 3,
+            "signature": "0000079E",
+            "txid": "00001112"
+          }
+        ],
+        "vout": [
+          {
+            "amount": 0,
+            "publicid": "91218912199121891218"
+          },
+          {
+            "amount": 1,
+            "publicid": "91218912199121891218"
+          },
+          {
+            "amount": 0,
+            "publicid": "91218912199121891218"
+          },
+          {
+            "amount": 1,
+            "publicid": "91218912199121891218"
+          },
+          {
+            "amount": 1,
+            "publicid": "91218912199121891218"
+          }
+        ]
+      },
+      {
+        "nTxin": 4,
+        "nTxout": 1,
+        "txid": "ABCDEFAA",
         "vin": [
           {
             "blockid": "00000EAE",
@@ -754,7 +898,7 @@
     ]
   },
   {
-    "blockid": "13878957",
+    "blockid": "1387895A",
     "height": 0,
     "merkleroot": "80EEF9F8",
     "nTx": 4,
@@ -908,7 +1052,7 @@
     ]
   },
   {
-    "blockid": "944EC375",
+    "blockid": "944EC37A",
     "height": 1,
     "merkleroot": "62F34A8A",
     "nTx": 4,
@@ -1066,7 +1210,7 @@
     ]
   },
   {
-    "blockid": "24C06253",
+    "blockid": "24C0625A",
     "height": 2,
     "merkleroot": "33C141D4",
     "nTx": 4,
@@ -1230,7 +1374,7 @@
     ]
   },
   {
-    "blockid": "164BD7B1",
+    "blockid": "164BD7BA",
     "height": 3,
     "merkleroot": "596B5112",
     "nTx": 4,
@@ -1354,7 +1498,7 @@
     ]
   },
   {
-    "blockid": "534F219B",
+    "blockid": "534F219A",
     "height": 4,
     "merkleroot": "AD45D3EA",
     "nTx": 4,
@@ -1508,7 +1652,7 @@
     ]
   },
   {
-    "blockid": "13878957",
+    "blockid": "1387895B",
     "height": 0,
     "merkleroot": "80EEF9F8",
     "nTx": 4,
@@ -1662,7 +1806,7 @@
     ]
   },
   {
-    "blockid": "944EC375",
+    "blockid": "944EC37B",
     "height": 1,
     "merkleroot": "62F34A8A",
     "nTx": 4,
@@ -1820,7 +1964,7 @@
     ]
   },
   {
-    "blockid": "24C06253",
+    "blockid": "24C0625B",
     "height": 2,
     "merkleroot": "33C141D4",
     "nTx": 4,
@@ -1984,7 +2128,7 @@
     ]
   },
   {
-    "blockid": "164BD7B1",
+    "blockid": "164BD7BB",
     "height": 3,
     "merkleroot": "596B5112",
     "nTx": 4,
@@ -2108,7 +2252,7 @@
     ]
   },
   {
-    "blockid": "534F219B",
+    "blockid": "534F21BB",
     "height": 4,
     "merkleroot": "AD45D3EA",
     "nTx": 4,
@@ -2262,7 +2406,7 @@
     ]
   },
   {
-    "blockid": "13878957",
+    "blockid": "1387895C",
     "height": 0,
     "merkleroot": "80EEF9F8",
     "nTx": 4,
@@ -2416,7 +2560,7 @@
     ]
   },
   {
-    "blockid": "944EC375",
+    "blockid": "944EC37C",
     "height": 1,
     "merkleroot": "62F34A8A",
     "nTx": 4,
@@ -2574,7 +2718,7 @@
     ]
   },
   {
-    "blockid": "24C06253",
+    "blockid": "24C0625C",
     "height": 2,
     "merkleroot": "33C141D4",
     "nTx": 4,
@@ -2738,7 +2882,7 @@
     ]
   },
   {
-    "blockid": "164BD7B1",
+    "blockid": "164BD7BC",
     "height": 3,
     "merkleroot": "596B5112",
     "nTx": 4,
@@ -2862,7 +3006,7 @@
     ]
   },
   {
-    "blockid": "534F219B",
+    "blockid": "534F219C",
     "height": 4,
     "merkleroot": "AD45D3EA",
     "nTx": 4,

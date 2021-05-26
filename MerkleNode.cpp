@@ -2,19 +2,36 @@
 
 
 
-MerkleNode::MerkleNode(std::string& data) {
+MerkleNode::MerkleNode(std::string data) {
 
     hash = data;
     right = nullptr;
     left = nullptr;
 }
 
-MerkleNode* MerkleNode::Left(void)
+MerkleNode::~MerkleNode()
+{
+    if (left != nullptr)
+    {
+        delete left;
+    }
+    if (right != nullptr)
+    {
+        delete right;
+    }
+}
+
+std::string MerkleNode::getHash()
+{
+    return hash;
+}
+
+MerkleNode*& MerkleNode::Left(void)
 {
     return left;
 }
 
-MerkleNode* MerkleNode::Right(void)
+MerkleNode*& MerkleNode::Right(void)
 {
     return right;
 }

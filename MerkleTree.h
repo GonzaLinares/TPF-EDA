@@ -6,21 +6,26 @@
 
 //TODO: arreglar la prolijidad
 
-template <std::string (*hashFunc)(std::string&)> class MerkleTree
+template <std::string(*hashFunc)(std::string&)> class MerkleTree
 {
-	
+
 public:
 
-	MerkleTree(std::vector <std::string>& txIds);
-	std::string getMerkleRoot(void);
-	void getMerklePath(std::string& txid, std::vector<std::string>& merklepath);
+    MerkleTree(std::vector <std::string>& txIds);
+    ~MerkleTree();
+
+
+    std::string getMerkleRoot(void);
+    void getMerklePath(std::string& txid, std::vector<std::string>& merklepath);
 
 private:
 
-	MerkleNode* root;
-	std::vector<MerkleNode*> blocks;
+    MerkleNode* root;
+    std::vector<MerkleNode*> blocks;
 
 };
+
+
 template<std::string(*hashFunc)(std::string&)> MerkleTree<hashFunc>::MerkleTree(std::vector<std::string>& txIds)
 {
     /*Al vector Blocks te lo meti adentro de la clase, sino se moriria todo al cerrar la funcion creo*/
@@ -34,17 +39,15 @@ template<std::string(*hashFunc)(std::string&)> MerkleTree<hashFunc>::MerkleTree(
 
     while (blocks.size() != 1) {
 
-        for (unsigned int l = 0, n = 0; l < blocks.size(); l = l + 2, n++) {
-            if (l != blocks.size() - 1) {
-                std::string aux = blocks[l]->hash + blocks[l + 1]->hash;
-                aux = hashFunc(aux);
-                nodes.push_back(new MerkleNode(aux));
-                nodes[n]->left = blocks[l];
-                nodes[n]->right = blocks[l + 1];
+        for (unsigned int i = 0, n = 0; i < blocks.size(); i = i + 2, n++) {
+            if (blocks.size() % 2 != 0) {
+                blocks.push_back(new MerkleNode(blocks.back()->getHash()));
             }
-            else {
-                nodes.push_back(blocks[l]);
-            }
+            std::string aux = blocks[i]->getHash() + blocks[i + 1]->getHash();
+            aux = hashFunc(aux);
+            nodes.push_back(new MerkleNode(aux));
+            nodes[n]->Left() = blocks[i];
+            nodes[n]->Right() = blocks[i + 1];
         }
 
         blocks = nodes;
@@ -52,6 +55,12 @@ template<std::string(*hashFunc)(std::string&)> MerkleTree<hashFunc>::MerkleTree(
     }
 
     root = blocks[0];
+}
+
+template<std::string(*hashFunc)(std::string&)>
+inline MerkleTree<hashFunc>::~MerkleTree()
+{
+    delete root;
 }
 
 template<std::string(*hashFunc)(std::string&)>
