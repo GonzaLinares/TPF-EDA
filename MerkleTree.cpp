@@ -44,7 +44,10 @@ template<std::string(*hashFunc)(std::string&)> MerkleTree<hashFunc>::MerkleTree(
 template<std::string(*hashFunc)(std::string&)>
 MerkleTree<hashFunc>::~MerkleTree()
 {
-    deleteTree(root);
+    if (root != nullptr)
+    {
+        deleteTree(root);
+    }
     root = nullptr;
 }
 
