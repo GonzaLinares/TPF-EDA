@@ -4,7 +4,6 @@
 #include "ImGui/imgui_impl_allegro5.h"
 #include "ImGui/imgui_stdlib.h"
 #include <stdexcept> 
-#include <filesystem>
 
 using namespace std;
 
@@ -104,6 +103,8 @@ void Gui::update(Node& node) {
     {
         ImGui_ImplAllegro5_ProcessEvent(&ev);
 		if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
+			deleteMerkleDic(merkleTrees);
+			merkleTrees.clear();
 			state = CLOSEPROGRAM;
 		}
     }
@@ -123,7 +124,9 @@ void Gui::update(Node& node) {
 	ImGui::InputText(" ", &filename);
 	ImGui::SameLine();
 	if (ImGui::Button("Load file")) {
+		deleteMerkleDic(merkleTrees);
 		merkleTrees.clear();
+		node.deleteBlockchain();
 		node.createBlockchainFromFile(filename);
 	}
 
@@ -157,6 +160,18 @@ int Gui::getState() {
 	return state;
 }
 
+void Gui::deleteMerkleDic(std::map<std::string, MerkleTree<hash32>*>& dic)
+{
+
+	for (auto it : dic)
+	{
+		if (it.second != nullptr)
+		{
+			delete it.second;
+		}
+	}
+}
+
 void Gui::showBlocksTab(Node& node) {
 
 	const int cols = 2;
@@ -186,36 +201,37 @@ void Gui::showBlocksTab(Node& node) {
 
 		ImGui::Text("Block %d", 1+i+blockPage);
 		ImGui::Spacing();
-		ImGui::Text("current block hash: %s", currentID.c_str());
-		ImGui::Text("previous block hash: %s", currentBlock->getPrevBlockId().c_str());
-		ImGui::Text("number of transactions: %d", currentBlock->getnTx());
-		ImGui::Text("nonce: %d", currentBlock->getNonce());
-		ImGui::Text("merkle root: %s", currentBlock->getMerkleRoot().c_str());
-		aux = "calculate merkle##" + currentID;
+		ImGui::Text("Current block hash: %s", currentID.c_str());
+		ImGui::Text("Previous block hash: %s", currentBlock->getPrevBlockId().c_str());
+		ImGui::Text("Number of transactions: %d", currentBlock->getnTx());
+		ImGui::Text("Nonce: %d", currentBlock->getNonce());
+		ImGui::Text("Merkle root: %s", currentBlock->getMerkleRoot().c_str());
+		aux = "Calculate Merkle Tree##" + currentID;
+		
 		if (ImGui::Button(aux.c_str())) {
 			std::vector<std::string> currentTrxs;
 			currentBlock->getTxsID(currentTrxs);
-			MerkleTree<hash32> arbol(currentTrxs);
-			merkleTrees.insert(pair<string, MerkleTree<hash32>>(currentID, arbol));
+			merkleTrees.insert(pair<string, MerkleTree<hash32>*>(currentID, new MerkleTree<hash32>(currentTrxs)));
 		}
 
 		
-		std::map<string, MerkleTree<hash32>>::iterator merkleIt = merkleTrees.find(currentID);
+		std::map<string, MerkleTree<hash32>*>::iterator merkleIt = merkleTrees.find(currentID);
 		if (merkleIt != merkleTrees.end()) {
 
-			ImGui::Text("calculated: %s", merkleTrees[currentID].getMerkleRoot().c_str());
-			if (merkleTrees.count(currentID) > 0 && currentBlock->getMerkleRoot() == (*merkleIt).second.getMerkleRoot()) {
+			ImGui::Text("Calculated: %s", (*merkleIt).second->getMerkleRoot().c_str());
+			if (merkleTrees.count(currentID) > 0 && currentBlock->getMerkleRoot() == (*merkleIt).second->getMerkleRoot()) {
 				checkbox = true;
 			}
 			ImGui::SameLine();
 			aux = "##" + currentID;
 			ImGui::Checkbox(aux.c_str(), &checkbox);
 
-			if (ImGui::TreeNode((const void*)(++label), "merkle tree", i))
+			if (ImGui::TreeNode((const void*)(++label), "Merkle Tree", i))
 			{
-				MerkleNode* merkleNodeRoot = (*merkleIt).second.getRootNode();
+				MerkleNode* merkleNodeRoot = (*merkleIt).second->getRootNode();
 
-				if (ImGui::TreeNode((const void*)(++label), "root")) {
+				if (ImGui::TreeNode((const void*)(++label), "Root:")) {
+					ImGui::SameLine();
 					ImGui::Text(merkleNodeRoot->getHash().c_str());
 
 					openSubTreeNode(merkleNodeRoot, label);
@@ -226,18 +242,12 @@ void Gui::showBlocksTab(Node& node) {
 			}
 		}
 		else {
-			ImGui::Text("calculated: ???");
+			ImGui::Text("Calculated: Press Calculate Merkle Tree");
 		}
 		
 
 		ImGui::Spacing();
 
-		//ImGui::Text("Width %.2f", ImGui::GetColumnWidth());
-		//ImGui::Text("Avail %.2f", ImGui::GetContentRegionAvail().x);
-		//ImGui::Text("Offset %.2f", ImGui::GetColumnOffset());
-		//ImGui::Text("Long text that is likely to clip");
-		//ImGui::Button("Button", ImVec2(-FLT_MIN, 0.0f));
-		
 		ImGui::NextColumn();
 	}
 
@@ -261,23 +271,15 @@ void Gui::showBlocksTab(Node& node) {
 
 void Gui::openSubTreeNode(MerkleNode* node, int& id) {
 
-	/*
-	if (n == 0) {
-		if (ImGui::TreeNode((const void*)(++id), "leaf %d", n)) {
-			ImGui::Text("d52c9f6fd4ea571ae30cd0973fa2a4fac282888cda19ecc20f6919bcf49fcbf0");
-			ImGui::TreePop();
-		}
-	}
-	else {
-	*/
-
-	if (node->Left() != nullptr && ImGui::TreeNode((const void*)(++id), "left")) {
-		ImGui::Text(node->getHash().c_str());
+	if (node->Left() != nullptr && ImGui::TreeNode((const void*)(++id), "Left:")) {
+		ImGui::SameLine();
+		ImGui::Text(node->Left()->getHash().c_str());
 		openSubTreeNode(node->Left(), id);
 		ImGui::TreePop();
 	}
-	if (node->Right() != nullptr && ImGui::TreeNode((const void*)(++id), "right")) {
-		ImGui::Text(node->getHash().c_str());
+	if (node->Right() != nullptr && ImGui::TreeNode((const void*)(++id), "Right:")) {
+		ImGui::SameLine();
+		ImGui::Text(node->Right()->getHash().c_str());
 		openSubTreeNode(node->Right(), id);
 		ImGui::TreePop();
 	}

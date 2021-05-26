@@ -28,7 +28,14 @@ public:
 
 	virtual void createBlockchainFromFile(std::string&) override;
 
+	virtual void deleteBlockchain() override;
+
+
 private:
 	
+
+	// Inherited via BaseNode
+	
+
 };
 
