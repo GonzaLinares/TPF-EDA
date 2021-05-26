@@ -22,7 +22,7 @@ void Node::commReceive(void)
 }
 
 //Devuelve un puntero al bloque del id pedido, en el caso de no encontrar ninguno, devuelve NULL
-Block * Node::getBlock(std::string id)
+Block* Node::getBlock(std::string id)
 {
     Block* salida = nullptr;
     for (std::vector<Block>::iterator it = blockchain.begin(); it != blockchain.end(); it++) {

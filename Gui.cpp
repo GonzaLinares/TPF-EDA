@@ -4,19 +4,16 @@
 #include "ImGui/imgui_impl_allegro5.h"
 #include "ImGui/imgui_stdlib.h"
 #include <stdexcept> 
-#include <allegro5/allegro_image.h>
-#include <allegro5/allegro_primitives.h>      
-#include <allegro5/allegro_font.h>
-#include <allegro5/allegro_ttf.h> 
 #include <filesystem>
 
 using namespace std;
 
-static ALLEGRO_DISPLAY* display;
-static ALLEGRO_EVENT_QUEUE* queue;
-
-void Gui::init() {
+Gui::Gui() {
 	
+	state = RUNNING;
+	blockPage = 0;
+	filename = "";
+
 	//Inicializamos allegro y sus principales addons
 	if (!al_init()) {
 		throw exception("Error al inicializar allegro");
@@ -77,10 +74,18 @@ void Gui::init() {
 	ImGui_ImplAllegro5_Init(display);
 }
 
-void Gui::update() {
+Gui::~Gui()
+{
+	// Cleanup
+	ImGui_ImplAllegro5_Shutdown();
+	ImGui::DestroyContext();
+	al_destroy_event_queue(queue);
+	al_destroy_display(display);
+}
+
+void Gui::update(Node& node) {
 
 	ALLEGRO_EVENT ev;
-	string filename;
 	const ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
 	ImGuiWindowFlags window_flags = 0;
@@ -98,7 +103,7 @@ void Gui::update() {
     {
         ImGui_ImplAllegro5_ProcessEvent(&ev);
 		if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
-			state = CLOSEPROGRAMM;
+			state = CLOSEPROGRAM;
 		}
     }
 
@@ -116,7 +121,10 @@ void Gui::update() {
 	ImGui::Spacing();
 	ImGui::InputText(" ", &filename);
 	ImGui::SameLine();
-	ImGui::Button("Load file");
+	if (ImGui::Button("Load file")) {
+		node.createBlockchainFromFile(filename);
+	}
+
 	ImGui::Spacing();
 	ImGui::Spacing();
 
@@ -124,7 +132,7 @@ void Gui::update() {
 	{
 		if (ImGui::BeginTabItem("Blocks"))
 		{
-			showBlocksTab();
+			showBlocksTab(node);
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Coming Soon"))
@@ -149,95 +157,100 @@ int Gui::getState() {
 	return state;
 }
 
-void Gui::destroy()
-{
-	// Cleanup
-	ImGui_ImplAllegro5_Shutdown();
-	ImGui::DestroyContext();
-	al_destroy_event_queue(queue);
-	al_destroy_display(display);
-
-}
-
-void Gui::showBlocksTab() {
+void Gui::showBlocksTab(Node& node) {
 
 	int openedNodes = 0;
 	const int cols = 2;
 	const int rows = 10;
 	bool checkbox = true;
+	int blocksQuant = 0;
+	int pageSize = cols*2;
 
 	ImGui::SetNextItemWidth(ImGui::GetFontSize() * 8);
 	ImGui::Columns(cols, NULL, true);
-	ImGui::SetColumnWidth(0, 631);
+	ImGui::SetColumnWidth(0, SCREENWIDTH/cols);
 
-	for (int i = 0; i < rows; i++){
-		for (int j = 0; j < cols; j++) {
+	std::vector<std::string> blockIDs;
+	node.getBlocksID(blockIDs, pageSize, blockPage);
+	blocksQuant = blockIDs.size();
 
-			if (ImGui::GetColumnIndex() == 0) {
-				ImGui::Separator();
-			}
+	for (int i = 0; i < blocksQuant; i++){
 
-			ImGui::Text("Block %d", (j+1) + i*cols);
-			ImGui::Spacing();
-			ImGui::Text("current block hash: %s", "0000000000000000000a6fb67004af665a3d5d9acaa7265dd44a61ee619b19f9");
-			ImGui::Text("previous block hash: %s", "0000000000000000000a6fb67004af66jfowehoifweoifdd44a61ee619b4g485");
-			ImGui::Text("number of transactions: %s", "1396");
-			ImGui::Text("nonce: %s", "393983482");
-			ImGui::Text("merkle root: %s", "d52c9f6fd4ea571ae30cd0973fa2a4fac282888cda19ecc20f6919bcf49fcbf0");
-			ImGui::Button("calculate merkle");
-			ImGui::Text("calculated: %s", "d52c9f6fd4ea571ae30cd0973fa2a4fac282888cda19ecc20f6919bcf49fcbf0");
-			ImGui::SameLine();
-			ImGui::Checkbox("", &checkbox);
-			
+		Block* currentBlock = node.getBlock(blockIDs[i]);
 
-			if (ImGui::TreeNode((void*)(intptr_t)(openedNodes), "merkle tree"))
-			{
-				if (ImGui::TreeNode((void*)(intptr_t)(openedNodes), "root")) {
-					ImGui::Text("d52c9f6fd4ea571ae30cd0973fa2a4fac282888cda19ecc20f6919bcf49fcbf0");
- 
-					openSubTreeNode(4, openedNodes);
+		if (ImGui::GetColumnIndex() == 0) {
+			ImGui::Separator();
+		}
 
-					ImGui::TreePop();
-				}
+		ImGui::Text("Block %d", i+1);
+		ImGui::Spacing();
+		ImGui::Text("current block hash: %s", currentBlock->getId().c_str());
+		ImGui::Text("previous block hash: %s", currentBlock->getPrevBlockId().c_str());
+		ImGui::Text("number of transactions: %d", currentBlock->getnTx());
+		ImGui::Text("nonce: %d", currentBlock->getNonce());
+		ImGui::Text("merkle root: %s", currentBlock->getMerkleRoot().c_str());
+		if (ImGui::Button("calculate merkle")) {
+
+		}
+		ImGui::Text("calculated: %s", "d52c9f6fd4ea571ae30cd0973fa2a4fac282888cda19ecc20f6919bcf49fcbf0");
+		ImGui::SameLine();
+		ImGui::Checkbox("", &checkbox);
+
+		if (ImGui::TreeNode((void*)(intptr_t)(0), "merkle tree"))
+		{
+			if (ImGui::TreeNode((void*)(intptr_t)(1), "root")) {
+				ImGui::Text("d52c9f6fd4ea571ae30cd0973fa2a4fac282888cda19ecc20f6919bcf49fcbf0");
+
+				openSubTreeNode(4, openedNodes);
 
 				ImGui::TreePop();
 			}
-			
-			openedNodes++;
 
-			ImGui::Spacing();
-
-			//ImGui::Text("Width %.2f", ImGui::GetColumnWidth());
-			//ImGui::Text("Avail %.2f", ImGui::GetContentRegionAvail().x);
-			//ImGui::Text("Offset %.2f", ImGui::GetColumnOffset());
-			//ImGui::Text("Long text that is likely to clip");
-			//ImGui::Button("Button", ImVec2(-FLT_MIN, 0.0f));
-
-			ImGui::NextColumn();
-			openedNodes = 0;
+			ImGui::TreePop();
 		}
+
+		ImGui::Spacing();
+
+		//ImGui::Text("Width %.2f", ImGui::GetColumnWidth());
+		//ImGui::Text("Avail %.2f", ImGui::GetContentRegionAvail().x);
+		//ImGui::Text("Offset %.2f", ImGui::GetColumnOffset());
+		//ImGui::Text("Long text that is likely to clip");
+		//ImGui::Button("Button", ImVec2(-FLT_MIN, 0.0f));
+		
+		ImGui::NextColumn();
 	}
 
 	ImGui::Columns(1);
+
+	if (ImGui::Button("Prev")) {
+		if (pageSize < blockPage) {
+			blockPage -= pageSize;
+		}
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Next")) {
+		if (blocksQuant/pageSize < blockPage) {
+			blockPage += pageSize;
+		}
+	}
 }
 
 void Gui::openSubTreeNode(int n, int q) {
 
 	if (n == 0) {
-		if (ImGui::TreeNode((void*)(intptr_t)(n), "leaf %d", n)) {
+		if (ImGui::TreeNode((void*)(intptr_t)(q), "leaf %d", n)) {
 			ImGui::Text("d52c9f6fd4ea571ae30cd0973fa2a4fac282888cda19ecc20f6919bcf49fcbf0");
 			ImGui::TreePop();
 		}
 	}
 	else {
 		if (ImGui::TreeNode((void*)(intptr_t)(q), "right %d", n)) {
-			openSubTreeNode(n-1, q);
+			openSubTreeNode(n - 1, q + 1);
 			ImGui::TreePop();
 		}
-		if (ImGui::TreeNode((void*)(intptr_t)(q+1), "left %d", n)) {
-			openSubTreeNode(n-1, q);
+		if (ImGui::TreeNode((void*)(intptr_t)(-q), "left %d", n)) {
+			openSubTreeNode(n - 1, q - 1);
 			ImGui::TreePop();
 		}
 	}
-
 }

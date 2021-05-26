@@ -5,17 +5,10 @@ int main(int argc, char** argv) {
 
 	Gui menu;
 	Node nodo;
-	std::string path = "json.json";
-	nodo.createBlockchainFromFile(path);
 
-
-	menu.init();
-
-	while (menu.getState()) {
-		menu.update();
+	while (menu.getState() == RUNNING) {
+		menu.update(nodo);
 	}
-
-	menu.destroy();
 
 	return 0;
 }
