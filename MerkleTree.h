@@ -11,6 +11,7 @@ template <std::string (*hashFunc)(std::string&)> class MerkleTree
 	
 public:
 
+    MerkleTree();
 	MerkleTree(std::vector <std::string>& txIds);
 	std::string getMerkleRoot(void);
 	void getMerklePath(std::string& txid, std::vector<std::string>& merklepath);
@@ -21,6 +22,13 @@ private:
 	std::vector<MerkleNode*> blocks;
 
 };
+
+
+template<std::string(*hashFunc)(std::string&)> MerkleTree<hashFunc>::MerkleTree() 
+{
+    root = nullptr;
+}
+
 template<std::string(*hashFunc)(std::string&)> MerkleTree<hashFunc>::MerkleTree(std::vector<std::string>& txIds)
 {
     /*Al vector Blocks te lo meti adentro de la clase, sino se moriria todo al cerrar la funcion creo*/

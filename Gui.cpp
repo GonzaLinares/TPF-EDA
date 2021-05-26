@@ -122,6 +122,7 @@ void Gui::update(Node& node) {
 	ImGui::InputText(" ", &filename);
 	ImGui::SameLine();
 	if (ImGui::Button("Load file")) {
+		merkleTrees.clear();
 		node.createBlockchainFromFile(filename);
 	}
 
@@ -158,23 +159,27 @@ int Gui::getState() {
 
 void Gui::showBlocksTab(Node& node) {
 
-	int openedNodes = 0;
 	const int cols = 2;
-	bool checkbox = true;
+	const int pageSize = cols * 2;
+	int openedNodes = 0;
+	bool checkbox = false;
 	int blocksQuant = 0;
-	int pageSize = cols*2;
 
 	ImGui::SetNextItemWidth(ImGui::GetFontSize() * 8);
 	ImGui::Columns(cols, NULL, true);
 	ImGui::SetColumnWidth(0, SCREENWIDTH/cols);
 
+	//TODO: Ver
 	std::vector<std::string> blockIDs;
 	node.getBlocksID(blockIDs, pageSize, blockPage);
 	blocksQuant = blockIDs.size();
 
+
+
 	for (int i = 0; i < blocksQuant; i++){
 
 		Block* currentBlock = node.getBlock(blockIDs[i]);
+		string currentID = currentBlock->getId();
 
 		if (ImGui::GetColumnIndex() == 0) {
 			ImGui::Separator();
@@ -182,15 +187,24 @@ void Gui::showBlocksTab(Node& node) {
 
 		ImGui::Text("Block %d", 1+i+blockPage);
 		ImGui::Spacing();
-		ImGui::Text("current block hash: %s", currentBlock->getId().c_str());
+		ImGui::Text("current block hash: %s", currentID.c_str());
 		ImGui::Text("previous block hash: %s", currentBlock->getPrevBlockId().c_str());
 		ImGui::Text("number of transactions: %d", currentBlock->getnTx());
 		ImGui::Text("nonce: %d", currentBlock->getNonce());
 		ImGui::Text("merkle root: %s", currentBlock->getMerkleRoot().c_str());
 		if (ImGui::Button("calculate merkle")) {
-
+			
+			std::vector<std::string> currentTrxs;
+			currentBlock->getTxsID(currentTrxs);
+			MerkleTree<hash32> arbol(currentTrxs);
+			merkleTrees[currentID] = arbol;
 		}
-		ImGui::Text("calculated: %s", "d52c9f6fd4ea571ae30cd0973fa2a4fac282888cda19ecc20f6919bcf49fcbf0");
+
+		if (merkleTrees.count(currentID) > 0) {
+			checkbox = true;
+		}
+
+		ImGui::Text("calculated: %s", merkleTrees[currentID]);
 		ImGui::SameLine();
 		ImGui::Checkbox("", &checkbox);
 
@@ -220,14 +234,13 @@ void Gui::showBlocksTab(Node& node) {
 	ImGui::Columns(1);
 
 	if (blocksQuant > 0) {
-		ImGui::SetCursorPos(ImVec2(120, 600));
+		ImGui::SetCursorPos(ImVec2(SCREENWIDTH - 2.5f*ImGui::GetItemRectSize().x, 20));
 		if (ImGui::Button("Prev", ImVec2(100, 50))) {
 			if (pageSize <= blockPage) {
 				blockPage -= pageSize;
 			}
 		}
 		ImGui::SameLine();
-		//ImGui::SetCursorPos(ImVec2(SCREENWIDTH-120-ImGui::GetItemRectSize().x, 600));
 		if (ImGui::Button("Next", ImVec2(100, 50))) {
 			if (blockPage + pageSize < node.getBlockQuant()) {
 				blockPage += pageSize;
