@@ -16,8 +16,14 @@ public:
 	//Getters
 	bool push_transaction(Tx);
 	void getMerklePath(void);		//TODO: Que reciba txid
-	void getMerkleRoot(void);
-	std::string getBlockId(void);
+	std::string getMerkleRoot(void);
+
+
+	std::string getId(void);
+	unsigned int getHeight(void);
+	unsigned int getNonce(void);
+	std::string getPrevBlockId(void);
+	unsigned int getnTx(void);
 
 	//Setters
 
