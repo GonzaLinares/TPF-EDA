@@ -66,7 +66,7 @@ inline MerkleTree<hashFunc>::~MerkleTree()
 template<std::string(*hashFunc)(std::string&)>
 std::string MerkleTree<hashFunc>::getMerkleRoot(void)
 {
-    return (root->hash);
+    return root->getHash();
 }
 
 template<std::string(*hashFunc)(std::string&)>

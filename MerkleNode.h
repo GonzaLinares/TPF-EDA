@@ -16,6 +16,8 @@ class MerkleNode {
 
     void getMerklePath(std::string& txid, std::vector<std::string>& merklepath);
 
+    void printNode(int indent);
+
 private:
     std::string hash;
     MerkleNode* left;
