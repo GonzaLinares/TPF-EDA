@@ -31,8 +31,9 @@ class Gui
 		std::string filename;
 		ALLEGRO_DISPLAY* display;
 		ALLEGRO_EVENT_QUEUE* queue;
-		std::map<std::string, MerkleTree<hash32>> merkleTrees;
+		std::map<std::string, MerkleTree<hash32>*> merkleTrees;
 
+		void deleteMerkleDic(std::map<std::string, MerkleTree<hash32>*>& dic);
 		void showBlocksTab(Node& node);
 		void openSubTreeNode(MerkleNode* node, int& id);
 
