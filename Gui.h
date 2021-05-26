@@ -34,7 +34,7 @@ class Gui
 		std::map<std::string, MerkleTree<hash32>> merkleTrees;
 
 		void showBlocksTab(Node& node);
-		void openSubTreeNode(int n, int q);
-		
+		void openSubTreeNode(MerkleNode* node, int& id);
+
 };
 
