@@ -35,16 +35,17 @@ template<std::string(*hashFunc)(std::string&)> MerkleTree<hashFunc>::MerkleTree(
     while (blocks.size() != 1) {
 
         for (unsigned int l = 0, n = 0; l < blocks.size(); l = l + 2, n++) {
-            if (l != blocks.size() - 1) {
-                std::string aux = blocks[l]->hash + blocks[l + 1]->hash;
-                aux = hashFunc(aux);
-                nodes.push_back(new MerkleNode(aux));
-                nodes[n]->left = blocks[l];
-                nodes[n]->right = blocks[l + 1];
+
+            if (blocks.size() % 2 != 0) {
+                nodes.push_back(blocks.back());
+
             }
-            else {
-                nodes.push_back(blocks[l]);
-            }
+            std::string aux = blocks[l]->hash + blocks[l + 1]->hash;
+            aux = hashFunc(aux);
+            nodes.push_back(new MerkleNode(aux));
+            nodes[n]->left = blocks[l];
+            nodes[n]->right = blocks[l + 1];
+
         }
 
         blocks = nodes;
