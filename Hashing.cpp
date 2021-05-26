@@ -20,11 +20,6 @@ const char* codeMap[16] =
 "E",
 "F", };
 
-string hash(char* str) {
-
-    return hexCodedAscii(generateID(str));
-}
-
 unsigned int generateID(char* str)
 {
     unsigned int ID = 0;
@@ -47,6 +42,11 @@ string hexCodedAscii(unsigned int asd)
 
     return output;
 
+}
+
+string hash(string str) {
+
+    return hexCodedAscii(generateID((char*)str.c_str()));
 }
 
 /*
