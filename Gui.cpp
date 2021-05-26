@@ -198,7 +198,6 @@ void Gui::showBlocksTab(Node& node) {
 			MerkleTree<hash32> arbol(currentTrxs);
 			merkleTrees.insert(pair<string, MerkleTree<hash32>>(currentID, arbol));
 		}
-
 		
 		std::map<string, MerkleTree<hash32>>::iterator merkleIt = merkleTrees.find(currentID);
 		if (merkleIt != merkleTrees.end()) {
