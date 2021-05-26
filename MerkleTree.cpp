@@ -49,4 +49,6 @@ template<std::string(*hashFunc)(std::string&)>
 void MerkleTree<hashFunc>::getMerklePath(std::string txid, std::vector<std::string> merklepath)
 {
 
+
+
 }
