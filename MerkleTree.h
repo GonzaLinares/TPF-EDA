@@ -15,6 +15,7 @@ public:
 	MerkleTree(std::vector <std::string>& txIds);
     ~MerkleTree();
 	std::string getMerkleRoot(void);
+    MerkleNode* getRootNode(void);
 	void getMerklePath(std::string& txid, std::vector<std::string>& merklepath);
 
 private:

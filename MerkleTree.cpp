@@ -3,7 +3,7 @@
 
 template class MerkleTree<hash32>;
 
-void deleteTree(MerkleNode* n);
+static void deleteTree(MerkleNode* n);
 
 template<std::string(*hashFunc)(std::string&)> MerkleTree<hashFunc>::MerkleTree()
 {
@@ -44,11 +44,11 @@ template<std::string(*hashFunc)(std::string&)> MerkleTree<hashFunc>::MerkleTree(
 template<std::string(*hashFunc)(std::string&)>
 MerkleTree<hashFunc>::~MerkleTree()
 {
-    /*
+    
     if (root != nullptr) {
-        deleteTree(root);
+        delete root;
     }
-    */
+    
 }
 
 template<std::string(*hashFunc)(std::string&)>
@@ -57,6 +57,12 @@ std::string MerkleTree<hashFunc>::getMerkleRoot(void)
     if (root != nullptr) {
         return (root->getHash());
     }
+}
+
+template<std::string(*hashFunc)(std::string&)>
+MerkleNode* MerkleTree<hashFunc>::getRootNode(void)
+{
+    return root;
 }
 
 template<std::string(*hashFunc)(std::string&)>
@@ -72,7 +78,6 @@ void deleteTree(MerkleNode* n) {
     if (n) {
         deleteTree(n->Left());
         deleteTree(n->Right());
-        n = NULL;
         delete n;
     }
 }

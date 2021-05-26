@@ -11,11 +11,11 @@ MerkleNode::MerkleNode(std::string data) {
 
 MerkleNode::~MerkleNode()
 {
-    if (left != nullptr)
+    if (left)
     {
         delete left;
     }
-    if (right != nullptr)
+    if (right)
     {
         delete right;
     }
