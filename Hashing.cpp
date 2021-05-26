@@ -44,7 +44,7 @@ string hexCodedAscii(unsigned int asd)
 
 }
 
-string hash(string str) {
+string hash(string& str) {
 
     return hexCodedAscii(generateID((char*)str.c_str()));
 }

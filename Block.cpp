@@ -58,7 +58,7 @@ bool Block::getTxsID(std::vector<std::string>& buffer, int numOfTxs, int offset)
         return false;
     }
 
-    if (txs.size() - offset > numOfTxs)
+    if (txs.size() - offset < numOfTxs)
     {
         numOfTxs = txs.size() - offset;
     }

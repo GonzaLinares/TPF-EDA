@@ -14,5 +14,5 @@ class MerkleNode {
     MerkleNode* Left(void);
     MerkleNode* Right(void);
 
-    void getMerklePath(std::string txid, std::vector<std::string> merklepath);
+    void getMerklePath(std::string& txid, std::vector<std::string>& merklepath);
 };
