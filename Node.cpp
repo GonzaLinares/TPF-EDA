@@ -123,3 +123,8 @@ void Node::createBlockchainFromFile(std::string& path)
         }
     }
 }
+
+void Node::deleteBlockchain()
+{
+    blockchain.clear();
+}
