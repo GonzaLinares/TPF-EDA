@@ -11,12 +11,11 @@ template <std::string(*hashFunc)(std::string&)> class MerkleTree
 
 public:
 
-    MerkleTree(std::vector <std::string>& txIds);
+    MerkleTree();
+	MerkleTree(std::vector <std::string>& txIds);
     ~MerkleTree();
-
-
-    std::string getMerkleRoot(void);
-    void getMerklePath(std::string& txid, std::vector<std::string>& merklepath);
+	std::string getMerkleRoot(void);
+	void getMerklePath(std::string& txid, std::vector<std::string>& merklepath);
 
 private:
 
@@ -25,6 +24,11 @@ private:
 
 };
 
+
+template<std::string(*hashFunc)(std::string&)> MerkleTree<hashFunc>::MerkleTree() 
+{
+    root = nullptr;
+}
 
 template<std::string(*hashFunc)(std::string&)> MerkleTree<hashFunc>::MerkleTree(std::vector<std::string>& txIds)
 {
@@ -58,15 +62,19 @@ template<std::string(*hashFunc)(std::string&)> MerkleTree<hashFunc>::MerkleTree(
 }
 
 template<std::string(*hashFunc)(std::string&)>
-inline MerkleTree<hashFunc>::~MerkleTree()
+MerkleTree<hashFunc>::~MerkleTree()
 {
-    delete root;
+    if (root != nullptr) {
+        delete root;
+    }
 }
 
 template<std::string(*hashFunc)(std::string&)>
 std::string MerkleTree<hashFunc>::getMerkleRoot(void)
 {
-    return (root->hash);
+    if (root != nullptr) {
+        return (root->getHash());
+    }
 }
 
 template<std::string(*hashFunc)(std::string&)>
