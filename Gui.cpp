@@ -137,13 +137,12 @@ void Gui::update(Node& node) {
 		}
 		if (ImGui::BeginTabItem("Coming Soon"))
 		{
+			ImGui::ShowDemoWindow();
 			ImGui::EndTabItem();
 		}
 		ImGui::EndTabBar();
 	}
     ImGui::End();
-
-	
 
     // Rendering
     ImGui::Render();
@@ -161,7 +160,6 @@ void Gui::showBlocksTab(Node& node) {
 
 	int openedNodes = 0;
 	const int cols = 2;
-	const int rows = 10;
 	bool checkbox = true;
 	int blocksQuant = 0;
 	int pageSize = cols*2;
@@ -182,7 +180,7 @@ void Gui::showBlocksTab(Node& node) {
 			ImGui::Separator();
 		}
 
-		ImGui::Text("Block %d", i+1);
+		ImGui::Text("Block %d", 1+i+blockPage);
 		ImGui::Spacing();
 		ImGui::Text("current block hash: %s", currentBlock->getId().c_str());
 		ImGui::Text("previous block hash: %s", currentBlock->getPrevBlockId().c_str());
@@ -205,7 +203,6 @@ void Gui::showBlocksTab(Node& node) {
 
 				ImGui::TreePop();
 			}
-
 			ImGui::TreePop();
 		}
 
@@ -222,15 +219,19 @@ void Gui::showBlocksTab(Node& node) {
 
 	ImGui::Columns(1);
 
-	if (ImGui::Button("Prev")) {
-		if (pageSize < blockPage) {
-			blockPage -= pageSize;
+	if (blocksQuant > 0) {
+		ImGui::SetCursorPos(ImVec2(120, 600));
+		if (ImGui::Button("Prev", ImVec2(100, 50))) {
+			if (pageSize <= blockPage) {
+				blockPage -= pageSize;
+			}
 		}
-	}
-	ImGui::SameLine();
-	if (ImGui::Button("Next")) {
-		if (blocksQuant/pageSize < blockPage) {
-			blockPage += pageSize;
+		ImGui::SameLine();
+		//ImGui::SetCursorPos(ImVec2(SCREENWIDTH-120-ImGui::GetItemRectSize().x, 600));
+		if (ImGui::Button("Next", ImVec2(100, 50))) {
+			if (blockPage + pageSize < node.getBlockQuant()) {
+				blockPage += pageSize;
+			}
 		}
 	}
 }
