@@ -9,5 +9,7 @@ class MerkleNode {
     MerkleNode* left;
     MerkleNode* right;
 
-    MerkleNode(std::string data);
+    MerkleNode(std::string& data);
+    MerkleNode* Left(void);
+    MerkleNode* Right(void);
 };
