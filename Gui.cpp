@@ -87,13 +87,13 @@ Gui::~Gui()
 void Gui::update(Node& node) {
 
 	ALLEGRO_EVENT ev;
-	const ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+	const ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);	//Color de fondo de pantalla
 
-	ImGuiWindowFlags window_flags = 0;
+	ImGuiWindowFlags window_flags = 0;		//Flags de configuracion del GUI
 	ImGuiCond window_cond = 0;
 	ImGuiTabBarFlags tab_bar_flags = 0;
 
-	window_flags |= ImGuiWindowFlags_NoTitleBar;
+	window_flags |= ImGuiWindowFlags_NoTitleBar;		//Configuraciones del la GUI
 	window_flags |= ImGuiWindowFlags_NoMove;
 	//window_flags |= ImGuiWindowFlags_NoResize;
 	window_flags |= ImGuiWindowFlags_NoCollapse;
@@ -101,7 +101,7 @@ void Gui::update(Node& node) {
 	//window_cond |= ImGuiCond_FirstUseEver;
 	tab_bar_flags |= ImGuiTabBarFlags_None;
 
-    while (al_get_next_event(queue, &ev))
+    while (al_get_next_event(queue, &ev))		//Leemos los eventos de allegro
     {
         ImGui_ImplAllegro5_ProcessEvent(&ev);
 		if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
@@ -122,23 +122,24 @@ void Gui::update(Node& node) {
     ImGui::NewFrame();
 
 	ImGui::SetNextWindowPos(ImVec2(0, 0), window_cond);
-	ImGui::SetNextWindowSize(ImVec2(SCREENWIDTH, SCREENHEIGHT), window_cond);
+	ImGui::SetNextWindowSize(ImVec2(SCREENWIDTH, SCREENHEIGHT), window_cond);	//Creamos la ventana
 	ImGui::Begin("Blockchain Explorer", NULL, window_flags);
 
+	//Dibujamos la GUI
 	ImGui::Spacing();
 	ImGui::Spacing();
 	ImGui::Text("Choose a file");
 	ImGui::Spacing();
 	ImGui::InputText(" ", &filename);
 	ImGui::SameLine();
-	if (ImGui::Button("Load file")) {
+	if (ImGui::Button("Load file")) {		//Cargamos el archivo solicitado
 		deleteMerkleDic();
 		merkleTrees.clear();
 		node.deleteBlockchain();
 		fileFounded = node.createBlockchainFromFile(filename);
 	}
 
-	if (fileFounded == false) {
+	if (fileFounded == false) {		//Si no encontro el archivo mostramos el mensaje de error
 		ImGui::Spacing();
 		ImGui::Text("File not found!!");
 	}
@@ -148,12 +149,12 @@ void Gui::update(Node& node) {
 
 	if (ImGui::BeginTabBar("Options", tab_bar_flags))
 	{
-		if (ImGui::BeginTabItem("Blocks"))
+		if (ImGui::BeginTabItem("Blocks"))	//Tab de los bloques
 		{
 			showBlocksTab(node);
 			ImGui::EndTabItem();
 		}
-		if (ImGui::BeginTabItem("Coming Soon"))
+		if (ImGui::BeginTabItem("Coming Soon"))		//Tab para completar
 		{
 			ImGui::EndTabItem();
 		}
@@ -162,8 +163,8 @@ void Gui::update(Node& node) {
     ImGui::End();
 
     // Rendering
-    ImGui::Render();
-	al_clear_to_color(al_map_rgba_f(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w));
+    ImGui::Render();	//Actualizamos el display
+	al_clear_to_color(al_map_rgba_f(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w));	
     ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
     al_flip_display();
 
@@ -175,8 +176,7 @@ int Gui::getState() {
 
 void Gui::deleteMerkleDic()
 {
-
-	for (auto it : merkleTrees)
+	for (auto it : merkleTrees)	
 	{
 		if (it.second != nullptr)
 		{
@@ -188,30 +188,31 @@ void Gui::deleteMerkleDic()
 void Gui::showBlocksTab(Node& node) {
 
 	const int cols = 2;
-	const int pageSize = cols * 2;
+	const int pageSize = cols * 2;	//Tamanio de la pagina
 	int label = 0;
-	bool checkbox = false;
+	bool merkleRootOk = false;
 	int blocksQuant = 0;
 	string aux;
 
-	std::vector<std::string> currentPageBlockIDs;
+	std::vector<std::string> currentPageBlockIDs;	//Cargamos los ids de los bloques que se van a mostrar en la pagina actual
 	node.getBlocksID(currentPageBlockIDs, pageSize, blockPage);
 	blocksQuant = currentPageBlockIDs.size();
 
-	ImGui::SetNextItemWidth(ImGui::GetFontSize() * 8);
+	ImGui::SetNextItemWidth(ImGui::GetFontSize() * 8);	//Configuramos las columnas
 	ImGui::Columns(cols, NULL, true);
 	ImGui::SetColumnWidth(0, SCREENWIDTH/cols);
 
 	for (int i = 0; i < blocksQuant; i++){
 
-		checkbox = false;
-		Block* currentBlock = node.getBlock(currentPageBlockIDs[i]);
+		merkleRootOk = false;	//Indica si el merkle root calculado coincide con el que tenia el bloque en el json
+		Block* currentBlock = node.getBlock(currentPageBlockIDs[i]);	//Obtenemos el bloque actual en base al blockID
 		string currentID = currentBlock->getId();
 
-		if (ImGui::GetColumnIndex() == 0) {
+		if (ImGui::GetColumnIndex() == 0) {	
 			ImGui::Separator();
 		}
 
+		//Mostramos la informacion del bloque
 		ImGui::Text("Block %d", 1+i+blockPage);
 		ImGui::Spacing();
 		ImGui::Text("Current block hash: %s", currentID.c_str());
@@ -221,27 +222,31 @@ void Gui::showBlocksTab(Node& node) {
 		ImGui::Text("Merkle root: %s", currentBlock->getMerkleRoot().c_str());
 		aux = "Calculate Merkle Tree##" + currentID;
 		
+		//Si se presiono el boton de calcular el merkle root
 		if (ImGui::Button(aux.c_str())) {
-			std::vector<std::string> currentTrxs;
+			std::vector<std::string> currentTrxs;	//Creamos el merkle root en base a las transacciones que tiene el bloque
 			currentBlock->getTxsID(currentTrxs);
 			merkleTrees.insert(pair<string, MerkleTree<hash32>*>(currentID, new MerkleTree<hash32>(currentTrxs)));
 		}
 		
-		std::map<string, MerkleTree<hash32>*>::iterator merkleIt = merkleTrees.find(currentID);
+		std::map<string, MerkleTree<hash32>*>::iterator merkleIt = merkleTrees.find(currentID);	//Buscamos el par id del bloque/merkle tree
 		if (merkleIt != merkleTrees.end()) {
 
+			//Tilde que indica si esta bien calculado en merkle tree
 			ImGui::Text("Calculated: %s", (*merkleIt).second->getMerkleRoot().c_str());
-			if (merkleTrees.count(currentID) > 0 && currentBlock->getMerkleRoot() == (*merkleIt).second->getMerkleRoot()) {
-				checkbox = true;
+			if (merkleTrees.count(currentID) > 0 && currentBlock->getMerkleRoot() == (*merkleIt).second->getMerkleRoot()) {	//Si el merkle tree fue creado y conicide el id calculado con el que tiene el bloque
+				merkleRootOk = true;
 			}
 			ImGui::SameLine();
 			aux = "##" + currentID;
-			ImGui::Checkbox(aux.c_str(), &checkbox);
+			ImGui::Checkbox(aux.c_str(), &merkleRootOk);
 
+			//Arbol de pestanias que muestran el merkle tree
 			if (ImGui::TreeNode((const void*)(++label), "Merkle Tree", i))
 			{
 				MerkleNode* merkleNodeRoot = (*merkleIt).second->getRootNode();
 
+				//Mostramos el arbol
 				if (ImGui::TreeNode((const void*)(++label), "Root:")) {
 					ImGui::SameLine();
 					ImGui::Text(merkleNodeRoot->getHash().c_str());
@@ -257,7 +262,6 @@ void Gui::showBlocksTab(Node& node) {
 			ImGui::Text("Calculated: Press Calculate Merkle Tree");
 		}
 		
-
 		ImGui::Spacing();
 
 		ImGui::NextColumn();
@@ -265,6 +269,7 @@ void Gui::showBlocksTab(Node& node) {
 
 	ImGui::Columns(1);
 
+	//Verificamos que se pueda avanzar o retroceder la pagina que muestra los bloques
 	if (blocksQuant > 0) {
 		ImGui::SetCursorPos(ImVec2(SCREENWIDTH - 300, 20));
 		if (ImGui::Button("Prev", ImVec2(100, 50))) {
