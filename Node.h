@@ -26,9 +26,16 @@ public:
 
 	virtual int getBlockQuant(void) override;
 
-	virtual void createBlockchainFromFile(std::string&) override;
+	virtual bool createBlockchainFromFile(std::string&) override;
+
+	virtual void deleteBlockchain() override;
+
 
 private:
 	
+
+	
+	
+
 };
 
