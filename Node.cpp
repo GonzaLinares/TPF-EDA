@@ -36,7 +36,7 @@ Block* Node::getBlock(std::string id)
     return salida;
 }
 
-bool Node::getBlocksID(std::vector<std::string>& buffer, int numOfBlocks, int offset)	//TODO: Que verga pasaba si numOfBlocks es 0 
+bool Node::getBlocksID(std::vector<std::string>& buffer, int numOfBlocks, int offset)
 {
     bool result = true;
     if (blockchain.size() == 0)
@@ -82,7 +82,7 @@ bool Node::createBlockchainFromFile(std::string& path)
 {
     if (path.size() > 0)
     {
-        std::ifstream file(path);		//TODO: Chequear por posibles excepciones si path es cualquier verdura
+        std::ifstream file(path);
 
         if (file.is_open())
         {
