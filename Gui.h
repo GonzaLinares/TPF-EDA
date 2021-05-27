@@ -1,5 +1,15 @@
 #pragma once
 
+/***************************************************************************//**
+@file     +Gui.h+
+@brief    +Header padre+
+@author   +Grupo 9+
+******************************************************************************/
+
+/******************************************************************************
+* INCLUDE HEADER FILES
+******************************************************************************/
+
 #include <string>
 #include <iostream>
 #include <allegro5/allegro_image.h>
@@ -28,6 +38,7 @@ class Gui
 
 		int state;
 		int blockPage;
+		bool fileFounded;
 		std::string filename;
 		ALLEGRO_DISPLAY* display;
 		ALLEGRO_EVENT_QUEUE* queue;

@@ -12,6 +12,7 @@ Gui::Gui() {
 	state = RUNNING;
 	blockPage = 0;
 	filename = "";
+	fileFounded = true;
 	merkleTrees.clear();
 
 	//Inicializamos allegro y sus principales addons
@@ -134,7 +135,12 @@ void Gui::update(Node& node) {
 		deleteMerkleDic(merkleTrees);
 		merkleTrees.clear();
 		node.deleteBlockchain();
-		node.createBlockchainFromFile(filename);
+		fileFounded = node.createBlockchainFromFile(filename);
+	}
+
+	if (fileFounded == false) {
+		ImGui::Spacing();
+		ImGui::Text("File not found!!");
 	}
 
 	ImGui::Spacing();

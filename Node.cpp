@@ -124,6 +124,7 @@ bool Node::createBlockchainFromFile(std::string& path)
             
         }
     }
+    return false;
 }
 
 void Node::deleteBlockchain()
