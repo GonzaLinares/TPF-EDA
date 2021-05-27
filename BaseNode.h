@@ -1,30 +1,93 @@
 #pragma once
+/***************************************************************************//**
+@file     +BaseNode.h+
+@brief    +Header padre+
+@author   +Grupo 99+
+******************************************************************************/
 
-
+/******************************************************************************
+* INCLUDE HEADER FILES
+******************************************************************************/
 #include "Block.h"
 #include <vector>
 #include <iostream>
 
+
+/******************************************************************************
+* CLASS BASE NODE
+******************************************************************************/
 class BaseNode
 {
 
 public:
-
+	/*=====================================================
+	* Name: connect
+	* Entra: -
+	* Resulta: Genera una conexion con otro nodo. A implementar
+	*=====================================================*/
 	virtual void connect(void) = 0;
+
+	/*=====================================================
+	* Name: disconnect
+	* Entra: -
+	* Resulta: termina una conexion con otro nodo. A implementar
+	*=====================================================*/
 	virtual void disconnect(void) = 0;
+
+	/*=====================================================
+	* Name: commSend
+	* Entra: -
+	* Resulta: envia un mensaje al nodo conectado. A implementar
+	*=====================================================*/
 	virtual void commSend(void) = 0;
+
+	/*=====================================================
+	* Name: commReceive
+	* Entra: -
+	* Resulta: recive un mensaje del nodo conectado. A implementar
+	*=====================================================*/
 	virtual void commReceive(void) = 0;
 
-	virtual void createBlockchainFromFile(std::string&) = 0;
+	/*=====================================================
+	* Name: createBlockchainFromFile
+	* Entra: String con la direcciion del archivo .json
+	* Resulta: true si se pudo leer el archivo y false en caso contrario
+	*=====================================================*/
+	virtual bool createBlockchainFromFile(std::string&) = 0;
+
+	/*=====================================================
+	* Name: deleteBlockchain
+	* Entra: -
+	* Resulta: limpia la blockchain que este cargada
+	*=====================================================*/
 	virtual void deleteBlockchain() = 0;
 
+	/*=====================================================
+	* Name: getBlock
+	* Entra: string con ID del bloque que se desea
+	* Resulta: puntero al blocke solicitado
+	*=====================================================*/
 	virtual Block * getBlock(std::string id) = 0;
+
+	/*=====================================================
+	* Name: getBlocksID
+	* Entra: vector de strings donde se guardaran las IDs. numero de bloques que 
+	* se desean y offset referenciado al primer bloque. Si nu se recibe numero de bloques se cargaran todos los disponibles
+	* Resulta: true o false dependiendo si se pudieron leer todos los bloques o solo algunos.
+	* Si la cantidad solicitada es mayor a la disponible se devuelven los que esten.
+	*=====================================================*/
 	virtual bool getBlocksID(std::vector<std::string>& buffer, int numOfBlocks = 0, int offset = 0) = 0;
+
+	/*=====================================================
+	* Name: getBlockQuant
+	* Entra: -
+	* Resulta: Numero de bloques cargados
+	*=====================================================*/
 	virtual int getBlockQuant(void) = 0;
 
 	
 protected:
 
-	std::vector <Block> blockchain;
+	std::vector <Block> blockchain;		//blockchain con los datos
 };
 
