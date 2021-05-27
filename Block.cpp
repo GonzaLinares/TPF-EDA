@@ -47,6 +47,8 @@ unsigned int Block::getnTx(void)
 
 bool Block::getTxsID(std::vector<std::string>& buffer, int numOfTxs, int offset)
 {
+
+    bool result = true;
     if (txs.size() == 0)
     {
         return false;
@@ -55,6 +57,7 @@ bool Block::getTxsID(std::vector<std::string>& buffer, int numOfTxs, int offset)
     if (txs.size() - offset < numOfTxs)
     {
         numOfTxs = txs.size() - offset;
+        result = false;
     }
 
     std::vector<Tx>::reverse_iterator it = txs.rbegin();
@@ -77,5 +80,5 @@ bool Block::getTxsID(std::vector<std::string>& buffer, int numOfTxs, int offset)
     }
 
 
-    return true;
+    return result;
 }
