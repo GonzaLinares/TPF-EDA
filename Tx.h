@@ -24,25 +24,25 @@ public:
 
 	/*=====================================================
 	* Name: constructor
-	* Entra: -
-	* Resulta: 
+	* Entra: Id de la transaccion
+	* Resulta: contruye un objeto
 	*=====================================================*/
-	Tx(std::string txid_, unsigned int nTxin_, unsigned int nTxout_);
+	Tx(std::string txid_);
 
 
 	/*=====================================================
 	* Name: push_vin
-	* Entra: -
-	* Resulta: 
+	* Entra: referencia al objeto a aniadir
+	* Resulta: Aniade una entrada a la transaccion
 	*=====================================================*/
-	bool push_vin(InTx&);
+	void push_vin(InTx&);
 
 	/*=====================================================
 	* Name: push_vout
-	* Entra: -
-	* Resulta: 
+	* Entra: referencia al objeto a aniadir
+	* Resulta: aniade una salida a la transaccion
 	*=====================================================*/
-	bool push_vout(OutTx&);
+	void push_vout(OutTx&);
 
 	/*=====================================================
 	* Name: getID
@@ -53,11 +53,9 @@ public:
 
 private:
 
-	std::string txid;
-	unsigned int nTxin;
-	unsigned int nTxout;
+	std::string txid;		// Id de la transacicon
 
-	std::vector <InTx> vin;
-	std::vector <OutTx> vout;
+	std::vector <InTx> vin;	//vector de entradas
+	std::vector <OutTx> vout;	//vectro de salidas
 };
 
