@@ -15,7 +15,6 @@ public:
 
 	//Getters
 	bool push_transaction(Tx);
-	void getMerklePath(void);		//TODO: Que reciba txid
 	std::string getMerkleRoot(void);
 
 

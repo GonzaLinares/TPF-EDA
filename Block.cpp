@@ -15,12 +15,6 @@ bool Block::push_transaction(Tx newTx)
 	return true;
 }
 
-void Block::getMerklePath(void)
-{
-
-
-}
-
 std::string Block::getMerkleRoot(void)
 {
 	return merkleRoot;
@@ -51,7 +45,7 @@ unsigned int Block::getnTx(void)
 	return txs.size();
 }
 
-bool Block::getTxsID(std::vector<std::string>& buffer, int numOfTxs, int offset)	//TODO: Que verga pasaba si numOfBlocks es 0 
+bool Block::getTxsID(std::vector<std::string>& buffer, int numOfTxs, int offset)
 {
     if (txs.size() == 0)
     {
