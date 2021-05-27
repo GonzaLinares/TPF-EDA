@@ -105,7 +105,7 @@ void Gui::update(Node& node) {
     {
         ImGui_ImplAllegro5_ProcessEvent(&ev);
 		if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
-			deleteMerkleDic(merkleTrees);
+			deleteMerkleDic();
 			merkleTrees.clear();
 			state = CLOSEPROGRAM;
 		}
@@ -132,7 +132,7 @@ void Gui::update(Node& node) {
 	ImGui::InputText(" ", &filename);
 	ImGui::SameLine();
 	if (ImGui::Button("Load file")) {
-		deleteMerkleDic(merkleTrees);
+		deleteMerkleDic();
 		merkleTrees.clear();
 		node.deleteBlockchain();
 		fileFounded = node.createBlockchainFromFile(filename);
@@ -173,10 +173,10 @@ int Gui::getState() {
 	return state;
 }
 
-void Gui::deleteMerkleDic(std::map<std::string, MerkleTree<hash32>*>& dic)
+void Gui::deleteMerkleDic()
 {
 
-	for (auto it : dic)
+	for (auto it : merkleTrees)
 	{
 		if (it.second != nullptr)
 		{
