@@ -58,8 +58,9 @@ public:
 
 	/*=====================================================
 	* Name: getMerklePath
-	* Entra: 
-	* Resulta: true si se pudo leer el archivo y false en caso contrario
+	* Entra: El id de la transaccion de la cual se desea el merkle path
+    y tambien el vector de strings donde se va a guardar el merkle path
+	* Resulta: -
 	*=====================================================*/
 	void getMerklePath(std::string& txid, std::vector<std::string>& merklepath);
 
