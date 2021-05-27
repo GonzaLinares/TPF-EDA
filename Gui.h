@@ -62,6 +62,7 @@ private:
 
 	int state;				//Estado de la GUI
 	int blockPage;			//Constador para pagina cuando se muestran los bloques
+	bool fileFounded;
 	std::string filename;	//String que mantiene el path al archivo con la blockchain
 	ALLEGRO_DISPLAY* display;	//Display y cola de eventos de allegro
 	ALLEGRO_EVENT_QUEUE* queue;

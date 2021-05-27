@@ -12,6 +12,7 @@ Gui::Gui() {
 	state = RUNNING;
 	blockPage = 0;
 	filename = "";
+	fileFounded = true;
 	merkleTrees.clear();
 
 	//Inicializamos allegro y sus principales addons
@@ -134,7 +135,12 @@ void Gui::update(Node& node) {
 		deleteMerkleDic();
 		merkleTrees.clear();
 		node.deleteBlockchain();
-		node.createBlockchainFromFile(filename);
+		fileFounded = node.createBlockchainFromFile(filename);
+	}
+
+	if (fileFounded == false) {
+		ImGui::Spacing();
+		ImGui::Text("File not found!!");
 	}
 
 	ImGui::Spacing();
@@ -220,7 +226,6 @@ void Gui::showBlocksTab(Node& node) {
 			currentBlock->getTxsID(currentTrxs);
 			merkleTrees.insert(pair<string, MerkleTree<hash32>*>(currentID, new MerkleTree<hash32>(currentTrxs)));
 		}
-
 		
 		std::map<string, MerkleTree<hash32>*>::iterator merkleIt = merkleTrees.find(currentID);
 		if (merkleIt != merkleTrees.end()) {
