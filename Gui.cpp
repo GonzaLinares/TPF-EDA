@@ -43,7 +43,7 @@ Gui::Gui() {
 		throw exception("Error al inicializar ttf addon de allegro");
 	}
 
-	//Creamos un display
+	al_set_new_display_flags(ALLEGRO_WINDOWED | ALLEGRO_RESIZABLE);
 	display = al_create_display(SCREENWIDTH, SCREENHEIGHT);
 	if (display == nullptr)
 	{
@@ -96,6 +96,7 @@ void Gui::update(Node& node) {
 	window_flags |= ImGuiWindowFlags_NoMove;
 	//window_flags |= ImGuiWindowFlags_NoResize;
 	window_flags |= ImGuiWindowFlags_NoCollapse;
+	window_flags |= ImGuiWindowFlags_AlwaysAutoResize;
 	//window_cond |= ImGuiCond_FirstUseEver;
 	tab_bar_flags |= ImGuiTabBarFlags_None;
 
@@ -106,6 +107,12 @@ void Gui::update(Node& node) {
 			deleteMerkleDic(merkleTrees);
 			merkleTrees.clear();
 			state = CLOSEPROGRAM;
+		}
+		else if (ev.type == ALLEGRO_EVENT_DISPLAY_RESIZE)
+		{
+			ImGui_ImplAllegro5_InvalidateDeviceObjects();
+			al_acknowledge_resize(display);
+			ImGui_ImplAllegro5_CreateDeviceObjects();
 		}
     }
 
