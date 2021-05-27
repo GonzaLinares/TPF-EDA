@@ -58,7 +58,7 @@ public:
 
 	/*=====================================================
 	* Name: getMerklePath
-	* Entra: String con la direcciion del archivo .json
+	* Entra: 
 	* Resulta: true si se pudo leer el archivo y false en caso contrario
 	*=====================================================*/
 	void getMerklePath(std::string& txid, std::vector<std::string>& merklepath);
