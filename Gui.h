@@ -1,5 +1,13 @@
 #pragma once
+/***************************************************************************//**
+@file     +Gui.h+
+@brief    +Header clase Gui+
+@author   +Grupo 9+
+******************************************************************************/
 
+/******************************************************************************
+* INCLUDE HEADER FILES
+******************************************************************************/
 #include <string>
 #include <iostream>
 #include <allegro5/allegro_image.h>
@@ -11,31 +19,74 @@
 #include "Hashing.h"
 #include "MerkleTree.h"
 
+/*******************************************************************************
+* ENUMERATIONS AND STRUCTURES AND TYPEDEFS
+******************************************************************************/
 enum STATES {CLOSEPROGRAM, RUNNING};
 
+/******************************************************************************
+* CLASS GUI
+******************************************************************************/
 class Gui
 {
-	public:
+public:
+	/*=====================================================
+	* Name: Constructor
+	* Entra: -
+	* Resulta: Inicializa las librearias de allegro e ImGui
+	*=====================================================*/
+	Gui();
 
-		Gui();
-		~Gui();
+	/*=====================================================
+	* Name: destructor
+	* Entra: -
+	* Resulta: Limpia residuos de memoria
+	*=====================================================*/
+	~Gui();
 
-		void update(Node& node);
+	/*=====================================================
+	* Name: update
+	* Entra: Objeto nodo de la red que se esta representando
+	* Resulta: Genera un refresto en base al estado interno del display
+	*=====================================================*/
+	void update(Node& node);
 	
-		int getState();
+	/*=====================================================
+	* Name: getState
+	* Entra: -
+	* Resulta: Devuelve es estado de la GUI. Leer enum en este archivo
+	*=====================================================*/
+	int getState();
 
-	private:
+private:
 
-		int state;
-		int blockPage;
-		std::string filename;
-		ALLEGRO_DISPLAY* display;
-		ALLEGRO_EVENT_QUEUE* queue;
-		std::map<std::string, MerkleTree<hash32>*> merkleTrees;
+	int state;				//Estado de la GUI
+	int blockPage;			//Constador para pagina cuando se muestran los bloques
+	std::string filename;	//String que mantiene el path al archivo con la blockchain
+	ALLEGRO_DISPLAY* display;	//Display y cola de eventos de allegro
+	ALLEGRO_EVENT_QUEUE* queue;
+	std::map<std::string, MerkleTree<hash32>*> merkleTrees;	//Diccionario para almacenar los Merkle Trees de los bloques al momento en que se solicitan
 
-		void deleteMerkleDic(std::map<std::string, MerkleTree<hash32>*>& dic);
-		void showBlocksTab(Node& node);
-		void openSubTreeNode(MerkleNode* node, int& id);
+	/*=====================================================
+	* Name: deleteMerkleDic
+	* Entra: -
+	* Resulta: Limpia el diccionario de arboles
+	*=====================================================*/
+	void deleteMerkleDic();
+
+	/*=====================================================
+	* Name: showBlocksTab
+	* Entra: Nodo en el que se esta trabajando
+	* Resulta: Muestra la tabla con los bloques a mostrar
+	*=====================================================*/
+	void showBlocksTab(Node& node);
+
+	/*=====================================================
+	* Name: openSubTreeNode
+	* Entra: Nodo de arbol desde el cual comenzar a dibujar y una id que se ira incrementando para generar las label de los nodos
+	* Resulta: -
+	*=====================================================*/
+	void openSubTreeNode(MerkleNode* node, int& id);
 
 };
 
