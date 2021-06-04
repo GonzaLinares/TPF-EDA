@@ -19,7 +19,7 @@
 int main(int argc, char** argv) {
 
 	Gui menu;
-	Node nodo;
+	FullNode nodo;
 
 	while (menu.getState() == RUNNING) {
 		menu.update(nodo);

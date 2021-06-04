@@ -1,28 +1,21 @@
-#include "Node.h"
+#include "FullNode.h"
 #include <iostream>
 #include <fstream>
 #include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
 
-void Node::connect(void)
+void FullNode::commSend(void)
 {
+
 }
 
-void Node::disconnect(void)
-{
-}
-
-void Node::commSend(void)
-{
-}
-
-void Node::commReceive(void)
+void FullNode::commReceive(void)
 {
 }
 
 //Devuelve un puntero al bloque del id pedido, en el caso de no encontrar ninguno, devuelve NULL
-Block* Node::getBlock(std::string id)
+Block* FullNode::getBlock(std::string id)
 {
     Block* salida = nullptr;
     for (std::vector<Block>::iterator it = blockchain.begin(); it != blockchain.end(); it++) {
@@ -36,7 +29,7 @@ Block* Node::getBlock(std::string id)
     return salida;
 }
 
-bool Node::getBlocksID(std::vector<std::string>& buffer, int numOfBlocks, int offset)
+bool FullNode::getBlocksID(std::vector<std::string>& buffer, int numOfBlocks, int offset)
 {
     bool result = true;
     if (blockchain.size() == 0)
@@ -44,7 +37,7 @@ bool Node::getBlocksID(std::vector<std::string>& buffer, int numOfBlocks, int of
         return false;
     }
 
-    if (blockchain.size() - offset < numOfBlocks)
+    if ((int)blockchain.size() - offset < numOfBlocks)
     {
         numOfBlocks = blockchain.size() - offset;
         result = false;
@@ -54,7 +47,7 @@ bool Node::getBlocksID(std::vector<std::string>& buffer, int numOfBlocks, int of
 
     if (numOfBlocks == 0 && offset == 0)
     {
-        for (int i = 1; i <= blockchain.size(); it++, i++) {
+        for (int i = 1; i <= (int)blockchain.size(); it++, i++) {
 
             buffer.push_back(it->getId());
         }
@@ -73,12 +66,12 @@ bool Node::getBlocksID(std::vector<std::string>& buffer, int numOfBlocks, int of
     return result;
 }
 
-int Node::getBlockQuant(void)
+int FullNode::getBlockQuant(void)
 {
     return blockchain.size();
 }
 
-bool Node::createBlockchainFromFile(std::string& path)
+bool FullNode::createBlockchainFromFile(std::string& path)
 {
     if (path.size() > 0)
     {
@@ -97,7 +90,7 @@ bool Node::createBlockchainFromFile(std::string& path)
                         this->blockchain.push_back(Block(jsonFile[i]["blockid"], jsonFile[i]["height"], jsonFile[i]["merkleroot"], jsonFile[i]["nTx"], jsonFile[i]["nonce"], jsonFile[i]["previousblockid"]));
                         for (int j = jsonFile[i]["nTx"] - 1; j >= 0; j--)
                         {
-                            Tx auxTx(jsonFile[i]["tx"][j]["txid"], jsonFile[i]["tx"][j]["nTxin"], jsonFile[i]["tx"][j]["nTxout"]);
+                            Tx auxTx(jsonFile[i]["tx"][j]["txid"]);
                             for (int k = jsonFile[i]["tx"][j]["nTxin"] - 1; k >= 0; k--)
                             {
                                 InTx auxInTx(jsonFile[i]["tx"][j]["vin"][k]["blockid"], jsonFile[i]["tx"][j]["vin"][k]["txid"], jsonFile[i]["tx"][j]["vin"][k]["signature"], jsonFile[i]["tx"][j]["vin"][k]["outputIndex"]);
@@ -127,7 +120,7 @@ bool Node::createBlockchainFromFile(std::string& path)
     return false;
 }
 
-void Node::deleteBlockchain()
+void FullNode::deleteBlockchain()
 {
     blockchain.clear();
 }

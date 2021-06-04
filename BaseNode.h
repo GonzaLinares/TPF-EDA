@@ -20,33 +20,6 @@ class BaseNode
 {
 
 public:
-	/*=====================================================
-	* Name: connect
-	* Entra: -
-	* Resulta: Genera una conexion con otro nodo. A implementar
-	*=====================================================*/
-	virtual void connect(void) = 0;
-
-	/*=====================================================
-	* Name: disconnect
-	* Entra: -
-	* Resulta: termina una conexion con otro nodo. A implementar
-	*=====================================================*/
-	virtual void disconnect(void) = 0;
-
-	/*=====================================================
-	* Name: commSend
-	* Entra: -
-	* Resulta: envia un mensaje al nodo conectado. A implementar
-	*=====================================================*/
-	virtual void commSend(void) = 0;
-
-	/*=====================================================
-	* Name: commReceive
-	* Entra: -
-	* Resulta: recive un mensaje del nodo conectado. A implementar
-	*=====================================================*/
-	virtual void commReceive(void) = 0;
 
 	/*=====================================================
 	* Name: createBlockchainFromFile
@@ -85,9 +58,30 @@ public:
 	*=====================================================*/
 	virtual int getBlockQuant(void) = 0;
 
-	
 protected:
 
-	std::vector <Block> blockchain;		//blockchain con los datos
-};
+	/*=====================================================
+	* Name: commSend used for POST messages
+	* Entra: -
+	* Resulta: envia un mensaje al nodo conectado.
+	*=====================================================*/
+	virtual void commSend(std::string host, std::string path, std::string& msg);
 
+	/*=====================================================
+	* Name: commSend used for GET messages
+	* Entra: -
+	* Resulta: envia un mensaje al nodo conectado.
+	*=====================================================*/
+	virtual void commSend(std::string host, std::string path);
+
+	/*=====================================================
+	* Name: commReceive
+	* Entra: -
+	* Resulta: recive un mensaje del nodo conectado. A implementar
+	*=====================================================*/
+	virtual void commReceive(void);
+
+	std::vector <Block> blockchain;		//blockchain con los datos
+	int state;	//Estado del nodo (recibió mensaje, manda mensaje, escucha, etc.)
+	std::vector <std::string> IPsSentList;
+};
