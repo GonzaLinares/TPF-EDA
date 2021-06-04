@@ -82,6 +82,8 @@ private:
 	*=====================================================*/
 	void showBlocksTab(Node& node);
 
+	void showNodesTab(Node& node);
+
 	/*=====================================================
 	* Name: openSubTreeNode
 	* Entra: Nodo de arbol desde el cual comenzar a dibujar y una id que se ira incrementando para generar las label de los nodos

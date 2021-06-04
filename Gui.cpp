@@ -154,8 +154,9 @@ void Gui::update(Node& node) {
 			showBlocksTab(node);
 			ImGui::EndTabItem();
 		}
-		if (ImGui::BeginTabItem("Coming Soon"))		//Tab para completar
+		if (ImGui::BeginTabItem("Nodos"))		//Tab para completar
 		{
+			showNodesTab(node);
 			ImGui::EndTabItem();
 		}
 		ImGui::EndTabBar();
@@ -183,6 +184,13 @@ void Gui::deleteMerkleDic()
 			delete it.second;
 		}
 	}
+}
+
+void Gui::showNodesTab(Node& node) {
+
+	bool show_demo_window = true;
+
+	ImGui::ShowDemoWindow(&show_demo_window);
 }
 
 void Gui::showBlocksTab(Node& node) {
