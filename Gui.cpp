@@ -84,7 +84,7 @@ Gui::~Gui()
 	al_destroy_display(display);
 }
 
-void Gui::update(Node& node) {
+void Gui::update(FullNode& node) {
 
 	ALLEGRO_EVENT ev;
 	const ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);	//Color de fondo de pantalla
@@ -185,7 +185,7 @@ void Gui::deleteMerkleDic()
 	}
 }
 
-void Gui::showBlocksTab(Node& node) {
+void Gui::showBlocksTab(FullNode& node) {
 
 	const int cols = 2;
 	const int pageSize = cols * 2;	//Tamanio de la pagina

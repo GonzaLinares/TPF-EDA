@@ -1,6 +1,6 @@
 #pragma once
 /***************************************************************************//**
-@file     +Node.h+
+@file     +FullNode.h+
 @brief    +Header hijo+
 @author   +Grupo 9+
 ******************************************************************************/
@@ -14,18 +14,21 @@
 #include <vector>
 
 /******************************************************************************
+* TODO
+******************************************************************************/
+
+std::vector<std::string> FullNode::actionsVector = { "ACA VAN LOS NOMBRES DE LAS ACCIONES" };
+
+/******************************************************************************
 * CLASS NODE
 ******************************************************************************/
-class Node : public BaseNode
+class FullNode : public BaseNode
 {
 
 public:
 
 	// Inherited via BaseNode
 	// override specifier ensures that the function is virtual and is overriding a virtual function from a base class
-	virtual void connect(void) override;
-
-	virtual void disconnect(void) override;
 
 	virtual void commSend(void) override;
 
@@ -44,6 +47,6 @@ public:
 
 private:
 	
-
+	static std::vector<std::string> actionsVector;    //Vector con los nombres de las acciones posibles
 };
 
