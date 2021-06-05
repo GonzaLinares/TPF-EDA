@@ -49,7 +49,7 @@ public:
 	* Entra: Objeto nodo de la red que se esta representando
 	* Resulta: Genera un refresto en base al estado interno del display
 	*=====================================================*/
-	void update(FullNode& node);
+	void update(BaseNode& node);
 	
 	/*=====================================================
 	* Name: getState
@@ -80,9 +80,9 @@ private:
 	* Entra: Nodo en el que se esta trabajando
 	* Resulta: Muestra la tabla con los bloques a mostrar
 	*=====================================================*/
-	void showBlocksTab(FullNode& node);
+	void showBlocksTab(BaseNode& node);
 
-	void showNodesTab(Node& node);
+	void showNodesTab(BaseNode& node);
 
 	/*=====================================================
 	* Name: openSubTreeNode

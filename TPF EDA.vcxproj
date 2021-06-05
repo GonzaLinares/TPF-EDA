@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BaseNode.cpp" />
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="Gui.cpp" />
     <ClCompile Include="Hashing.cpp" />
