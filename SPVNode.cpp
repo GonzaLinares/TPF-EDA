@@ -1,5 +1,7 @@
 #include "SPVNode.h"
 
+std::vector<std::string> SPVNode::actionsVector{ "ACA VAN LOS NOMBRES DE LAS ACCIONES" };
+
 bool SPVNode::createBlockchainFromFile(std::string&)
 {
     return false;

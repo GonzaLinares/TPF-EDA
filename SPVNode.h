@@ -19,7 +19,7 @@ public:
 
 private:
 
-    std::vector<std::string> actionsVector;    //Vector con los nombres de las acciones posibles
+    static std::vector<std::string> actionsVector;    //Vector con los nombres de las acciones posibles
 };
 
 /******************************************************************************

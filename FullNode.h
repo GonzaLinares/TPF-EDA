@@ -48,7 +48,7 @@ public:
 
 private:
 	
-	std::vector<std::string> actionsVector;
+	static std::vector<std::string> actionsVector;
 	// Inherited via BaseNode
 	virtual std::vector<std::string> getActionList() override;
 	//Vector con los nombres de las acciones posibles
