@@ -84,7 +84,7 @@ Gui::~Gui()
 	al_destroy_display(display);
 }
 
-void Gui::update(FullNode& node) {
+void Gui::update(vector<BaseNode*>& nodes) {
 
 	ALLEGRO_EVENT ev;
 	const ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);	//Color de fondo de pantalla
@@ -135,8 +135,9 @@ void Gui::update(FullNode& node) {
 	if (ImGui::Button("Load file")) {		//Cargamos el archivo solicitado
 		deleteMerkleDic();
 		merkleTrees.clear();
-		node.deleteBlockchain();
-		fileFounded = node.createBlockchainFromFile(filename);
+		nodes.deleteBlockchain();
+		fileFounded = nodes.createBlockchainFromFile(filename);
+		blockPage = 0;
 	}
 
 	if (fileFounded == false) {		//Si no encontro el archivo mostramos el mensaje de error
@@ -149,14 +150,16 @@ void Gui::update(FullNode& node) {
 
 	if (ImGui::BeginTabBar("Options", tab_bar_flags))
 	{
-		if (ImGui::BeginTabItem("Blocks"))	//Tab de los bloques
-		{
-			showBlocksTab(node);
-			ImGui::EndTabItem();
-		}
 		if (ImGui::BeginTabItem("Nodos"))		//Tab para completar
 		{
-			showNodesTab(node);
+			showNodesTab(nodes);
+			ImGui::EndTabItem();
+		}
+		if (ImGui::BeginTabItem("Blocks"))	//Tab de los bloques
+		{
+			/*
+			showBlocksTab(node);
+			*/
 			ImGui::EndTabItem();
 		}
 		ImGui::EndTabBar();
@@ -186,14 +189,14 @@ void Gui::deleteMerkleDic()
 	}
 }
 
-void Gui::showNodesTab(Node& node) {
+void Gui::showNodesTab(vector<BaseNode*>& nodes) {
 
 	bool show_demo_window = true;
 
 	ImGui::ShowDemoWindow(&show_demo_window);
 }
 
-void Gui::showBlocksTab(Node& node) {
+void Gui::showBlocksTab(BaseNode& node) {
 
 	const int cols = 2;
 	const int pageSize = cols * 2;	//Tamanio de la pagina
