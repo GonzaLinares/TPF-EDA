@@ -154,8 +154,9 @@ void Gui::update(FullNode& node) {
 			showBlocksTab(node);
 			ImGui::EndTabItem();
 		}
-		if (ImGui::BeginTabItem("Coming Soon"))		//Tab para completar
+		if (ImGui::BeginTabItem("Nodos"))		//Tab para completar
 		{
+			showNodesTab(node);
 			ImGui::EndTabItem();
 		}
 		ImGui::EndTabBar();
@@ -185,7 +186,14 @@ void Gui::deleteMerkleDic()
 	}
 }
 
-void Gui::showBlocksTab(FullNode& node) {
+void Gui::showNodesTab(Node& node) {
+
+	bool show_demo_window = true;
+
+	ImGui::ShowDemoWindow(&show_demo_window);
+}
+
+void Gui::showBlocksTab(Node& node) {
 
 	const int cols = 2;
 	const int pageSize = cols * 2;	//Tamanio de la pagina
