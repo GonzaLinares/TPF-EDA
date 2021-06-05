@@ -50,7 +50,7 @@ public:
 	* Entra: Objeto nodo de la red que se esta representando
 	* Resulta: Genera un refresto en base al estado interno del display
 	*=====================================================*/
-	void update(vector<BaseNode*>& nodes);
+	void update(std::vector<BaseNode*>& nodes);
 	
 	/*=====================================================
 	* Name: getState
@@ -83,7 +83,7 @@ private:
 	*=====================================================*/
 	void showBlocksTab(BaseNode& node);
 
-	void showNodesTab(vector<BaseNode*>& nodes);
+	void showNodesTab(std::vector<BaseNode*>& nodes);
 
 	/*=====================================================
 	* Name: openSubTreeNode

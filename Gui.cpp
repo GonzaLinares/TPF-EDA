@@ -135,8 +135,8 @@ void Gui::update(vector<BaseNode*>& nodes) {
 	if (ImGui::Button("Load file")) {		//Cargamos el archivo solicitado
 		deleteMerkleDic();
 		merkleTrees.clear();
-		nodes.deleteBlockchain();
-		fileFounded = nodes.createBlockchainFromFile(filename);
+		nodes[0]->deleteBlockchain();
+		fileFounded = nodes[0]->createBlockchainFromFile(filename);
 		blockPage = 0;
 	}
 
