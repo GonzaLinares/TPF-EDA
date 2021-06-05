@@ -13,11 +13,6 @@
 #include "BaseNode.h"
 #include <vector>
 
-/******************************************************************************
-* TODO
-******************************************************************************/
-
-std::vector<std::string> FullNode::actionsVector = { "ACA VAN LOS NOMBRES DE LAS ACCIONES" };
 
 /******************************************************************************
 * CLASS NODE
@@ -52,3 +47,8 @@ private:
 	//Vector con los nombres de las acciones posibles
 };
 
+/******************************************************************************
+* TODO
+******************************************************************************/
+
+std::vector<std::string> FullNode::actionsVector = { "ACA VAN LOS NOMBRES DE LAS ACCIONES" };
