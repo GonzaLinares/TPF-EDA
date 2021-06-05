@@ -82,3 +82,9 @@ bool Block::getTxsID(std::vector<std::string>& buffer, int numOfTxs, int offset)
 
     return result;
 }
+
+std::vector<Tx> Block::getTxVector(void)
+{
+
+    return txs;
+}

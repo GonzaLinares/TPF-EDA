@@ -14,8 +14,8 @@ public:
     virtual int getBlockQuant(void) override;
 
     //POST HTTP
-    bool transactionPost(std::string blockId, std::string host);    //TODO: Preguntar sobre la incoherencia
-    bool filterPost();
+    bool transactionPost(std::string blockId, std::string host);
+    bool filterPost(std::string host);
 
     //GET HTTP
     bool getBlockHeader(std::string blockId, std::string blockCount, std::string host);

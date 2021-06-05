@@ -31,10 +31,18 @@ bool SPVNode::transactionPost(std::string blockId, std::string host)
     return false;
 }
 
-bool SPVNode::filterPost()
+bool SPVNode::filterPost(std::string host)
 {
+    std::string answer;
+
+    answer = std::string("{\n ""Key"": ""DamiValue""\n }");
+
+    commSend(host, "eda_coin/send_filter/", answer);
+
     return false;
 }
+
+
 
 bool SPVNode::getBlockHeader(std::string blockId, std::string blockCount, std::string host)
 {

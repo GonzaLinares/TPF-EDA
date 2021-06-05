@@ -88,7 +88,6 @@ protected:
 	*=====================================================*/
 	virtual void commReceive(void);
 
-	std::string jsonBlockChain;			//TODO: 
 	std::vector <Block> blockchain;		//blockchain con los datos
 	int state;	//Estado del nodo (recibió mensaje, manda mensaje, escucha, etc.)
 	std::vector <std::string> IPsSentList;

@@ -40,16 +40,20 @@ public:
 	virtual bool createBlockchainFromFile(std::string&) override;
 
 	virtual void deleteBlockchain() override;
-
-	//POST HTTP 
+		
+	//POST HTTP	*********************************************************
 	bool blockPost(std::string host);
-	bool transactionPost(std::string blockId, std::string host);	//TODO: Preguntar sobre la incoherencia 
-	bool merkleBlockPost(std::string blockId, std::string host);	//TODO: ¿Que chota hace esto?
+	bool transactionPost(std::string blockId, std::string host);
+	bool merkleBlockPost(std::string blockId, std::string host);
 
-	//GET HTTP
+	//*********************************************************//
+
+	//GET HTTP	*********************************************************
 	bool getBlocks(std::string blockId, std::string blockCount, std::string host);
 
-	//FUNCIONES RESPUESTA DE POSTS Y GETS
+	//*********************************************************//
+
+	//FUNCIONES RESPUESTA DE POSTS Y GETS *********************************************************
 
 	/*=====================================================
 	* Name: blockPostReceived
@@ -60,7 +64,8 @@ public:
 	bool blockPostReceived(bool error, int result, std::string host);
 
 	bool transactionPostReceived();
-	bool filterPostReceived();
+
+	bool filterPostReceived(bool error, int result, std::string host);
 
 	/*=====================================================
 	* Name: getBlockHeaderReceived
@@ -70,7 +75,10 @@ public:
 	* Resulta: -
 	*=====================================================*/
 	bool getBlockHeaderReceived(std::string blockID, int count, std::string host);
+
 	bool getBlocksReceived(std::string blockID, int count, std::string host);
+
+	//*********************************************************//
 
 private:
 	
