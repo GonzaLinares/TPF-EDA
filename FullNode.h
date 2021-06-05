@@ -30,9 +30,9 @@ public:
 	// Inherited via BaseNode
 	// override specifier ensures that the function is virtual and is overriding a virtual function from a base class
 
-	virtual void commSend(void) override;
+	virtual void commSend(void) ;
 
-	virtual void commReceive(void) override;
+	virtual void commReceive(void) ;
 
 	virtual Block * getBlock(std::string id) override;
 
@@ -44,9 +44,11 @@ public:
 
 	virtual void deleteBlockchain() override;
 
-
 private:
 	
-	static std::vector<std::string> actionsVector;    //Vector con los nombres de las acciones posibles
+	static std::vector<std::string> actionsVector;
+	// Inherited via BaseNode
+	virtual std::vector<std::string> getActionList() override;
+	//Vector con los nombres de las acciones posibles
 };
 

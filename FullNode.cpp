@@ -124,3 +124,8 @@ void FullNode::deleteBlockchain()
 {
     blockchain.clear();
 }
+
+std::vector<std::string> FullNode::getActionList()
+{
+    return std::vector<std::string>();
+}
