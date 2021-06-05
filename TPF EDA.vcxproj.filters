@@ -123,6 +123,9 @@
     <ClCompile Include="Block\Tx.cpp">
       <Filter>Source Files\Block</Filter>
     </ClCompile>
+    <ClCompile Include="Node\NodeFactory.cpp">
+      <Filter>Source Files\Node</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ImGui\imconfig.h">
@@ -202,6 +205,9 @@
     </ClInclude>
     <ClInclude Include="Block\Tx.h">
       <Filter>Header Files\Block</Filter>
+    </ClInclude>
+    <ClInclude Include="Node\NodeFactory.h">
+      <Filter>Header Files\Node</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

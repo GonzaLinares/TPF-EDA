@@ -188,6 +188,7 @@
     <ClInclude Include="Node\BaseNode.h" />
     <ClInclude Include="Node\Client\TweetDLoader.h" />
     <ClInclude Include="Node\FullNode.h" />
+    <ClInclude Include="Node\NodeFactory.h" />
     <ClInclude Include="Node\Server\Connection.h" />
     <ClInclude Include="Node\Server\HTTP.h" />
     <ClInclude Include="Node\Server\mime_types.h" />

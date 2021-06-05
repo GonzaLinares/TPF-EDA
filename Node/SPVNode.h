@@ -12,16 +12,17 @@ public:
     virtual Block* getBlock(std::string id) override;
     virtual bool getBlocksID(std::vector<std::string>& buffer, int numOfBlocks = 0, int offset = 0) override;
     virtual int getBlockQuant(void) override;
+    virtual std::vector<std::string> getActionList() override;
 
     //POST HTTP
-    bool transactionPost(std::string blockId, std::string host);
+    bool transactionPost(std::string publicKey, int amount, std::string host);
     bool filterPost(std::string host);
 
     //GET HTTP
     bool getBlockHeader(std::string blockId, std::string blockCount, std::string host);
 
     //FUNCIONES RESPUESTA DE POSTS Y GETS
-    bool merkleBlockPostReceived(); 
+    bool merkleBlockPostReceived(bool error, int result, std::string host);
 
 
 private:
