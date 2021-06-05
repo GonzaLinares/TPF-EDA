@@ -29,6 +29,7 @@ int SPVNode::getBlockQuant(void)
 
 bool SPVNode::transactionPost(std::string publicKey, int amount, std::string host)
 {
+    char buf[50];
     std::string answer;
 
     answer += std::string(" ""tx"": [ \n ");
@@ -44,7 +45,10 @@ bool SPVNode::transactionPost(std::string publicKey, int amount, std::string hos
     answer += std::string(" {\n");
     answer += std::string(" ""amount"": ");
 
-    answer += std::to_string(amount) + std::string(",\n");
+    sprintf_s(buf, "%d", amount);
+    answer += std::string(buf);
+
+    answer += std::string(",\n");
     answer += std::string(" ""publicid"": ");
     answer += std::string("""") + publicKey + std::string(""",\n");
     answer += std::string(" },\n");
