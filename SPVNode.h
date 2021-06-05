@@ -13,17 +13,18 @@ public:
     virtual bool getBlocksID(std::vector<std::string>& buffer, int numOfBlocks = 0, int offset = 0) override;
     virtual int getBlockQuant(void) override;
 
-    bool transactionPost();
+    //POST HTTP
+    bool transactionPost(std::string blockId, std::string host);    //TODO: Preguntar sobre la incoherencia
     bool filterPost();
-    bool getBlockHeader();
+
+    //GET HTTP
+    bool getBlockHeader(std::string blockId, std::string blockCount, std::string host);
+
+    //FUNCIONES RESPUESTA DE POSTS Y GETS
+    bool merkleBlockPostReceived(); 
+
 
 private:
 
     static std::vector<std::string> actionsVector;    //Vector con los nombres de las acciones posibles
 };
-
-/******************************************************************************
-* TODO
-******************************************************************************/
-
-// TODO: std::vector<std::string> SPVNode::actionsVector = { "ACA VAN LOS NOMBRES DE LAS ACCIONES" };

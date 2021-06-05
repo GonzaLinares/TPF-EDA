@@ -41,21 +41,40 @@ public:
 
 	virtual void deleteBlockchain() override;
 
+	//POST HTTP 
 	bool blockPost(std::string host);
-	bool transactionPost();
-	bool merkleBlockPost();
-	bool getBlocks();
+	bool transactionPost(std::string blockId, std::string host);	//TODO: Preguntar sobre la incoherencia 
+	bool merkleBlockPost(std::string blockId, std::string host);	//TODO: ¿Que chota hace esto?
+
+	//GET HTTP
+	bool getBlocks(std::string blockId, std::string blockCount, std::string host);
+
+	//FUNCIONES RESPUESTA DE POSTS Y GETS
+
+	/*=====================================================
+	* Name: blockPostReceived
+	* Entra: error-> Tiene que ser = true si hubo error
+	* result-> En el caso de que hubo error, mandas 1 si hubo error de formato y 2 si hubo error de contenido
+	* Resulta: -
+	*=====================================================*/
+	bool blockPostReceived(bool error, int result, std::string host);
+
+	bool transactionPostReceived();
+	bool filterPostReceived();
+
+	/*=====================================================
+	* Name: getBlockHeaderReceived
+	* Entra: blockID-> 
+	* count-> 
+	* host->
+	* Resulta: -
+	*=====================================================*/
+	bool getBlockHeaderReceived(std::string blockID, int count, std::string host);
+	bool getBlocksReceived(std::string blockID, int count, std::string host);
 
 private:
 	
 	static std::vector<std::string> actionsVector;
-	// Inherited via BaseNode
 	virtual std::vector<std::string> getActionList() override;
 	//Vector con los nombres de las acciones posibles
 };
-
-/******************************************************************************
-* TODO
-******************************************************************************/
-
-//std::vector<std::string> FullNode::actionsVector = { "ACA VAN LOS NOMBRES DE LAS ACCIONES" };

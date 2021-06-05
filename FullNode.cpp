@@ -4,6 +4,8 @@
 
 using json = nlohmann::json;
 
+std::vector<std::string> FullNode::actionsVector{ "ACA VAN LOS NOMBRES DE LAS ACCIONES" };
+
 void FullNode::commSend(std::string host, std::string path, std::string& msg)
 {
 
@@ -11,6 +13,7 @@ void FullNode::commSend(std::string host, std::string path, std::string& msg)
 
 void FullNode::commSend(std::string host, std::string path)
 {
+
 }
 
 void FullNode::commReceive(void)
@@ -76,6 +79,8 @@ int FullNode::getBlockQuant(void)
 
 bool FullNode::createBlockchainFromFile(std::string& path)
 {
+    jsonBlockChain = path;
+
     if (path.size() > 0)
     {
         std::ifstream file(path);
@@ -131,23 +136,146 @@ void FullNode::deleteBlockchain()
 bool FullNode::blockPost(std::string host)
 {
 
-    commSend(host, std::string("eda_coin/send_block/"), )
+    commSend(host, std::string("eda_coin/send_block/"), jsonBlockChain);
 
     return false;
 }
 
-bool FullNode::transactionPost()
+bool FullNode::transactionPost(std::string blockId, std::string host)
 {
+
     return false;
 }
 
-bool FullNode::merkleBlockPost()
+bool FullNode::merkleBlockPost(std::string blockId, std::string host)
 {
+
+
     return false;
 }
 
-bool FullNode::getBlocks()
+bool FullNode::getBlocks(std::string blockId, std::string blockCount, std::string host)
 {
+    char buf[50];
+
+    sprintf_s(buf, "eda_coin/get_blocks?block_id=%s&count=%s", blockId.c_str(), blockCount.c_str());
+
+    commSend(host, std::string(buf));
+
+    return false;
+}
+
+bool FullNode::blockPostReceived(bool error, int result, std::string host)
+{
+    std::string answer;
+
+    if (error == true) {
+        
+        if (result == 1) {
+
+            answer = std::string("{ ""status"": true,\n ""result"": 1 }");
+        }
+        else {
+
+            answer = std::string("{ ""status"": true,\n ""result"": 2 }");
+        }
+    }
+    else {
+
+        answer = std::string("{ ""status"": true,\n ""result"": null }");
+    }
+
+    commSend(host, "QUE,PATH,VA,?", answer);
+
+    return false;
+}
+
+bool FullNode::getBlockHeaderReceived(std::string blockID, int count, std::string host)
+{
+
+    std::string answer = std::string("{ ""status"": true,\n ""result"": ");
+    bool startCopying = false;
+    int i = 0;
+
+    //Busco el bloque que me pidieron
+
+    if (blockID == std::string("0x00000000")) {
+
+        startCopying = true;
+    }
+
+    for (std::vector<Block>::iterator it = blockchain.begin(); it != blockchain.end() && i < count; it++) {
+
+        if (startCopying == true) {
+
+            answer += std::string(" { ""blockid"": ");
+            answer += std::string("""") + it->getId() + std::string(""",\n");
+            answer += std::string(" ""height"": ");
+            answer += std::to_string(it->getHeight()) + std::string(",\n");
+            answer += std::string(" ""merkleroot"": ");
+            answer += std::string("""") + it->getMerkleRoot() + std::string(""",\n");
+            answer += std::string(" ""nTx"": ");
+            answer += std::to_string(it->getnTx()) + std::string(",\n");
+            answer += std::string(" ""nonce"": ");
+            answer += std::to_string(it->getNonce()) + std::string(",\n");
+            answer += std::string(" ""previousblockid"": ");
+            answer += std::string("""") + it->getPrevBlockId() + std::string(""",\n");
+            answer += std::string("},");
+            i++;
+        }
+        if ((it->getId()) == blockID ) {
+
+            startCopying = true;
+        }
+    }
+
+    commSend(host, std::string("cual vergas es el path"), answer);
+
+    return false;
+}
+
+bool FullNode::getBlocksReceived(std::string blockID, int count, std::string host)
+{
+    std::string answer = std::string("{ ""status"": true,\n ""result"": ");
+    bool startCopying = false;
+    int i = 0;
+
+    //Busco el bloque que me pidieron
+
+    if (blockID == std::string("0x00000000")) {
+
+        startCopying = true;
+    }
+
+    for (std::vector<Block>::iterator it = blockchain.begin(); it != blockchain.end() && i < count; it++) {
+
+        if (startCopying == true) {
+
+            answer += std::string(" { ""blockid"": ");
+            answer += std::string("""") + it->getId() + std::string(""",\n");
+            answer += std::string(" ""height"": ");
+            answer += std::to_string(it->getHeight()) + std::string(",\n");
+            answer += std::string(" ""merkleroot"": ");
+            answer += std::string("""") + it->getMerkleRoot() + std::string(""",\n");
+            answer += std::string(" ""nTx"": ");
+            answer += std::to_string(it->getnTx()) + std::string(",\n");
+            answer += std::string(" ""nonce"": ");
+            answer += std::to_string(it->getNonce()) + std::string(",\n");
+            answer += std::string(" ""previousblockid"": ");
+            answer += std::string("""") + it->getPrevBlockId() + std::string(""",\n");
+            answer += std::string(" ""tx"": [ \n ");
+            //Hacer un iterador por todas las transacciones e ir construyendo de ahi
+
+            i++;
+        }
+        if ((it->getId()) == blockID) {
+
+            startCopying = true;
+        }
+    }
+
+    commSend(host, std::string("cual vergas es el path"), answer);
+
     return false;
 }
 

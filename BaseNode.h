@@ -52,7 +52,7 @@ public:
 	/*=====================================================
 	* Name: getBlocksID
 	* Entra: vector de strings donde se guardaran las IDs. numero de bloques que 
-	* se desean y offset referenciado al primer bloque. Si nu se recibe numero de bloques se cargaran todos los disponibles
+	* se desean y offset referenciado al primer bloque. Si no se recibe numero de bloques se cargaran todos los disponibles
 	* Resulta: true o false dependiendo si se pudieron leer todos los bloques o solo algunos.
 	* Si la cantidad solicitada es mayor a la disponible se devuelven los que esten.
 	*=====================================================*/
@@ -88,6 +88,7 @@ protected:
 	*=====================================================*/
 	virtual void commReceive(void);
 
+	std::string jsonBlockChain;			//TODO: 
 	std::vector <Block> blockchain;		//blockchain con los datos
 	int state;	//Estado del nodo (recibió mensaje, manda mensaje, escucha, etc.)
 	std::vector <std::string> IPsSentList;
