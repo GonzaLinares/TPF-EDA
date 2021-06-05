@@ -51,10 +51,23 @@ public:
 	*=====================================================*/
 	std::string getId(void);
 
+	/*=====================================================
+	* Name: getVin
+	* Entra: -
+	* Resulta: 
+	*=====================================================*/
+	std::vector <InTx> getVin(void);
+
+	/*=====================================================
+	* Name: getVout
+	* Entra: -
+	* Resulta:
+	*=====================================================*/
+	std::vector <OutTx> getVout(void);
+
 private:
 
 	std::string txid;		// Id de la transacicon
-
 	std::vector <InTx> vin;	//vector de entradas
 	std::vector <OutTx> vout;	//vectro de salidas
 };

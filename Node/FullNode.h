@@ -9,47 +9,41 @@
 /******************************************************************************
 * INCLUDE HEADER FILES
 ******************************************************************************/
-#include "Block.h"
+#include "../Block/Block.h"
 #include "BaseNode.h"
 #include <vector>
 
 
 /******************************************************************************
-* CLASS NODE
+* CLASS FULLNODE
 ******************************************************************************/
 class FullNode : public BaseNode
 {
 
 public:
 
+
+	FullNode(boost::asio::io_context& ioContext, std::string path2blockchain, std::string port);
+	FullNode(boost::asio::io_context& ioContext, std::string port);
 	// Inherited via BaseNode
 	// override specifier ensures that the function is virtual and is overriding a virtual function from a base class
 
-	virtual void commSend(std::string host, std::string path, std::string& msg);
-	virtual void commSend(std::string host, std::string path);
-
-
-	virtual void commReceive(void) ;
-
-	virtual Block * getBlock(std::string id) override;
-
-	virtual bool getBlocksID(std::vector<std::string>& buffer, int numOfBlocks = 0, int offset = 0) override;
-
-	virtual int getBlockQuant(void) override;
-
 	virtual bool createBlockchainFromFile(std::string&) override;
 
-	virtual void deleteBlockchain() override;
-
-	//POST HTTP 
+		
+	//POST HTTP	*********************************************************
 	bool blockPost(std::string host);
-	bool transactionPost(std::string blockId, std::string host);	//TODO: Preguntar sobre la incoherencia 
-	bool merkleBlockPost(std::string blockId, std::string host);	//TODO: ¿Que chota hace esto?
+	bool transactionPost(std::string publicKey, int amount, std::string host);
+	bool merkleBlockPost(std::string blockId, std::string host, int position);
 
-	//GET HTTP
+	//*********************************************************//
+
+	//GET HTTP	*********************************************************
 	bool getBlocks(std::string blockId, std::string blockCount, std::string host);
 
-	//FUNCIONES RESPUESTA DE POSTS Y GETS
+	//*********************************************************//
+
+	//FUNCIONES RESPUESTA DE POSTS Y GETS *********************************************************
 
 	/*=====================================================
 	* Name: blockPostReceived
@@ -59,8 +53,9 @@ public:
 	*=====================================================*/
 	bool blockPostReceived(bool error, int result, std::string host);
 
-	bool transactionPostReceived();
-	bool filterPostReceived();
+	bool transactionPostReceived(bool error, int result, std::string host);
+
+	bool filterPostReceived(bool error, int result, std::string host);
 
 	/*=====================================================
 	* Name: getBlockHeaderReceived
@@ -70,10 +65,15 @@ public:
 	* Resulta: -
 	*=====================================================*/
 	bool getBlockHeaderReceived(std::string blockID, int count, std::string host);
+
 	bool getBlocksReceived(std::string blockID, int count, std::string host);
+
+	//*********************************************************//
 
 private:
 	
+	std::string receivedMsgCB(std::string client, std::string msg);
+
 	static std::vector<std::string> actionsVector;
 	virtual std::vector<std::string> getActionList() override;
 	//Vector con los nombres de las acciones posibles

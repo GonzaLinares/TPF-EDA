@@ -7,8 +7,8 @@
 /******************************************************************************
 * INCLUDE HEADER FILES
 ******************************************************************************/
-#include "FullNode.h"
-#include "Gui.h"
+#include "Node/FullNode.h"
+#include "ImGui/Gui.h"
 #include "MerkleTree.h"
 #include "Hashing.h"
 
@@ -21,10 +21,12 @@ int main(int argc, char** argv) {
 
 	Gui menu;
 	vector<BaseNode*> nodes;
-
+	boost::asio::io_context contexto;
+	FullNode pene(contexto, "25565");
+	FullNode penelo(contexto, "24465");
 	while (menu.getState() == RUNNING) {
 
-
+		contexto.poll();
 		menu.update(nodes);
 	}
 

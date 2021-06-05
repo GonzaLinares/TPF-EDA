@@ -54,7 +54,7 @@ bool Block::getTxsID(std::vector<std::string>& buffer, int numOfTxs, int offset)
         return false;
     }
 
-    if (txs.size() - offset < numOfTxs)
+    if ((int)txs.size() - offset < numOfTxs)
     {
         numOfTxs = txs.size() - offset;
         result = false;
@@ -64,7 +64,7 @@ bool Block::getTxsID(std::vector<std::string>& buffer, int numOfTxs, int offset)
 
     if (numOfTxs == 0 && offset == 0)
     {
-        for (int i = 1; i <= txs.size(); it++, i++) {
+        for (int i = 1; i <= (int)txs.size(); it++, i++) {
 
             buffer.push_back(it->getId());
         }
@@ -81,4 +81,10 @@ bool Block::getTxsID(std::vector<std::string>& buffer, int numOfTxs, int offset)
 
 
     return result;
+}
+
+std::vector<Tx> Block::getTxVector(void)
+{
+
+    return txs;
 }

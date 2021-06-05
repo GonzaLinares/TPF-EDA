@@ -87,6 +87,13 @@ public:
 	*=====================================================*/
 	bool getTxsID(std::vector<std::string>& buffer, int numOfTxs = 0, int offset = 0);
 
+	/*=====================================================
+	* Name: getTxVector
+	* Entra: 
+	* Resulta: 
+	*=====================================================*/
+	std::vector<Tx> getTxVector(void);
+
 private:
 
 	std::string blockId;		//Id del bloque

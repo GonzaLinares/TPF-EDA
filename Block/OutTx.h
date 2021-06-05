@@ -1,7 +1,6 @@
 #pragma once
-
 /***************************************************************************//**
-@file     +InTx.h+
+@file     +OutTx.h+
 @brief    +Header+
 @author   +Grupo 9+
 ******************************************************************************/
@@ -11,13 +10,11 @@
 ******************************************************************************/
 #include <iostream>
 
-
 /******************************************************************************
-* CLASS InTx NODE
+* CLASS OutTx
 ******************************************************************************/
-class InTx
+class OutTx
 {
-
 public:
 
 	/*=====================================================
@@ -25,16 +22,13 @@ public:
 	* Entra: Recibe los datos con los que va a llenar el bloque
 	* Resulta: -
 	*=====================================================*/
-	InTx(std::string blockid_, std::string txid_, std::string signature_, int outputindex_);
+	OutTx(std::string publicId_, int amount_);
+
+	std::string getPublicId(void);
+	int getAmount(void);
 
 private:
-	std::string blockId;
-	std::string txid;
-	std::string signature;
-
-	int outputIndex;
-
-
-
+	std::string publicId;
+	int amount;
 };
 

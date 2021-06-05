@@ -19,24 +19,39 @@
     <Filter Include="Source Files\DearImGui">
       <UniqueIdentifier>{4dd9d950-382d-4898-bf4f-2e334dbf72af}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Node">
+      <UniqueIdentifier>{d298e7a5-aa64-4c33-bdf6-72b3bd71768a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Node">
+      <UniqueIdentifier>{98d73f4b-eab2-4af8-bd90-6fd05f587c8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Node\Server">
+      <UniqueIdentifier>{82182f0f-7016-4894-8f79-54580192ba33}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Node\Server">
+      <UniqueIdentifier>{a765f4d0-4646-4413-b5cd-5296e5b7f882}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Node\Client">
+      <UniqueIdentifier>{fa007c3d-c6d5-4393-aead-1d7b251dc9d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Node\Client">
+      <UniqueIdentifier>{3578b0a9-2c43-4751-88e6-4187e999cf38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI">
+      <UniqueIdentifier>{ff52d24b-6cd3-49dd-865c-ea4cea798167}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI">
+      <UniqueIdentifier>{e7fa69da-6f50-4780-8888-57cfc9bb7a04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Block">
+      <UniqueIdentifier>{926a8edd-4aa0-4416-a7c7-217eabfca4db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Block">
+      <UniqueIdentifier>{17837e70-ece4-4744-b719-8bde81cfea58}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FullNode.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Block.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Tx.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="InTx.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="OutTx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ImGui\imgui.cpp">
@@ -60,9 +75,6 @@
     <ClCompile Include="ImGui\imgui_widgets.cpp">
       <Filter>Source Files\DearImGui</Filter>
     </ClCompile>
-    <ClCompile Include="Gui.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="MerkleNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -72,32 +84,50 @@
     <ClCompile Include="MerkleTree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SPVNode.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Node\Server\Connection.cpp">
+      <Filter>Source Files\Node\Server</Filter>
     </ClCompile>
-    <ClCompile Include="BaseNode.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Node\Server\HTTP.cpp">
+      <Filter>Source Files\Node\Server</Filter>
+    </ClCompile>
+    <ClCompile Include="Node\Server\mime_types.cpp">
+      <Filter>Source Files\Node\Server</Filter>
+    </ClCompile>
+    <ClCompile Include="Node\Server\Server.cpp">
+      <Filter>Source Files\Node\Server</Filter>
+    </ClCompile>
+    <ClCompile Include="Node\Client\TweetDLoader.cpp">
+      <Filter>Source Files\Node\Client</Filter>
+    </ClCompile>
+    <ClCompile Include="Node\BaseNode.cpp">
+      <Filter>Source Files\Node</Filter>
+    </ClCompile>
+    <ClCompile Include="Node\FullNode.cpp">
+      <Filter>Source Files\Node</Filter>
+    </ClCompile>
+    <ClCompile Include="Node\SPVNode.cpp">
+      <Filter>Source Files\Node</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\Gui.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Block\Block.cpp">
+      <Filter>Source Files\Block</Filter>
+    </ClCompile>
+    <ClCompile Include="Block\InTx.cpp">
+      <Filter>Source Files\Block</Filter>
+    </ClCompile>
+    <ClCompile Include="Block\OutTx.cpp">
+      <Filter>Source Files\Block</Filter>
+    </ClCompile>
+    <ClCompile Include="Block\Tx.cpp">
+      <Filter>Source Files\Block</Filter>
+    </ClCompile>
+    <ClCompile Include="Node\NodeFactory.cpp">
+      <Filter>Source Files\Node</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="FullNode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Block.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Tx.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="BaseNode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="InTx.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="OutTx.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ImGui\imconfig.h">
       <Filter>Header Files\DearImGui</Filter>
     </ClInclude>
@@ -128,9 +158,6 @@
     <ClInclude Include="config.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Gui.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="MerkleTree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -140,8 +167,47 @@
     <ClInclude Include="Hashing.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SPVNode.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Node\Server\Connection.h">
+      <Filter>Header Files\Node\Server</Filter>
+    </ClInclude>
+    <ClInclude Include="Node\Server\HTTP.h">
+      <Filter>Header Files\Node\Server</Filter>
+    </ClInclude>
+    <ClInclude Include="Node\Server\mime_types.h">
+      <Filter>Header Files\Node\Server</Filter>
+    </ClInclude>
+    <ClInclude Include="Node\Server\Server.h">
+      <Filter>Header Files\Node\Server</Filter>
+    </ClInclude>
+    <ClInclude Include="Node\Client\TweetDLoader.h">
+      <Filter>Header Files\Node\Client</Filter>
+    </ClInclude>
+    <ClInclude Include="Node\BaseNode.h">
+      <Filter>Header Files\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="Node\FullNode.h">
+      <Filter>Header Files\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="Node\SPVNode.h">
+      <Filter>Header Files\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGui\Gui.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Block\Block.h">
+      <Filter>Header Files\Block</Filter>
+    </ClInclude>
+    <ClInclude Include="Block\InTx.h">
+      <Filter>Header Files\Block</Filter>
+    </ClInclude>
+    <ClInclude Include="Block\OutTx.h">
+      <Filter>Header Files\Block</Filter>
+    </ClInclude>
+    <ClInclude Include="Block\Tx.h">
+      <Filter>Header Files\Block</Filter>
+    </ClInclude>
+    <ClInclude Include="Node\NodeFactory.h">
+      <Filter>Header Files\Node</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
