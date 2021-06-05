@@ -23,4 +23,4 @@ private:
 * TODO
 ******************************************************************************/
 
-
+//std::vector<std::string> SPVNode::actionsVector = { "ACA VAN LOS NOMBRES DE LAS ACCIONES" };

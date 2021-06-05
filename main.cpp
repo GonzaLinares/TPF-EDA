@@ -13,16 +13,18 @@
 #include "Hashing.h"
 #include <vector>
 
+using namespace std;
+
 /******************************************************************************
 * Funcion Main
 ******************************************************************************/
 int main(int argc, char** argv) {
 
 	Gui menu;
-	FullNode nodo;
+	vector<BaseNode*> nodes;
 
 	while (menu.getState() == RUNNING) {
-		menu.update(nodo);
+		menu.update(nodes);
 	}
 
 	return 0;
