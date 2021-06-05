@@ -14,14 +14,14 @@ public:
     virtual int getBlockQuant(void) override;
 
     //POST HTTP
-    bool transactionPost(std::string blockId, std::string host);
+    bool transactionPost(std::string publicKey, int amount, std::string host);
     bool filterPost(std::string host);
 
     //GET HTTP
     bool getBlockHeader(std::string blockId, std::string blockCount, std::string host);
 
     //FUNCIONES RESPUESTA DE POSTS Y GETS
-    bool merkleBlockPostReceived(); 
+    bool merkleBlockPostReceived(bool error, int result, std::string host);
 
 
 private:

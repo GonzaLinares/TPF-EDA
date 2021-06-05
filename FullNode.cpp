@@ -216,7 +216,7 @@ bool FullNode::blockPost(std::string host)
                     answer += std::string(" },\n");
                 }
             }
-            answer += std::string(" }\n],\n");
+            answer += std::string("],\n");
         }
     }
 
@@ -225,8 +225,29 @@ bool FullNode::blockPost(std::string host)
     return false;
 }
 
-bool FullNode::transactionPost(std::string blockId, std::string host)
+bool FullNode::transactionPost(std::string publicKey, int amount, std::string host)
 {
+    std::string answer;
+
+    answer += std::string(" ""tx"": [ \n ");
+    answer += std::string(" {\n");
+
+    //VIN
+    answer += std::string(" ""vin"": [ \n ");
+    //Aca guardaria las vin
+    answer += std::string(" ],\n");
+
+    //VOUT
+    answer += std::string(" ""vout"": [ \n ");
+    answer += std::string(" {\n");
+    answer += std::string(" ""amount"": ");
+    answer += std::to_string(amount) + std::string(",\n");
+    answer += std::string(" ""publicid"": ");
+    answer += std::string("""") + publicKey + std::string(""",\n");
+    answer += std::string(" },\n");
+    answer += std::string("],\n");
+
+    commSend(host, std::string("eda_coin/send_tx/"), answer);
 
     return false;
 }
@@ -255,6 +276,31 @@ bool FullNode::blockPostReceived(bool error, int result, std::string host)
 
     if (error == true) {
         
+        if (result == 1) {
+
+            answer = std::string("{ ""status"": true,\n ""result"": 1 }");
+        }
+        else {
+
+            answer = std::string("{ ""status"": true,\n ""result"": 2 }");
+        }
+    }
+    else {
+
+        answer = std::string("{ ""status"": true,\n ""result"": null }");
+    }
+
+    commSend(host, "QUE,PATH,VA,?", answer);
+
+    return false;
+}
+
+bool FullNode::transactionPostReceived(bool error, int result, std::string host)
+{
+    std::string answer;
+
+    if (error == true) {
+
         if (result == 1) {
 
             answer = std::string("{ ""status"": true,\n ""result"": 1 }");
