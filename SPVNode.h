@@ -16,11 +16,11 @@ public:
 private:
 
 
-    static std::vector<std::string> actionsVector;    //Vector con los nombres de las acciones posibles
+    std::vector<std::string> actionsVector;    //Vector con los nombres de las acciones posibles
 };
 
 /******************************************************************************
 * TODO
 ******************************************************************************/
 
-std::vector<std::string> SPVNode::actionsVector = { "ACA VAN LOS NOMBRES DE LAS ACCIONES" };
+//std::vector<std::string> SPVNode::actionsVector = { "ACA VAN LOS NOMBRES DE LAS ACCIONES" };
