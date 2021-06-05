@@ -20,3 +20,13 @@ std::string Tx::getId(void)
 {
 	return txid;
 }
+
+std::vector<InTx> Tx::getVin(void)
+{
+	return vin;
+}
+
+std::vector<OutTx> Tx::getVout(void)
+{
+	return vout;
+}

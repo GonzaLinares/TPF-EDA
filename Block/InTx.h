@@ -27,14 +27,16 @@ public:
 	*=====================================================*/
 	InTx(std::string blockid_, std::string txid_, std::string signature_, int outputindex_);
 
+	std::string getBlockId(void);
+	std::string getTxid(void);
+	std::string getSignature(void);
+	int getOutputIndex(void);
+
 private:
+
 	std::string blockId;
 	std::string txid;
 	std::string signature;
-
 	int outputIndex;
-
-
-
 };
 

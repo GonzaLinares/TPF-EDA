@@ -24,6 +24,9 @@ public:
 	*=====================================================*/
 	OutTx(std::string publicId_, int amount_);
 
+	std::string getPublicId(void);
+	int getAmount(void);
+
 private:
 	std::string publicId;
 	int amount;
