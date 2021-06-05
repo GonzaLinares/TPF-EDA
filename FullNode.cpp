@@ -1,28 +1,21 @@
-#include "Node.h"
+#include "FullNode.h"
 #include <iostream>
 #include <fstream>
 #include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
 
-void Node::connect(void)
+void FullNode::commSend(void)
 {
+
 }
 
-void Node::disconnect(void)
-{
-}
-
-void Node::commSend(void)
-{
-}
-
-void Node::commReceive(void)
+void FullNode::commReceive(void)
 {
 }
 
 //Devuelve un puntero al bloque del id pedido, en el caso de no encontrar ninguno, devuelve NULL
-Block* Node::getBlock(std::string id)
+Block* FullNode::getBlock(std::string id)
 {
     Block* salida = nullptr;
     for (std::vector<Block>::iterator it = blockchain.begin(); it != blockchain.end(); it++) {
@@ -36,7 +29,7 @@ Block* Node::getBlock(std::string id)
     return salida;
 }
 
-bool Node::getBlocksID(std::vector<std::string>& buffer, int numOfBlocks, int offset)
+bool FullNode::getBlocksID(std::vector<std::string>& buffer, int numOfBlocks, int offset)
 {
     bool result = true;
     if (blockchain.size() == 0)
@@ -73,12 +66,12 @@ bool Node::getBlocksID(std::vector<std::string>& buffer, int numOfBlocks, int of
     return result;
 }
 
-int Node::getBlockQuant(void)
+int FullNode::getBlockQuant(void)
 {
     return blockchain.size();
 }
 
-bool Node::createBlockchainFromFile(std::string& path)
+bool FullNode::createBlockchainFromFile(std::string& path)
 {
     if (path.size() > 0)
     {
@@ -127,7 +120,12 @@ bool Node::createBlockchainFromFile(std::string& path)
     return false;
 }
 
-void Node::deleteBlockchain()
+void FullNode::deleteBlockchain()
 {
     blockchain.clear();
+}
+
+std::vector<std::string> FullNode::getActionList()
+{
+    return std::vector<std::string>();
 }

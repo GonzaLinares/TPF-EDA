@@ -1,6 +1,6 @@
 #pragma once
 /***************************************************************************//**
-@file     +Node.h+
+@file     +FullNode.h+
 @brief    +Header hijo+
 @author   +Grupo 9+
 ******************************************************************************/
@@ -13,23 +13,21 @@
 #include "BaseNode.h"
 #include <vector>
 
+
 /******************************************************************************
 * CLASS NODE
 ******************************************************************************/
-class Node : public BaseNode
+class FullNode : public BaseNode
 {
 
 public:
 
 	// Inherited via BaseNode
 	// override specifier ensures that the function is virtual and is overriding a virtual function from a base class
-	virtual void connect(void) override;
 
-	virtual void disconnect(void) override;
+	virtual void commSend(void) ;
 
-	virtual void commSend(void) override;
-
-	virtual void commReceive(void) override;
+	virtual void commReceive(void) ;
 
 	virtual Block * getBlock(std::string id) override;
 
@@ -41,9 +39,16 @@ public:
 
 	virtual void deleteBlockchain() override;
 
-
 private:
 	
-
+	static std::vector<std::string> actionsVector;
+	// Inherited via BaseNode
+	virtual std::vector<std::string> getActionList() override;
+	//Vector con los nombres de las acciones posibles
 };
 
+/******************************************************************************
+* TODO
+******************************************************************************/
+
+std::vector<std::string> FullNode::actionsVector = { "ACA VAN LOS NOMBRES DE LAS ACCIONES" };

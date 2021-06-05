@@ -15,7 +15,7 @@
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
 #include <map>
-#include "Node.h"
+#include "FullNode.h"
 #include "Hashing.h"
 #include "MerkleTree.h"
 
@@ -49,7 +49,7 @@ public:
 	* Entra: Objeto nodo de la red que se esta representando
 	* Resulta: Genera un refresto en base al estado interno del display
 	*=====================================================*/
-	void update(Node& node);
+	void update(FullNode& node);
 	
 	/*=====================================================
 	* Name: getState
@@ -80,7 +80,9 @@ private:
 	* Entra: Nodo en el que se esta trabajando
 	* Resulta: Muestra la tabla con los bloques a mostrar
 	*=====================================================*/
-	void showBlocksTab(Node& node);
+	void showBlocksTab(FullNode& node);
+
+	void showNodesTab(Node& node);
 
 	/*=====================================================
 	* Name: openSubTreeNode

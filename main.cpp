@@ -7,7 +7,7 @@
 /******************************************************************************
 * INCLUDE HEADER FILES
 ******************************************************************************/
-#include "Node.h"
+#include "FullNode.h"
 #include "Gui.h"
 #include "MerkleTree.h"
 #include "Hashing.h"
@@ -19,7 +19,7 @@
 int main(int argc, char** argv) {
 
 	Gui menu;
-	Node nodo;
+	FullNode nodo;
 
 	while (menu.getState() == RUNNING) {
 		menu.update(nodo);
