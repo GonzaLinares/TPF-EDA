@@ -127,27 +127,12 @@ void Gui::update(vector<BaseNode*>& nodes) {
 	ImGui::SetNextWindowPos(ImVec2(0, 0), window_cond);
 	ImGui::SetNextWindowSize(ImVec2(SCREENWIDTH, SCREENHEIGHT), window_cond);	//Creamos la ventana
 	ImGui::Begin("Blockchain Explorer", NULL, window_flags);
+	
+	nSpacing(4);
 
-	//Dibujamos la GUI
-	nSpacing(2);
-	ImGui::Text("Choose a file");
-	nSpacing(1);
-	ImGui::InputText(" ", &filename);
-	ImGui::SameLine();
-	if (ImGui::Button("Load file")) {		//Cargamos el archivo solicitado
-		deleteMerkleDic();
-		merkleTrees.clear();
-		nodes[0]->deleteBlockchain();
-		fileFounded = nodes[0]->createBlockchainFromFile(filename);
-		blockPage = 0;
-	}
-
-	if (fileFounded == false) {		//Si no encontro el archivo mostramos el mensaje de error
-		nSpacing(1);
-		ImGui::Text("File not found!!");
-	}
-
-	nSpacing(2);
+	ImGui::Text("Welcome to the blockchain explorer made by Agustin Gullino, Damian Sergi and Gonzalo Linares");
+	
+	nSpacing(4);
 
 	if (ImGui::BeginTabBar("Options", tab_bar_flags))
 	{
@@ -156,7 +141,7 @@ void Gui::update(vector<BaseNode*>& nodes) {
 			showNodesTab(nodes);
 			ImGui::EndTabItem();
 		}
-		if (ImGui::BeginTabItem("Blocks"))	//Tab de los bloques
+		if (ImGui::BeginTabItem("Blocks 8090"))	//Tab de los bloques
 		{
 			//showBlocksTab(nodes[0]);
 			ImGui::EndTabItem();
@@ -208,6 +193,13 @@ void Gui::showNodesTab(vector<BaseNode*>& nodes) {
 	static string receiverNode = "";
 	static string message = "";
 
+	static string publicKey = "";
+	static int coinAmount = 0;
+
+	const char* items[] = { "AAAA", "BBBB", "CCCC", "DDDD", "EEEE", "FFFF", "GGGG", "HHHH", "IIII", "JJJJ", "KKKK", "LLLLLLL", "MMMM", "OOOOOOO" };
+	static int item_current_idx = 0; // Here we store our selection data as an index.
+	const char* combo_label = items[item_current_idx];  // Label to preview before opening the combo (technically it could be anything)
+
 	static ImGuiTableFlags flags =
 		ImGuiTableFlags_Reorderable | ImGuiTableFlags_Hideable | ImGuiTableFlags_Sortable | ImGuiTableFlags_SortMulti
 		| ImGuiTableFlags_RowBg | ImGuiTableFlags_BordersOuter  | ImGuiTableFlags_NoBordersInBody
@@ -215,30 +207,46 @@ void Gui::showNodesTab(vector<BaseNode*>& nodes) {
 
 	ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f); //TODO: Ver porque no aparecen los bordes redondeados
 	
-	ImGui::BeginChild("CreateNode", ImVec2(250, 150), true);
+	nSpacing(3);
+	ImGui::BeginChild("CreateNode", ImVec2(300, 130), true);
 	ImGui::Text("1) Create node");
 	nSpacing(3);
-	ImGui::Text("IP:");
+	ImGui::Text("IP:Port");
 	ImGui::SameLine();
-	ImGui::InputText("###IP", &nodeIp);
-	ImGui::Text("Port:");
+	ImGui::InputText("###IP:Port001", &nodeIp);
+	ImGui::Text("Blockchain file");
+	ImGui::SameLine(); 
+	ImGui::InputText(" ", &filename);
+	/*
 	ImGui::SameLine();
-	ImGui::InputText("###Port", &nodePort);
+	if (ImGui::Button("Load file")) {		//Cargamos el archivo solicitado
+		deleteMerkleDic();
+		merkleTrees.clear();
+		nodes[0]->deleteBlockchain();
+		fileFounded = nodes[0]->createBlockchainFromFile(filename);
+		blockPage = 0;
+	}
+	*/
+
+	if (fileFounded == false) {		//Si no encontro el archivo mostramos el mensaje de error
+		nSpacing(1);
+		ImGui::Text("File not found!!");
+	}
+
+	nSpacing(2);
+
 	ImGui::Button("SPV");
 	ImGui::SameLine();
 	ImGui::Button("Full");
 	ImGui::EndChild();
 
 
-	ImGui::BeginChild("Connect", ImVec2(250, 150), true);
+	ImGui::BeginChild("Connect", ImVec2(300, 130), true);
 	ImGui::Text("2) Connect");
 	nSpacing(3);
-	ImGui::Text("Port 1:");
+	ImGui::Text("IP:Port");
 	ImGui::SameLine();
-	ImGui::InputText("###Port1", &connPort1);
-	ImGui::Text("Port 2:");
-	ImGui::SameLine();
-	ImGui::InputText("###Port2", &connPort2);
+	ImGui::InputText("###IP:Port002", &connPort1);
 	nSpacing(1);
 	if (ImGui::Button("Link")) {
 		cout << connPort1 << " and " << connPort2 << " linked" << endl;
@@ -251,24 +259,27 @@ void Gui::showNodesTab(vector<BaseNode*>& nodes) {
 	ImGui::EndChild();
 
 
-	ImGui::SetCursorPos(ImVec2(300,90));
-	ImGui::BeginChild("NodeList", ImVec2(400, 300), true);
-	if (ImGui::BeginTable("table_sorting", 4, flags))
+	ImGui::SetCursorPos(ImVec2(320,80));
+	ImGui::BeginChild("NodeList", ImVec2(480, 300), true);
+	if (ImGui::BeginTable("table_sorting", 6, flags))
 	{
 		ImGui::TableSetupColumn("Type", ImGuiTableColumnFlags_PreferSortDescending | ImGuiTableColumnFlags_WidthFixed, 0.0f, TYPE_TABLE_IDENTIFIER);
 		ImGui::TableSetupColumn("IP", ImGuiTableColumnFlags_DefaultSort | ImGuiTableColumnFlags_WidthFixed, 0.0f, IP_TABLE_IDENTIFIER);
 		ImGui::TableSetupColumn("Port", ImGuiTableColumnFlags_WidthFixed, 0.0f, PORT_TABLE_IDENTIFIER);
+		ImGui::TableSetupColumn("Active", ImGuiTableColumnFlags_NoSort | ImGuiTableColumnFlags_WidthFixed, 0.0f, CONNECTIONS_TABLE_IDENTIFIER);
 		ImGui::TableSetupColumn("Connections", ImGuiTableColumnFlags_NoSort | ImGuiTableColumnFlags_WidthFixed, 0.0f, CONNECTIONS_TABLE_IDENTIFIER);
+		ImGui::TableSetupColumn("Status", ImGuiTableColumnFlags_NoSort | ImGuiTableColumnFlags_WidthFixed, 0.0f, CONNECTIONS_TABLE_IDENTIFIER);
 		ImGui::TableSetupScrollFreeze(0, 1); // Make row always visible
 		ImGui::TableHeadersRow();
 
 		ImGuiListClipper clipper;
 		//clipper.Begin(items.Size);
-		clipper.Begin(4);
+		clipper.Begin(20);
 		while (clipper.Step())
 			//cout << clipper.DisplayStart << endl;
 			for (int row_n = clipper.DisplayStart; row_n < clipper.DisplayEnd; row_n++)
 			{
+				static int e = 0;
 				// Display a data item
 				//MyItem* item = &items[row_n];
 				//ImGui::PushID(item->ID);
@@ -279,6 +290,8 @@ void Gui::showNodesTab(vector<BaseNode*>& nodes) {
 				ImGui::Text("%s", "134.56.235.7");
 				ImGui::TableNextColumn();
 				ImGui::Text("%s", "8080");
+				ImGui::TableNextColumn();
+				ImGui::RadioButton("###radio a", &e); e++;
 				ImGui::TableNextColumn();
 				if (true) { //Si tiene conexiones
 					char buffer[32];
@@ -291,8 +304,10 @@ void Gui::showNodesTab(vector<BaseNode*>& nodes) {
 					ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
 					if (ImGui::BeginPopupModal(buffer, NULL, ImGuiWindowFlags_AlwaysAutoResize))
 					{
+						ImGui::Button("X");
+						ImGui::SameLine();
 						ImGui::Text("IP: %s", "AAAAA");
-						ImGui::Text("IP: %s", "BBBBB");
+						
 						if (ImGui::Button("Close", ImVec2(120, 0))) { ImGui::CloseCurrentPopup(); }
 						ImGui::SetItemDefaultFocus();
 						ImGui::EndPopup();
@@ -301,29 +316,70 @@ void Gui::showNodesTab(vector<BaseNode*>& nodes) {
 				else {
 					ImGui::Text("%s", "Empty");
 				}
+				ImGui::TableNextColumn();
+				ImGui::Text("Receiving");
 				//ImGui::PopID();
 			}
 		ImGui::EndTable();
 	}
 	ImGui::EndChild();
 
-	/*
-	ImGui::SetCursorPos(ImVec2(300, 300));
-	ImGui::BeginChild("MessageTab", ImVec2(0, 200), true);
 	
-	ImGui::Text("Sender IP:");
-	ImGui::SameLine();
-	ImGui::InputText("###senderIP", &senderNode);
-	
-	ImGui::Text("Receiver IP:");
-	ImGui::SameLine();
-	ImGui::InputText("###reseiverIP", &receiverNode);
+	ImGui::SetCursorPos(ImVec2(0, 400));
+	ImGui::BeginChild("MessageTab", ImVec2(0, 180), true);
 
-	ImGui::Text("Enter message:");
+	ImGui::Text("3) Actions");
+	nSpacing(3);
+	ImGui::Text("Receiver IP:Port");
+	ImGui::SameLine();	
+	if (ImGui::BeginCombo("###Receiver IP:Port", combo_label))
+	{
+		for (int n = 0; n < IM_ARRAYSIZE(items); n++)
+		{
+			const bool is_selected = (item_current_idx == n);
+			if (ImGui::Selectable(items[n], is_selected))
+				item_current_idx = n;
+
+			// Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
+	}
+
+	ImGui::Text("Message:");
 	ImGui::SameLine();
-	ImGui::InputText("###message", &message);
+	if (ImGui::BeginCombo("###Message:", combo_label))
+	{
+		for (int n = 0; n < IM_ARRAYSIZE(items); n++)
+		{
+			const bool is_selected = (item_current_idx == n);
+			if (ImGui::Selectable(items[n], is_selected))
+				item_current_idx = n;
+
+			// Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
+	}
+
+	if (true) { //Message send crypto == true
+		ImGui::Text("Public key: ");
+		ImGui::SameLine();
+		ImGui::InputText("###Public key :", &publicKey);
+		ImGui::SameLine();
+		ImGui::Text("Amount: ");
+		ImGui::SameLine();
+		ImGui::InputInt("###Amount:", &coinAmount);
+		nSpacing(5);
+		ImGui::Button("Send Message");
+	}
+
 	ImGui::EndChild();
-	*/
+	
+
+
 
 	ImGui::PopStyleVar();
 
