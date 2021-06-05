@@ -1,7 +1,7 @@
 #include "SPVNode.h"
 #include <iostream>
 
-std::vector<std::string> SPVNode::actionsVector{ "ACA VAN LOS NOMBRES DE LAS ACCIONES" };
+std::vector<std::string> SPVNode::actionsVector{"TransactionPost" , "FilterPost" , "GetBlockPost"};
 
 bool SPVNode::createBlockchainFromFile(std::string&)
 {
@@ -25,6 +25,11 @@ bool SPVNode::getBlocksID(std::vector<std::string>& buffer, int numOfBlocks, int
 int SPVNode::getBlockQuant(void)
 {
     return 0;
+}
+
+std::vector<std::string> SPVNode::getActionList()
+{
+    return std::vector<std::string>();
 }
 
 bool SPVNode::transactionPost(std::string publicKey, int amount, std::string host)
@@ -72,14 +77,11 @@ bool SPVNode::filterPost(std::string host)
     return false;
 }
 
-
-
 bool SPVNode::getBlockHeader(std::string blockId, std::string blockCount, std::string host)
 {
     char buf[50];
 
     sprintf_s(buf, "eda_coin/get_block_header?block_id=%s&count=%s", blockId.c_str(), blockCount.c_str());
-    .
     commSend(host, std::string(buf));
 
     return false;

@@ -6,7 +6,7 @@
 
 using json = nlohmann::json;
 
-std::vector<std::string> FullNode::actionsVector{ "ACA VAN LOS NOMBRES DE LAS ACCIONES" };
+std::vector<std::string> FullNode::actionsVector{ "BlockPost", "TransactionPost", "MerkleBlockPost", "GetBlocksPost" } };
 
 void FullNode::commSend(std::string host, std::string path, std::string& msg)
 {

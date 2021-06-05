@@ -12,6 +12,7 @@ public:
     virtual Block* getBlock(std::string id) override;
     virtual bool getBlocksID(std::vector<std::string>& buffer, int numOfBlocks = 0, int offset = 0) override;
     virtual int getBlockQuant(void) override;
+    virtual std::vector<std::string> getActionList() override;
 
     //POST HTTP
     bool transactionPost(std::string publicKey, int amount, std::string host);

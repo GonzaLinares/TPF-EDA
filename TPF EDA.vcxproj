@@ -158,6 +158,7 @@
     <ClCompile Include="Node\BaseNode.cpp" />
     <ClCompile Include="Node\Client\TweetDLoader.cpp" />
     <ClCompile Include="Node\FullNode.cpp" />
+    <ClCompile Include="Node\NodeFactory.cpp" />
     <ClCompile Include="Node\Server\Connection.cpp" />
     <ClCompile Include="Node\Server\HTTP.cpp" />
     <ClCompile Include="Node\Server\mime_types.cpp" />
@@ -186,6 +187,7 @@
     <ClInclude Include="Node\BaseNode.h" />
     <ClInclude Include="Node\Client\TweetDLoader.h" />
     <ClInclude Include="Node\FullNode.h" />
+    <ClInclude Include="Node\NodeFactory.h" />
     <ClInclude Include="Node\Server\Connection.h" />
     <ClInclude Include="Node\Server\HTTP.h" />
     <ClInclude Include="Node\Server\mime_types.h" />
