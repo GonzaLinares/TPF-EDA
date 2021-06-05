@@ -139,10 +139,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="BaseNode.cpp" />
-    <ClCompile Include="Block.cpp" />
-    <ClCompile Include="Gui.cpp" />
     <ClCompile Include="Hashing.cpp" />
+    <ClCompile Include="ImGui\Gui.cpp" />
     <ClCompile Include="ImGui\imgui.cpp" />
     <ClCompile Include="ImGui\imgui_demo.cpp" />
     <ClCompile Include="ImGui\imgui_draw.cpp" />
@@ -150,21 +148,22 @@
     <ClCompile Include="ImGui\imgui_stdlib.cpp" />
     <ClCompile Include="ImGui\imgui_tables.cpp" />
     <ClCompile Include="ImGui\imgui_widgets.cpp" />
-    <ClCompile Include="InTx.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MerkleNode.cpp" />
     <ClCompile Include="MerkleTree.cpp" />
-    <ClCompile Include="FullNode.cpp" />
-    <ClCompile Include="OutTx.cpp" />
-    <ClCompile Include="SPVNode.cpp" />
-    <ClCompile Include="Tx.cpp" />
+    <ClCompile Include="Node\BaseNode.cpp" />
+    <ClCompile Include="Node\Client\TweetDLoader.cpp" />
+    <ClCompile Include="Node\FullNode.cpp" />
+    <ClCompile Include="Node\Server\Connection.cpp" />
+    <ClCompile Include="Node\Server\HTTP.cpp" />
+    <ClCompile Include="Node\Server\mime_types.cpp" />
+    <ClCompile Include="Node\Server\Server.cpp" />
+    <ClCompile Include="Node\SPVNode.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BaseNode.h" />
-    <ClInclude Include="Block.h" />
     <ClInclude Include="config.h" />
-    <ClInclude Include="Gui.h" />
     <ClInclude Include="Hashing.h" />
+    <ClInclude Include="ImGui\Gui.h" />
     <ClInclude Include="ImGui\imconfig.h" />
     <ClInclude Include="ImGui\imconfig_allegro5.h" />
     <ClInclude Include="ImGui\imgui.h" />
@@ -174,13 +173,16 @@
     <ClInclude Include="ImGui\imstb_rectpack.h" />
     <ClInclude Include="ImGui\imstb_textedit.h" />
     <ClInclude Include="ImGui\imstb_truetype.h" />
-    <ClInclude Include="InTx.h" />
     <ClInclude Include="MerkleNode.h" />
     <ClInclude Include="MerkleTree.h" />
-    <ClInclude Include="FullNode.h" />
-    <ClInclude Include="OutTx.h" />
-    <ClInclude Include="SPVNode.h" />
-    <ClInclude Include="Tx.h" />
+    <ClInclude Include="Node\BaseNode.h" />
+    <ClInclude Include="Node\Client\TweetDLoader.h" />
+    <ClInclude Include="Node\FullNode.h" />
+    <ClInclude Include="Node\Server\Connection.h" />
+    <ClInclude Include="Node\Server\HTTP.h" />
+    <ClInclude Include="Node\Server\mime_types.h" />
+    <ClInclude Include="Node\Server\Server.h" />
+    <ClInclude Include="Node\SPVNode.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
