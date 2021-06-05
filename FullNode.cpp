@@ -1,5 +1,4 @@
 #include "FullNode.h"
-#include <iostream>
 #include <fstream>
 #include <nlohmann/json.hpp>
 
@@ -127,5 +126,5 @@ void FullNode::deleteBlockchain()
 
 std::vector<std::string> FullNode::getActionList()
 {
-    return std::vector<std::string>();
+    return actionsVector;
 }
