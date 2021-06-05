@@ -8,7 +8,7 @@
 
 using namespace std;
 
-void HTTP:: elaborateMessage() {
+void HTTP::elaborateMessage(std::string client) {
 
     int error = 0;  //Detecta cuando es momento de enviar el mensaje de error
 
@@ -26,14 +26,10 @@ void HTTP:: elaborateMessage() {
 
     if (!error) {   //LECTURA DE COMANDOS
         
-        if (!auxString.compare(string("GET"))) {    //Si el comando ingresado es GET...
+        if (!auxString.compare(string("GET")) || !auxString.compare(string("POST"))) {    //Si el comando ingresado es GET...
 
             command = auxString;
-            write_GET_message();
-        }
-        else if (!auxString.compare(string("VIVA-PERON"))) {    //Si el comando ingresado es VIVA-PERON...
-
-
+            write_response_message();
         }
         else {
             error = 1;
@@ -142,10 +138,13 @@ void HTTP:: elaborateMessage() {
     }
 
     auxString = receivedMsg.substr(auxPositionINICIAL, auxPositionFINAL - auxPositionINICIAL); //ACA ESTA EL RESTO DEL STRING, si sirve de algo
+
+    // TODO: agregar aca que analice el POST con generateReplyData
+
 }
 
 
-void HTTP::write_GET_message() {
+void HTTP::write_response_message() {
 
     char buffer[100];
     int i = 0;

@@ -15,13 +15,16 @@
 
 
 /******************************************************************************
-* CLASS NODE
+* CLASS FULLNODE
 ******************************************************************************/
 class FullNode : public BaseNode
 {
 
 public:
 
+
+	FullNode(boost::asio::io_context& ioContext, std::string path2blockchain, std::string port);
+	FullNode(boost::asio::io_context& ioContext, std::string port);
 	// Inherited via BaseNode
 	// override specifier ensures that the function is virtual and is overriding a virtual function from a base class
 
@@ -82,6 +85,8 @@ public:
 
 private:
 	
+	std::string receivedMsgCB(std::string client, std::string msg);
+
 	static std::vector<std::string> actionsVector;
 	virtual std::vector<std::string> getActionList() override;
 	//Vector con los nombres de las acciones posibles

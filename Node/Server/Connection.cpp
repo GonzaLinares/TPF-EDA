@@ -8,15 +8,16 @@ Connection::~Connection()			//Destructor solo para uso de debug
 #endif // DEBUG
 }
 
-Connection::Connection(boost::asio::io_context& ioContext)	//Preparo el socket de la conexion con el constructor
+Connection::Connection(boost::asio::io_context& ioContext, boost::function<std::string(std::string, std::string)> postReplyCB)	//Preparo el socket de la conexion con el constructor
 	: conSocket(ioContext)
 {
+	generateReplyData = postReplyCB;
 }
 
 
-Connection::pointer Connection::createConnection(boost::asio::io_context& ioContext)	//Creador de conexiones inteligentes
+Connection::pointer Connection::createConnection(boost::asio::io_context& ioContext, boost::function<std::string(std::string, std::string)> postReplyCB)	//Creador de conexiones inteligentes
 {
-	return Connection::pointer(new Connection(ioContext));
+	return Connection::pointer(new Connection(ioContext, postReplyCB));
 }
 
 
@@ -40,7 +41,7 @@ void Connection::readDataHandler( int recievedBytes, Connection::pointer thisCon
 	if (!error)
 	{
 
-		elaborateMessage();	//Parseo la entrada de datos y creo una respuesta en toSendMesage
+		elaborateMessage(conSocket.remote_endpoint().address().to_string());	//Parseo la entrada de datos y creo una respuesta en toSendMesage
 
 		//Se envia el mensaje de respuesta
 		boost::asio::async_write(this->conSocket, boost::asio::dynamic_buffer(this->toSendMsg),

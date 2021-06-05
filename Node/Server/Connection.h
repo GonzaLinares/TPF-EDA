@@ -5,6 +5,7 @@
 #include <boost/asio/buffer.hpp>
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/asio.hpp>
+#include <boost/function.hpp>
 #include "HTTP.h"
 
 using boost::asio::ip::tcp;
@@ -14,7 +15,7 @@ class Connection : public boost::enable_shared_from_this<Connection>, public HTT
 public:
 	typedef boost::shared_ptr<Connection> pointer;				//Typedef para facilitar declaraciones
 
-	static pointer createConnection(boost::asio::io_context& ioContext);	//Funcion creadora de conexiones
+	static pointer createConnection(boost::asio::io_context& ioContext, boost::function<std::string(std::string, std::string)> postReplyCB);	//Funcion creadora de conexiones
 
 	tcp::socket& getSocket();									//Getter del socket de conexion
 
@@ -24,7 +25,7 @@ public:
 
 private:
 
-	Connection(boost::asio::io_context& ioContext);			
+	Connection(boost::asio::io_context& ioContext, boost::function<std::string(std::string, std::string)> postReplyCB);
 								
 	/*Callback para las comunicaciones*/
 	void readDataHandler(int recievedBytes, Connection::pointer thisCon, const boost::system::error_code& error);

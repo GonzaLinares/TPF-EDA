@@ -1,10 +1,12 @@
 #include "Server.h"
 
 
-Server::Server(boost::asio::io_context& _ioContext)				//Inicializo el servidor y lo pongo a escuchar
+Server::Server(boost::asio::io_context& _ioContext, boost::function<std::string(std::string, std::string)> msgReceivedCb_, int portNum)				//Inicializo el servidor y lo pongo a escuchar
 	:ioContext(_ioContext),
-	acceptor(_ioContext, tcp::endpoint(tcp::v4(), PORTNUM))
+	acceptor(_ioContext, tcp::endpoint(tcp::v4(), portNum)),
+	msgReceivedCb(msgReceivedCb_)
 {
+	std::cout << msgReceivedCb_("hola", std::to_string(portNum)) << std::endl;
 	startListening();
 }
 
@@ -12,7 +14,7 @@ Server::Server(boost::asio::io_context& _ioContext)				//Inicializo el servidor 
 void Server::startListening()
 {
 
-	Connection::pointer newConnection = Connection::createConnection(ioContext);		//Genero una nuevo conexion con un smart pointer para que se borre al terminar la misma
+	Connection::pointer newConnection = Connection::createConnection(ioContext, msgReceivedCb);		//Genero una nuevo conexion con un smart pointer para que se borre al terminar la misma
 
 	acceptor.async_accept(newConnection->getSocket(),
 		boost::bind(&Server::connectionHandler, this, newConnection, boost::asio::placeholders::error));	//comienzo a recibir en esa nueva conexion

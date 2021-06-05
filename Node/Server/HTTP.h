@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <string>
+#include <boost/function.hpp>
 
 class HTTP {
 protected:
@@ -11,7 +12,9 @@ protected:
 	std::string host;
 	std::string command;
 
-	void write_GET_message();
+	boost::function<std::string(std::string, std::string)> generateReplyData;
+
+	void write_response_message();
 	void write_error_message();
-	void elaborateMessage();
+	void elaborateMessage(std::string client);
 };

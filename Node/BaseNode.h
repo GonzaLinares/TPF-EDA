@@ -9,6 +9,7 @@
 * INCLUDE HEADER FILES
 ******************************************************************************/
 #include "../Block/Block.h"
+#include "Server/Server.h"
 #include <vector>
 #include <iostream>
 
@@ -21,6 +22,8 @@ class BaseNode
 
 public:
 	
+
+
 	/*=====================================================
 	* Name: getActionList
 	* Entra: 
@@ -67,6 +70,8 @@ public:
 
 protected:
 
+	BaseNode(boost::asio::io_context& ioContext, boost::function<std::string(std::string, std::string)> msgReceivedCb, int portNum);
+
 	/*=====================================================
 	* Name: commSend used for POST messages
 	* Entra: -
@@ -88,6 +93,7 @@ protected:
 	*=====================================================*/
 	virtual void commReceive(void);
 
+	Server server;
 	std::vector <Block> blockchain;		//blockchain con los datos
 	int state;	//Estado del nodo (recibió mensaje, manda mensaje, escucha, etc.)
 	std::vector <std::string> IPsSentList;

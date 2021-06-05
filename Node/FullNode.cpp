@@ -6,6 +6,20 @@ using json = nlohmann::json;
 
 std::vector<std::string> FullNode::actionsVector{ "ACA VAN LOS NOMBRES DE LAS ACCIONES" };
 
+
+
+FullNode::FullNode(boost::asio::io_context& ioContext, std::string path2blockchain, std::string port)
+    : BaseNode(ioContext, boost::bind(&FullNode::receivedMsgCB, this, boost::placeholders::_1, boost::placeholders::_2), stoi(port))
+{
+
+}
+
+FullNode::FullNode(boost::asio::io_context& ioContext, std::string port)
+    : BaseNode(ioContext, boost::bind(&FullNode::receivedMsgCB, this, boost::placeholders::_1, boost::placeholders::_2), stoi(port))
+{
+
+}
+
 void FullNode::commSend(std::string host, std::string path, std::string& msg)
 {
 
@@ -450,6 +464,11 @@ bool FullNode::getBlocksReceived(std::string blockID, int count, std::string hos
     commSend(host, std::string("cual vergas es el path"), answer);
 
     return false;
+}
+
+std::string FullNode::receivedMsgCB(std::string client, std::string msg)
+{
+    return client + msg;
 }
 
 std::vector<std::string> FullNode::getActionList()
