@@ -63,11 +63,13 @@ private:
 
 	int state;				//Estado de la GUI
 	int blockPage;			//Indice de pagina cuando se muestran los bloques
-	bool fileFounded;		//Estado del texto que muestra cuando no encuentra un archivo
 	std::string filename;	//String que mantiene el path al archivo con la blockchain
 	ALLEGRO_DISPLAY* display;	//Display y cola de eventos de allegro
 	ALLEGRO_EVENT_QUEUE* queue; 
 	std::map<std::string, MerkleTree<hash32>*> merkleTrees;	//Diccionario para almacenar los Merkle Trees de los bloques al momento en que se solicitan
+
+	bool fileFounded;		//Estado del texto que muestra cuando no encuentra un archivo
+	bool linkedSuccess;
 
 	/*=====================================================
 	* Name: deleteMerkleDic
@@ -92,5 +94,6 @@ private:
 	*=====================================================*/
 	void openSubTreeNode(MerkleNode* node, int& id);
 
+	void nSpacing(int n);
 };
 

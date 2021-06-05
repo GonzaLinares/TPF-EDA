@@ -7,12 +7,15 @@
 
 using namespace std;
 
+enum NodeTableColumns {TYPE_TABLE_IDENTIFIER, IP_TABLE_IDENTIFIER, PORT_TABLE_IDENTIFIER, CONNECTIONS_TABLE_IDENTIFIER};
+
 Gui::Gui() {
 	
 	state = RUNNING;
 	blockPage = 0;
 	filename = "";
 	fileFounded = true;
+	linkedSuccess = true;
 	merkleTrees.clear();
 
 	//Inicializamos allegro y sus principales addons
@@ -126,10 +129,9 @@ void Gui::update(vector<BaseNode*>& nodes) {
 	ImGui::Begin("Blockchain Explorer", NULL, window_flags);
 
 	//Dibujamos la GUI
-	ImGui::Spacing();
-	ImGui::Spacing();
+	nSpacing(2);
 	ImGui::Text("Choose a file");
-	ImGui::Spacing();
+	nSpacing(1);
 	ImGui::InputText(" ", &filename);
 	ImGui::SameLine();
 	if (ImGui::Button("Load file")) {		//Cargamos el archivo solicitado
@@ -141,25 +143,28 @@ void Gui::update(vector<BaseNode*>& nodes) {
 	}
 
 	if (fileFounded == false) {		//Si no encontro el archivo mostramos el mensaje de error
-		ImGui::Spacing();
+		nSpacing(1);
 		ImGui::Text("File not found!!");
 	}
 
-	ImGui::Spacing();
-	ImGui::Spacing();
+	nSpacing(2);
 
 	if (ImGui::BeginTabBar("Options", tab_bar_flags))
 	{
-		if (ImGui::BeginTabItem("Nodos"))		//Tab para completar
+		if (ImGui::BeginTabItem("Nodes"))		//Tab para completar
 		{
 			showNodesTab(nodes);
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Blocks"))	//Tab de los bloques
 		{
-			/*
-			showBlocksTab(node);
-			*/
+			//showBlocksTab(nodes[0]);
+			ImGui::EndTabItem();
+		}
+		if (ImGui::BeginTabItem("DemoWindows"))	//Tab de los bloques
+		{
+			bool show_demo_window = true;
+			ImGui::ShowDemoWindow(&show_demo_window);
 			ImGui::EndTabItem();
 		}
 		ImGui::EndTabBar();
@@ -191,9 +196,149 @@ void Gui::deleteMerkleDic()
 
 void Gui::showNodesTab(vector<BaseNode*>& nodes) {
 
-	bool show_demo_window = true;
+	const ImVec2 center = ImGui::GetMainViewport()->GetCenter();
 
-	ImGui::ShowDemoWindow(&show_demo_window);
+	static string nodeIp = "";
+	static string nodePort = "";
+
+	static string connPort1 = "";
+	static string connPort2 = "";
+
+	static string senderNode = "";
+	static string receiverNode = "";
+	static string message = "";
+
+	static ImGuiTableFlags flags =
+		ImGuiTableFlags_Reorderable | ImGuiTableFlags_Hideable | ImGuiTableFlags_Sortable | ImGuiTableFlags_SortMulti
+		| ImGuiTableFlags_RowBg | ImGuiTableFlags_BordersOuter  | ImGuiTableFlags_NoBordersInBody
+		| ImGuiTableFlags_ScrollY;
+
+	ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f); //TODO: Ver porque no aparecen los bordes redondeados
+	
+	ImGui::BeginChild("CreateNode", ImVec2(250, 150), true);
+	ImGui::Text("1) Create node");
+	nSpacing(3);
+	ImGui::Text("IP:");
+	ImGui::SameLine();
+	ImGui::InputText("###IP", &nodeIp);
+	ImGui::Text("Port:");
+	ImGui::SameLine();
+	ImGui::InputText("###Port", &nodePort);
+	ImGui::Button("SPV");
+	ImGui::SameLine();
+	ImGui::Button("Full");
+	ImGui::EndChild();
+
+
+	ImGui::BeginChild("Connect", ImVec2(250, 150), true);
+	ImGui::Text("2) Connect");
+	nSpacing(3);
+	ImGui::Text("Port 1:");
+	ImGui::SameLine();
+	ImGui::InputText("###Port1", &connPort1);
+	ImGui::Text("Port 2:");
+	ImGui::SameLine();
+	ImGui::InputText("###Port2", &connPort2);
+	nSpacing(1);
+	if (ImGui::Button("Link")) {
+		cout << connPort1 << " and " << connPort2 << " linked" << endl;
+		linkedSuccess = false;
+	}
+	nSpacing(4);
+	if (!linkedSuccess) {
+		ImGui::Text("Mustn't be linked two SPV nodes");
+	}
+	ImGui::EndChild();
+
+
+	ImGui::SetCursorPos(ImVec2(300,90));
+	ImGui::BeginChild("NodeList", ImVec2(400, 300), true);
+	if (ImGui::BeginTable("table_sorting", 4, flags))
+	{
+		ImGui::TableSetupColumn("Type", ImGuiTableColumnFlags_PreferSortDescending | ImGuiTableColumnFlags_WidthFixed, 0.0f, TYPE_TABLE_IDENTIFIER);
+		ImGui::TableSetupColumn("IP", ImGuiTableColumnFlags_DefaultSort | ImGuiTableColumnFlags_WidthFixed, 0.0f, IP_TABLE_IDENTIFIER);
+		ImGui::TableSetupColumn("Port", ImGuiTableColumnFlags_WidthFixed, 0.0f, PORT_TABLE_IDENTIFIER);
+		ImGui::TableSetupColumn("Connections", ImGuiTableColumnFlags_NoSort | ImGuiTableColumnFlags_WidthFixed, 0.0f, CONNECTIONS_TABLE_IDENTIFIER);
+		ImGui::TableSetupScrollFreeze(0, 1); // Make row always visible
+		ImGui::TableHeadersRow();
+
+		ImGuiListClipper clipper;
+		//clipper.Begin(items.Size);
+		clipper.Begin(4);
+		while (clipper.Step())
+			//cout << clipper.DisplayStart << endl;
+			for (int row_n = clipper.DisplayStart; row_n < clipper.DisplayEnd; row_n++)
+			{
+				// Display a data item
+				//MyItem* item = &items[row_n];
+				//ImGui::PushID(item->ID);
+				ImGui::TableNextRow();
+				ImGui::TableNextColumn();
+				ImGui::Text("%s", "SPV");
+				ImGui::TableNextColumn();
+				ImGui::Text("%s", "134.56.235.7");
+				ImGui::TableNextColumn();
+				ImGui::Text("%s", "8080");
+				ImGui::TableNextColumn();
+				if (true) { //Si tiene conexiones
+					char buffer[32];
+					sprintf_s(buffer, "Show###%d", row_n);
+					if (ImGui::SmallButton(buffer)) {
+						ImGui::OpenPopup(buffer);
+					}
+					
+					sprintf_s(buffer, "Connections###%d", row_n);
+					ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+					if (ImGui::BeginPopupModal(buffer, NULL, ImGuiWindowFlags_AlwaysAutoResize))
+					{
+						ImGui::Text("IP: %s", "AAAAA");
+						ImGui::Text("IP: %s", "BBBBB");
+						if (ImGui::Button("Close", ImVec2(120, 0))) { ImGui::CloseCurrentPopup(); }
+						ImGui::SetItemDefaultFocus();
+						ImGui::EndPopup();
+					}
+				}
+				else {
+					ImGui::Text("%s", "Empty");
+				}
+				//ImGui::PopID();
+			}
+		ImGui::EndTable();
+	}
+	ImGui::EndChild();
+
+	/*
+	ImGui::SetCursorPos(ImVec2(300, 300));
+	ImGui::BeginChild("MessageTab", ImVec2(0, 200), true);
+	
+	ImGui::Text("Sender IP:");
+	ImGui::SameLine();
+	ImGui::InputText("###senderIP", &senderNode);
+	
+	ImGui::Text("Receiver IP:");
+	ImGui::SameLine();
+	ImGui::InputText("###reseiverIP", &receiverNode);
+
+	ImGui::Text("Enter message:");
+	ImGui::SameLine();
+	ImGui::InputText("###message", &message);
+	ImGui::EndChild();
+	*/
+
+	ImGui::PopStyleVar();
+
+}
+
+static void PushStyleCompact()
+{
+	ImGuiStyle& style = ImGui::GetStyle();
+	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(style.FramePadding.x, (float)(int)(style.FramePadding.y * 0.60f)));
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(style.ItemSpacing.x, (float)(int)(style.ItemSpacing.y * 0.60f)));
+}
+
+static void PopStyleCompact()
+{
+	ImGui::PopStyleVar(2);
 }
 
 void Gui::showBlocksTab(BaseNode& node) {
@@ -225,7 +370,7 @@ void Gui::showBlocksTab(BaseNode& node) {
 
 		//Mostramos la informacion del bloque
 		ImGui::Text("Block %d", 1+i+blockPage);
-		ImGui::Spacing();
+		nSpacing(1);
 		ImGui::Text("Current block hash: %s", currentID.c_str());
 		ImGui::Text("Previous block hash: %s", currentBlock->getPrevBlockId().c_str());
 		ImGui::Text("Number of transactions: %d", currentBlock->getnTx());
@@ -273,7 +418,7 @@ void Gui::showBlocksTab(BaseNode& node) {
 			ImGui::Text("Calculated: Press Calculate Merkle Tree");
 		}
 		
-		ImGui::Spacing();
+		nSpacing(1);
 
 		ImGui::NextColumn();
 	}
@@ -312,4 +457,10 @@ void Gui::openSubTreeNode(MerkleNode* node, int& id) {
 		ImGui::TreePop();
 	}
 	
+}
+
+void Gui::nSpacing(int n) {
+	for (int i = 0; i < n; i++) {
+		ImGui::Spacing();
+	}
 }

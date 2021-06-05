@@ -11,7 +11,6 @@
 #include "Gui.h"
 #include "MerkleTree.h"
 #include "Hashing.h"
-#include <vector>
 
 using namespace std;
 
