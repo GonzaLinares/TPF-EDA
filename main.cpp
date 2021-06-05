@@ -7,8 +7,8 @@
 /******************************************************************************
 * INCLUDE HEADER FILES
 ******************************************************************************/
-#include "FullNode.h"
-#include "Gui.h"
+#include "Node/FullNode.h"
+#include "ImGui/Gui.h"
 #include "MerkleTree.h"
 #include "Hashing.h"
 

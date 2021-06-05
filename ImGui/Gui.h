@@ -16,9 +16,9 @@
 #include <allegro5/allegro_ttf.h>
 #include <map>
 #include <vector>
-#include "FullNode.h"
-#include "Hashing.h"
-#include "MerkleTree.h"
+#include "../Node/FullNode.h"
+#include "../Hashing.h"
+#include "../MerkleTree.h"
 
 /*******************************************************************************
 * ENUMERATIONS AND STRUCTURES AND TYPEDEFS
