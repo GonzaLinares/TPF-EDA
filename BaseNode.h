@@ -20,6 +20,13 @@ class BaseNode
 {
 
 public:
+	
+	/*=====================================================
+	* Name: getActionList
+	* Entra: 
+	* Resulta: 
+	*=====================================================*/
+	virtual std::vector<std::string> getActionList() = 0;
 
 	/*=====================================================
 	* Name: createBlockchainFromFile

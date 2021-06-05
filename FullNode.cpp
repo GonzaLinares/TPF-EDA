@@ -1,5 +1,4 @@
 #include "FullNode.h"
-#include <iostream>
 #include <fstream>
 #include <nlohmann/json.hpp>
 
@@ -123,4 +122,9 @@ bool FullNode::createBlockchainFromFile(std::string& path)
 void FullNode::deleteBlockchain()
 {
     blockchain.clear();
+}
+
+std::vector<std::string> FullNode::getActionList()
+{
+    return actionsVector;
 }

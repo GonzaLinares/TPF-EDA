@@ -14,7 +14,7 @@ Block* SPVNode::getBlock(std::string id)
     return nullptr;
 }
 
-bool SPVNode::getBlocksID(std::vector<std::string>& buffer, int numOfBlocks = 0, int offset = 0)
+bool SPVNode::getBlocksID(std::vector<std::string>& buffer, int numOfBlocks, int offset)
 {
     return false;
 }
