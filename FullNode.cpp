@@ -4,9 +4,13 @@
 
 using json = nlohmann::json;
 
-void FullNode::commSend(void)
+void FullNode::commSend(std::string host, std::string path, std::string& msg)
 {
 
+}
+
+void FullNode::commSend(std::string host, std::string path)
+{
 }
 
 void FullNode::commReceive(void)
@@ -122,6 +126,29 @@ bool FullNode::createBlockchainFromFile(std::string& path)
 void FullNode::deleteBlockchain()
 {
     blockchain.clear();
+}
+
+bool FullNode::blockPost(std::string host)
+{
+
+    commSend(host, std::string("eda_coin/send_block/"), )
+
+    return false;
+}
+
+bool FullNode::transactionPost()
+{
+    return false;
+}
+
+bool FullNode::merkleBlockPost()
+{
+    return false;
+}
+
+bool FullNode::getBlocks()
+{
+    return false;
 }
 
 std::vector<std::string> FullNode::getActionList()

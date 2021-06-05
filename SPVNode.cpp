@@ -23,3 +23,18 @@ int SPVNode::getBlockQuant(void)
 {
     return 0;
 }
+
+bool SPVNode::transactionPost()
+{
+    return false;
+}
+
+bool SPVNode::filterPost()
+{
+    return false;
+}
+
+bool SPVNode::getBlockHeader()
+{
+    return false;
+}

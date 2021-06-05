@@ -13,8 +13,11 @@ public:
     virtual bool getBlocksID(std::vector<std::string>& buffer, int numOfBlocks = 0, int offset = 0) override;
     virtual int getBlockQuant(void) override;
 
-private:
+    bool transactionPost();
+    bool filterPost();
+    bool getBlockHeader();
 
+private:
 
     std::vector<std::string> actionsVector;    //Vector con los nombres de las acciones posibles
 };
@@ -23,4 +26,4 @@ private:
 * TODO
 ******************************************************************************/
 
-//std::vector<std::string> SPVNode::actionsVector = { "ACA VAN LOS NOMBRES DE LAS ACCIONES" };
+// TODO: std::vector<std::string> SPVNode::actionsVector = { "ACA VAN LOS NOMBRES DE LAS ACCIONES" };

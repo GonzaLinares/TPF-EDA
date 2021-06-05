@@ -24,6 +24,8 @@ int main(int argc, char** argv) {
 	vector<BaseNode*> nodes;
 
 	while (menu.getState() == RUNNING) {
+
+
 		menu.update(nodes);
 	}
 

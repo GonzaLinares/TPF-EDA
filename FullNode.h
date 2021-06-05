@@ -25,7 +25,9 @@ public:
 	// Inherited via BaseNode
 	// override specifier ensures that the function is virtual and is overriding a virtual function from a base class
 
-	virtual void commSend(void) ;
+	virtual void commSend(std::string host, std::string path, std::string& msg);
+	virtual void commSend(std::string host, std::string path);
+
 
 	virtual void commReceive(void) ;
 
@@ -38,6 +40,11 @@ public:
 	virtual bool createBlockchainFromFile(std::string&) override;
 
 	virtual void deleteBlockchain() override;
+
+	bool blockPost(std::string host);
+	bool transactionPost();
+	bool merkleBlockPost();
+	bool getBlocks();
 
 private:
 	
