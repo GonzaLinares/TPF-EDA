@@ -1,30 +1,54 @@
 #include "SPVNode.h"
+#include <fstream>
+#include <nlohmann/json.hpp>
 #include <iostream>
+
+using json = nlohmann::json;
 
 std::vector<std::string> SPVNode::actionsVector{"TransactionPost" , "FilterPost" , "GetBlockPost"};
 
-bool SPVNode::createBlockchainFromFile(std::string&)
+SPVNode::SPVNode(boost::asio::io_context& ioContext, std::string path2blockchain, std::string port)
+    : BaseNode(ioContext, boost::bind(&SPVNode::receivedMsgCB, this, boost::placeholders::_1, boost::placeholders::_2), stoi(port))
 {
+
+}
+
+SPVNode::SPVNode(boost::asio::io_context& ioContext, std::string port)
+    : BaseNode(ioContext, boost::bind(&SPVNode::receivedMsgCB, this, boost::placeholders::_1, boost::placeholders::_2), stoi(port))
+{
+}
+
+bool SPVNode::createBlockchainFromFile(std::string& path)
+{
+
+    if (path.size() > 0)
+    {
+        std::ifstream file(path);
+
+        if (file.is_open())
+        {
+            json jsonFile;
+            try
+            {
+                file >> jsonFile;
+                if (jsonFile.is_array() && jsonFile[0].is_object())
+                {
+                    for (int i = jsonFile.size() - 1; i >= 0; i--)
+                    {
+                        this->blockchain.push_back(Block(jsonFile[i]["blockid"], jsonFile[i]["height"], jsonFile[i]["merkleroot"], jsonFile[i]["nTx"], jsonFile[i]["nonce"], jsonFile[i]["previousblockid"]));
+                    }
+                }
+                return true;
+            }
+            catch (const std::exception& e)
+            {
+                std::cerr << e.what() << std::endl;
+                return false;
+            }
+
+        }
+    }
     return false;
-}
-
-void SPVNode::deleteBlockchain()
-{
-}
-
-Block* SPVNode::getBlock(std::string id)
-{
-    return nullptr;
-}
-
-bool SPVNode::getBlocksID(std::vector<std::string>& buffer, int numOfBlocks, int offset)
-{
-    return false;
-}
-
-int SPVNode::getBlockQuant(void)
-{
-    return 0;
 }
 
 std::vector<std::string> SPVNode::getActionList()
@@ -110,4 +134,9 @@ bool SPVNode::merkleBlockPostReceived(bool error, int result, std::string host)
     commSend(host, "eda_coin/send_merkle_block/", answer);
 
     return false;
+}
+
+std::string SPVNode::receivedMsgCB(std::string client, std::string msg)     // TODO: Implementar
+{
+    return client + msg;
 }

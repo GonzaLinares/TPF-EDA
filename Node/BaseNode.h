@@ -22,8 +22,6 @@ class BaseNode
 
 public:
 	
-
-
 	/*=====================================================
 	* Name: getActionList
 	* Entra: 
@@ -43,14 +41,14 @@ public:
 	* Entra: -
 	* Resulta: limpia la blockchain que este cargada
 	*=====================================================*/
-	virtual void deleteBlockchain() = 0;
+	virtual void deleteBlockchain();
 
 	/*=====================================================
 	* Name: getBlock
 	* Entra: string con ID del bloque que se desea
 	* Resulta: puntero al blocke solicitado
 	*=====================================================*/
-	virtual Block * getBlock(std::string id) = 0;
+	virtual Block * getBlock(std::string id);
 
 	/*=====================================================
 	* Name: getBlocksID
@@ -59,14 +57,14 @@ public:
 	* Resulta: true o false dependiendo si se pudieron leer todos los bloques o solo algunos.
 	* Si la cantidad solicitada es mayor a la disponible se devuelven los que esten.
 	*=====================================================*/
-	virtual bool getBlocksID(std::vector<std::string>& buffer, int numOfBlocks = 0, int offset = 0) = 0;
+	virtual bool getBlocksID(std::vector<std::string>& buffer, int numOfBlocks = 0, int offset = 0);
 
 	/*=====================================================
 	* Name: getBlockQuant
 	* Entra: -
 	* Resulta: Numero de bloques cargados
 	*=====================================================*/
-	virtual int getBlockQuant(void) = 0;
+	virtual int getBlockQuant(void);
 
 protected:
 
@@ -86,12 +84,6 @@ protected:
 	*=====================================================*/
 	virtual void commSend(std::string host, std::string path);
 
-	/*=====================================================
-	* Name: commReceive
-	* Entra: -
-	* Resulta: recive un mensaje del nodo conectado. A implementar
-	*=====================================================*/
-	virtual void commReceive(void);
 
 	Server server;
 	std::vector <Block> blockchain;		//blockchain con los datos
