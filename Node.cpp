@@ -44,7 +44,7 @@ bool Node::getBlocksID(std::vector<std::string>& buffer, int numOfBlocks, int of
         return false;
     }
 
-    if (blockchain.size() - offset < numOfBlocks)
+    if ((int)blockchain.size() - offset < numOfBlocks)
     {
         numOfBlocks = blockchain.size() - offset;
         result = false;
@@ -54,7 +54,7 @@ bool Node::getBlocksID(std::vector<std::string>& buffer, int numOfBlocks, int of
 
     if (numOfBlocks == 0 && offset == 0)
     {
-        for (int i = 1; i <= blockchain.size(); it++, i++) {
+        for (int i = 1; i <= (int)blockchain.size(); it++, i++) {
 
             buffer.push_back(it->getId());
         }
@@ -97,7 +97,7 @@ bool Node::createBlockchainFromFile(std::string& path)
                         this->blockchain.push_back(Block(jsonFile[i]["blockid"], jsonFile[i]["height"], jsonFile[i]["merkleroot"], jsonFile[i]["nTx"], jsonFile[i]["nonce"], jsonFile[i]["previousblockid"]));
                         for (int j = jsonFile[i]["nTx"] - 1; j >= 0; j--)
                         {
-                            Tx auxTx(jsonFile[i]["tx"][j]["txid"], jsonFile[i]["tx"][j]["nTxin"], jsonFile[i]["tx"][j]["nTxout"]);
+                            Tx auxTx(jsonFile[i]["tx"][j]["txid"]);
                             for (int k = jsonFile[i]["tx"][j]["nTxin"] - 1; k >= 0; k--)
                             {
                                 InTx auxInTx(jsonFile[i]["tx"][j]["vin"][k]["blockid"], jsonFile[i]["tx"][j]["vin"][k]["txid"], jsonFile[i]["tx"][j]["vin"][k]["signature"], jsonFile[i]["tx"][j]["vin"][k]["outputIndex"]);
