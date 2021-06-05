@@ -639,7 +639,41 @@ bool FullNode::getBlocksReceived(std::string blockID, int count, std::string hos
 
 std::string FullNode::receivedMsgCB(std::string client, std::string msg)
 {
-    return client + msg;
+    std::string path;  
+
+    if ( path.find('?') == std::string::npos) {
+
+        if (path == std::string("eda_coin/send_block/")) {
+
+            //Tengo que parsear para hacer la llamada aca
+            //getBlocksReceived();
+        }
+        else if (path == std::string("eda_coin/send_tx/")) {
+
+
+        }
+        else if (path == std::string("eda_coin/send_filter/")) {
+
+
+        }
+    }
+    else {
+
+        std::string blockId;
+        int count;
+        //Tengo que conseguir los datos que estan en el comando
+
+        if (path == std::string("get_block")) {
+            
+
+        }
+        else if (path == std::string("get_block_header")) {
+
+
+        }
+    }
+
+    return std::string("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 }
 
 std::vector<std::string> FullNode::getActionList()

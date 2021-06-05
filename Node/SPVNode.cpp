@@ -111,3 +111,5 @@ bool SPVNode::merkleBlockPostReceived(bool error, int result, std::string host)
 
     return false;
 }
+
+std::string Full
