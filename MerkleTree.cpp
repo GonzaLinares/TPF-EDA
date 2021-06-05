@@ -57,6 +57,8 @@ std::string MerkleTree<hashFunc>::getMerkleRoot(void)
     if (root != nullptr) {
         return (root->getHash());
     }
+
+    return "";
 }
 
 template<std::string(*hashFunc)(std::string&)>

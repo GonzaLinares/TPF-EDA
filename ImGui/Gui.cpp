@@ -1,8 +1,8 @@
 #include "Gui.h"
-#include "config.h"
-#include "ImGui/imgui.h"
-#include "ImGui/imgui_impl_allegro5.h"
-#include "ImGui/imgui_stdlib.h"
+#include "../config.h"
+#include "imgui.h"
+#include "imgui_impl_allegro5.h"
+#include "imgui_stdlib.h"
 #include <stdexcept> 
 
 using namespace std;

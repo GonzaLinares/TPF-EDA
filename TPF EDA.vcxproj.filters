@@ -43,6 +43,12 @@
     <Filter Include="Header Files\GUI">
       <UniqueIdentifier>{e7fa69da-6f50-4780-8888-57cfc9bb7a04}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Block">
+      <UniqueIdentifier>{926a8edd-4aa0-4416-a7c7-217eabfca4db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Block">
+      <UniqueIdentifier>{17837e70-ece4-4744-b719-8bde81cfea58}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -104,6 +110,18 @@
     </ClCompile>
     <ClCompile Include="ImGui\Gui.cpp">
       <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Block\Block.cpp">
+      <Filter>Source Files\Block</Filter>
+    </ClCompile>
+    <ClCompile Include="Block\InTx.cpp">
+      <Filter>Source Files\Block</Filter>
+    </ClCompile>
+    <ClCompile Include="Block\OutTx.cpp">
+      <Filter>Source Files\Block</Filter>
+    </ClCompile>
+    <ClCompile Include="Block\Tx.cpp">
+      <Filter>Source Files\Block</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -172,6 +190,18 @@
     </ClInclude>
     <ClInclude Include="ImGui\Gui.h">
       <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Block\Block.h">
+      <Filter>Header Files\Block</Filter>
+    </ClInclude>
+    <ClInclude Include="Block\InTx.h">
+      <Filter>Header Files\Block</Filter>
+    </ClInclude>
+    <ClInclude Include="Block\OutTx.h">
+      <Filter>Header Files\Block</Filter>
+    </ClInclude>
+    <ClInclude Include="Block\Tx.h">
+      <Filter>Header Files\Block</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
