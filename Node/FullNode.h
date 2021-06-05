@@ -44,7 +44,7 @@ public:
 	//POST HTTP	*********************************************************
 	bool blockPost(std::string host);
 	bool transactionPost(std::string publicKey, int amount, std::string host);
-	bool merkleBlockPost(std::string blockId, std::string host);
+	bool merkleBlockPost(std::string blockId, std::string host, int position);
 
 	//*********************************************************//
 

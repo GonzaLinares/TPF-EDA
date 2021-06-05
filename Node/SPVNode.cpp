@@ -79,7 +79,7 @@ bool SPVNode::getBlockHeader(std::string blockId, std::string blockCount, std::s
     char buf[50];
 
     sprintf_s(buf, "eda_coin/get_block_header?block_id=%s&count=%s", blockId.c_str(), blockCount.c_str());
-
+    .
     commSend(host, std::string(buf));
 
     return false;
@@ -105,7 +105,7 @@ bool SPVNode::merkleBlockPostReceived(bool error, int result, std::string host)
         answer = std::string("{ ""status"": true,\n ""result"": null }");
     }
 
-    commSend(host, "QUE,PATH,VA,?", answer);
+    commSend(host, "eda_coin/send_merkle_block/", answer);
 
     return false;
 }
