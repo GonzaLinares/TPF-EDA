@@ -4,6 +4,9 @@
 
 using json = nlohmann::json;
 
+
+std::vector<std::string> FullNode::actionsVector{ "ACA VAN LOS NOMBRES DE LAS ACCIONES" };
+
 void FullNode::commSend(void)
 {
 
