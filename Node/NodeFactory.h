@@ -6,7 +6,7 @@ class NodeFactory
 {
 public:
 
-	std::vector <BaseNode*>* getNodes(void);
+	std::vector <BaseNode*>& getNodes(void);
 	bool createFullNode(void);
 	bool createSPVNode(void);
 
