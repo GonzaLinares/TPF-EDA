@@ -10,7 +10,7 @@ enum { IDLE = 0, DOWNLOADING, DISPLAYING };
 class Client
 {
 public:
-	Client(const char* API_key, const char* API_SecretKey);
+	Client();
 
 	bool POST(std::string url, std::string& msg);
 

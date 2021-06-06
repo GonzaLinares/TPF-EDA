@@ -7,7 +7,7 @@ using json = nlohmann::json;
 static size_t recieveCallback(char* ptr, size_t size, size_t nmemb, void* userdata);
 
 
-Client::Client(const char* API_key, const char* API_SecretKey)
+Client::Client()
 {
 	
 	this->curl = curl_easy_init();
@@ -41,7 +41,7 @@ bool Client::download(std::list<std::string>& buffer, const char* usrname, unsig
 
 			curl_multi_add_handle(this->multiCurl, this->curl);
 
-			curl_easy_setopt(curl, CURLOPT_URL, );
+			//curl_easy_setopt(curl, CURLOPT_URL, );
 			curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
 			curl_easy_setopt(curl, CURLOPT_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);
 
