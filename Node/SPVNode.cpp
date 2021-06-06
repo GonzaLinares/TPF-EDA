@@ -147,6 +147,10 @@ std::string SPVNode::receivedMsgCB(std::string client, std::string msg)
 {
     std::string answer;
 
+    std::string host = client.substr(0, client.find_first_of('/', 0));
+
+    lastReClient = host;
+
     if (msg != std::string("")) {
 
         //Aca podria por ejemplo hacer algo con el mensaje que nos enviaron

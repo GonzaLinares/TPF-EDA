@@ -113,5 +113,6 @@ protected:
 	Server server;
 	std::vector <Block> blockchain;		//blockchain con los datos
 	int state;	//Estado del nodo (recibió mensaje, manda mensaje, escucha, etc.)
+	std::string lastReClient;
 	std::vector <std::string> IPsSentList;
 };

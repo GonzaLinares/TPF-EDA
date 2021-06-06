@@ -341,6 +341,7 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 		if (ImGui::Button("Send Message")) {
 
 			if (currentNode->getNodeType() == std::string("Full")) {
+
 				((FullNode*)currentNode)->transactionPost(publicKeyWritten, amountWritten, neigh[comboBoxNodesIndex].first);
 			}
 			else {
