@@ -14,7 +14,6 @@
 #include <vector>
 #include <iostream>
 
-typedef enum { SPV = 0, FULL} node_type_t;
 typedef enum {IDLE = 0, RECEIVING, SENDING} node_state_t;
 
 /******************************************************************************
@@ -74,7 +73,7 @@ public:
 	* Entra: -
 	* Resulta: -
 	*=====================================================*/
-	virtual node_type_t getNodeType(void) = 0;
+	virtual std::string getNodeType(void) = 0;
 
 	/*=====================================================
 	* Name: addNeighbour
@@ -82,6 +81,7 @@ public:
 	* Resulta: 
 	*=====================================================*/
 	virtual bool addNeighbour(std::string ipAndPort, std::string nodeType);
+	virtual bool deleteNeighbour(int indexNum);
 
 	virtual std::string getIP();
 	virtual std::string getPort();

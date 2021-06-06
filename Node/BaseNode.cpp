@@ -110,6 +110,18 @@ bool BaseNode::addNeighbour(std::string ipAndPort, std::string nodeType)
     return false;
 }
 
+bool BaseNode::deleteNeighbour(int indexNum)
+{
+    if (indexNum < neighbours.size())
+    {
+        auto it = neighbours.begin();
+        it += indexNum;
+        neighbours.erase(it);
+        return true;
+    }
+    return false;
+}
+
 std::vector <std::pair<std::string, std::string>>& BaseNode::getNeighbours() {
     return neighbours;
 }
