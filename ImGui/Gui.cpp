@@ -146,11 +146,9 @@ void Gui::update(NodeFactory& nodes) {
 			showNodesTab(nodes);
 			ImGui::EndTabItem();
 		}
-		if (ImGui::BeginTabItem("Blocks XXXX"))	//Tab de los bloques
+		if (nodes.getNodes().size() > 0 && ImGui::BeginTabItem("Blocks"))	//Tab de los bloques
 		{
-			if(nodes.getNodes().size() > 0){
-				showBlocksTab(*nodes.getNodes()[currentNodeActive]);
-			}
+			showBlocksTab(*nodes.getNodes()[currentNodeActive]);
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("DemoWindows"))	//Tab de los bloques
@@ -188,10 +186,12 @@ void Gui::deleteMerkleDic()
 
 void Gui::showNodesTab(NodeFactory& nodes) {
 
-	showCreateBox(nodes);
+	showCreateBox(nodes);  
 	showConnectBox(nodes);
 	showNodesTable(nodes);
-	showActionsBox(nodes);
+	if (nodes.getNodes().size() > 0) {
+		showActionsBox(nodes);
+	}
 }
 
 void Gui::showCreateBox(NodeFactory& nodes) {
@@ -207,23 +207,25 @@ void Gui::showCreateBox(NodeFactory& nodes) {
 	ImGui::InputText("###Port001", &nodePort);
 	ImGui::Text("Blockchain file");
 	ImGui::SameLine();
-	ImGui::InputText("", &filename);
+	ImGui::InputText("", &filename);  //Ingresamos el archivo donde cargamos un nodo
 	nSpacing(2);
-	if (ImGui::Button("SPV")) {
+	if (ImGui::Button("SPV")) {		//Si se presiono SPV creamos un SPV con los datos ingresados...
 		if (filename.size() > 0) {
-			fileFound = nodes.createSPVNode(nodePort, filename);
+			fileFound = nodes.createSPVNode(nodePort, filename);	
 		}
 		else {
 			nodes.createSPVNode(nodePort);
 		}
-		//deleteMerkleDic();
+		//deleteMerkleDic();		//Esto estaba del TP anterior
 		//merkleTrees.clear();
-		//node[currentNodeActive]->deleteBlockchain();
-		//fileFound = node[currentNodeActive]->createBlockchainFromFile(filename);
+		//currentNode[currentNodeActive]->deleteBlockchain();
+		//fileFound = currentNode[currentNodeActive]->createBlockchainFromFile(filename);
 		blockPage = 0;
+		comboBoxNodesIndex = 0;
+		comboBoxActionNodesIndex = 0;
 	}
 	ImGui::SameLine();
-	if (ImGui::Button("Full")) {
+	if (ImGui::Button("Full")) {		//Sino creamos un Full
 		if (filename.size() > 0) {
 			fileFound = nodes.createFullNode(nodePort, filename);
 		}
@@ -235,6 +237,8 @@ void Gui::showCreateBox(NodeFactory& nodes) {
 		//nodes[currentNodeActive]->deleteBlockchain();
 		//fileFound = nodes[currentNodeActive]->createBlockchainFromFile(filename);
 		blockPage = 0;
+		comboBoxNodesIndex = 0;
+		comboBoxActionNodesIndex = 0;
 	}
 
 	if (fileFound == false) {		//Si no encontro el archivo mostramos el mensaje de error
@@ -243,7 +247,6 @@ void Gui::showCreateBox(NodeFactory& nodes) {
 	}
 
 	ImGui::EndChild();
-
 	ImGui::PopStyleVar();
 }
 
@@ -256,9 +259,14 @@ void Gui::showConnectBox(NodeFactory& nodes) {
 	ImGui::SameLine();
 	ImGui::InputText("###IP:Port002", &connPort1);
 	nSpacing(1);
-	if (ImGui::Button("Link")) {
-		//*nodes.getNodes()[currentNodeActive]
-		linkedSuccess = false;
+	if (ImGui::Button("SPV")) {
+		nodes.getNodes()[currentNodeActive]->addNeighbour(connPort1, "SPV");
+		linkedSuccess = true;
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Full")) {
+		nodes.getNodes()[currentNodeActive]->addNeighbour(connPort1, "Full");
+		linkedSuccess = true;
 	}
 	nSpacing(4);
 
@@ -270,73 +278,69 @@ void Gui::showConnectBox(NodeFactory& nodes) {
 
 void Gui::showActionsBox(NodeFactory& nodes) {
 
-	vector<BaseNode*> node = nodes.getNodes();
-	vector<string> actionList;
-	vector<string> nodesIDs; // = node->get; //TODO: getNeightbords	//Vector con las labels de los nodos para mostrar en la combobox
+	BaseNode* currentNode = nodes.getNodes()[currentNodeActive];
+	vector <pair<string, string>> neigh = currentNode->getNeighbours();
+	vector<string> actionList = currentNode->getActionList();
+	pair<string, string> aux;
+
+	if (neigh.empty()) {
+		aux.first = "Empty";
+		aux.second = "NULL";
+		neigh.push_back(aux);
+	}
+
+	ImGui::SetCursorPos(ImVec2(0, 400));
+	ImGui::BeginChild("MessageTab", ImVec2(0, 180), true);
+
+	ImGui::Text("3) Actions");
+	nSpacing(3);
+	ImGui::Text("Receiver IP:Port");
+	ImGui::SameLine();
+
+	if (ImGui::BeginCombo("###Receiver IP:Port", neigh[comboBoxNodesIndex].first.c_str()))
+	{
+		for (int i = 0; i < neigh.size(); i++)
+		{
+			if (ImGui::Selectable(neigh[i].first.c_str(), comboBoxNodesIndex == i)) {
+				comboBoxNodesIndex = i;
+			}
+			if (comboBoxNodesIndex == i) {
+				ImGui::SetItemDefaultFocus();
+			}
+		}
+		ImGui::EndCombo();
+	}
+
+	ImGui::Text("Message:");
+	ImGui::SameLine();
+	if (ImGui::BeginCombo("###Message:", actionList[comboBoxActionNodesIndex].c_str()))
+	{
+		for (int i = 0; i < actionList.size(); i++)
+		{
+			const bool is_selected = (comboBoxActionNodesIndex == i);
+			if (ImGui::Selectable(actionList[i].c_str(), is_selected))
+				comboBoxActionNodesIndex = i;
+
+			// Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
+	}
+
+	if (true) { //Message send crypto == true
+		ImGui::Text("Public key: ");
+		ImGui::SameLine();
+		//ImGui::InputText("###Public key :", &publicKey);
+		ImGui::SameLine();
+		ImGui::Text("Amount: ");
+		ImGui::SameLine();
+		//ImGui::InputInt("###Amount:", &coinAmount);
+		nSpacing(5);
+		ImGui::Button("Send Message");
+	}
+	ImGui::EndChild();
 	
-	if (nodesIDs.empty()) {
-		nodesIDs.push_back("No connections");
-	}
-
-	if (node.size() > 0) {
-
-		ImGui::SetCursorPos(ImVec2(0, 400));
-		ImGui::BeginChild("MessageTab", ImVec2(0, 180), true);
-
-		ImGui::Text("3) Actions");
-		nSpacing(3);
-		ImGui::Text("Receiver IP:Port");
-		ImGui::SameLine();
-
-		if (ImGui::BeginCombo("###Receiver IP:Port", nodesIDs[comboBoxNodesIndex].c_str()))
-		{
-			for (int i = 0; i < node.size(); i++)
-			{
-				const bool is_selected = (comboBoxNodesIndex == i);
-				if (ImGui::Selectable(nodesIDs[i].c_str(), is_selected)) {
-					comboBoxNodesIndex = i;
-				}
-
-				// Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
-				if (is_selected) {
-					ImGui::SetItemDefaultFocus();
-				}
-
-			}
-			ImGui::EndCombo();
-		}
-
-		actionList = (*node[currentNodeActive]).getActionList();
-		ImGui::Text("Message:");
-		ImGui::SameLine();
-		if (ImGui::BeginCombo("###Message:", actionList[comboBoxActionNodesIndex].c_str()))
-		{
-			for (int i = 0; i < actionList.size(); i++)
-			{
-				const bool is_selected = (comboBoxActionNodesIndex == i);
-				if (ImGui::Selectable(actionList[i].c_str(), is_selected))
-					comboBoxActionNodesIndex = i;
-
-				// Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
-				if (is_selected)
-					ImGui::SetItemDefaultFocus();
-			}
-			ImGui::EndCombo();
-		}
-
-		if (true) { //Message send crypto == true
-			ImGui::Text("Public key: ");
-			ImGui::SameLine();
-			//ImGui::InputText("###Public key :", &publicKey);
-			ImGui::SameLine();
-			ImGui::Text("Amount: ");
-			ImGui::SameLine();
-			//ImGui::InputInt("###Amount:", &coinAmount);
-			nSpacing(5);
-			ImGui::Button("Send Message");
-		}
-		ImGui::EndChild();
-	}
 }
 
 void Gui::showNodesTable(NodeFactory& nodes) {
@@ -380,19 +384,29 @@ void Gui::showNodesTable(NodeFactory& nodes) {
 				ImGui::TableNextColumn();
 				ImGui::RadioButton(buffer, &currentNodeActive, i);
 				ImGui::TableNextColumn();
-				if (false) { //Si tiene conexiones
+
+				if (current->hasNeighbours()) { //Si tiene vecinos
+
 					sprintf_s(buffer, "Show###%d", i);
 					if (ImGui::SmallButton(buffer)) {
 						ImGui::OpenPopup(buffer);
 					}
 
+					vector <pair<string, string>> neigh = current->getNeighbours();
+
 					sprintf_s(buffer, "Connections###%d", i);
 					ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
 					if (ImGui::BeginPopupModal(buffer, NULL, ImGuiWindowFlags_AlwaysAutoResize))
 					{
-						ImGui::Button("X");
-						ImGui::SameLine();
-						ImGui::Text("IP: %s", "AAAAA");
+						for (auto n : neigh) {
+							if (ImGui::Button("X")) {
+								//delete current neigh from map
+							}
+							ImGui::SameLine();
+							ImGui::Text("IP/Port: %s", "AAA");
+							ImGui::SameLine();
+							ImGui::Text("Type: %s", "SPV or Full");
+						}
 
 						if (ImGui::Button("Close", ImVec2(120, 0))) { ImGui::CloseCurrentPopup(); }
 						ImGui::SetItemDefaultFocus();
@@ -403,8 +417,9 @@ void Gui::showNodesTable(NodeFactory& nodes) {
 					ImGui::Text("%s", "Empty");
 				}
 				ImGui::TableNextColumn();
+				ImGui::Text("%s", current->getState().c_str());
+
 				blockPage = 0;
-				ImGui::Text("%s", "linea 405");
 			}
 		ImGui::EndTable();
 	}

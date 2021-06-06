@@ -83,12 +83,15 @@ public:
 
 	virtual std::string getIP();
 	virtual std::string getPort();
+	virtual std::string getState();
+	virtual std::vector <std::pair<std::string, std::string>>& getNeighbours();
+	virtual bool hasNeighbours();
 
 	virtual bool poll();
 
 protected:
 
-	std::map <std::string, std::string> neighbours;
+	std::vector <std::pair<std::string, std::string>> neighbours;
 
 	BaseNode(boost::asio::io_context& ioContext, boost::function<std::string(std::string, std::string)> msgReceivedCb, int portNum);
 
