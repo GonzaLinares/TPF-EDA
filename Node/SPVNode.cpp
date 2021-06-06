@@ -153,7 +153,7 @@ std::string SPVNode::receivedMsgCB(std::string client, std::string msg)
 
     client.erase(0, client.find_first_of('/', 0));
 
-    if (client == std::string("/eda_coin/send_merkle_block")) {
+    if (client == std::string("/eda_coin/send_merkle_block/")) {
 
         if (msg != std::string("")) {
 
