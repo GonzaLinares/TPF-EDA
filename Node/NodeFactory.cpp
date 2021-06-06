@@ -2,6 +2,11 @@
 #include "FullNode.h"
 #include "SPVNode.h"
 
+NodeFactory::NodeFactory(boost::asio::io_context& ioContext_)
+	: ioContext(ioContext_)
+{
+}
+
 std::vector<BaseNode*>& NodeFactory::getNodes(void)
 {
 	return nodes;

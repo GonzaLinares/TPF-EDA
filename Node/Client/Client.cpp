@@ -1,4 +1,4 @@
-#include "TweetDLoader.h"
+#include "Client.h"
 #include <nlohmann/json.hpp>
 //#include "procesamiento.h"
 
@@ -7,7 +7,7 @@ using json = nlohmann::json;
 static size_t recieveCallback(char* ptr, size_t size, size_t nmemb, void* userdata);
 
 
-TweetDLoader::TweetDLoader(const char* API_key, const char* API_SecretKey) :
+Client::Client(const char* API_key, const char* API_SecretKey) :
 	APIKey(API_key), 
 	APISecretKey(API_SecretKey),
 	queryLink("https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name={username}&count={tweetcount}")
@@ -57,12 +57,12 @@ TweetDLoader::TweetDLoader(const char* API_key, const char* API_SecretKey) :
 	
 }
 
-int TweetDLoader::getStatus()
+int Client::getStatus()
 {
 	return this->status;
 }
 
-void TweetDLoader::cancelDownload()
+void Client::cancelDownload()
 {
 	curl_easy_cleanup(this->curl);
 	curl_multi_cleanup(this->multiCurl);
@@ -70,7 +70,7 @@ void TweetDLoader::cancelDownload()
 }
 
 
-bool TweetDLoader::download(std::list<std::string>& buffer, const char* usrname, unsigned int tweetCount)
+bool Client::download(std::list<std::string>& buffer, const char* usrname, unsigned int tweetCount)
 {
 	if (this->status == IDLE)
 	{

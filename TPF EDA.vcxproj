@@ -156,7 +156,7 @@
     <ClCompile Include="MerkleNode.cpp" />
     <ClCompile Include="MerkleTree.cpp" />
     <ClCompile Include="Node\BaseNode.cpp" />
-    <ClCompile Include="Node\Client\TweetDLoader.cpp" />
+    <ClCompile Include="Node\Client\Client.cpp" />
     <ClCompile Include="Node\FullNode.cpp" />
     <ClCompile Include="Node\NodeFactory.cpp" />
     <ClCompile Include="Node\Server\Connection.cpp">
@@ -187,7 +187,7 @@
     <ClInclude Include="MerkleNode.h" />
     <ClInclude Include="MerkleTree.h" />
     <ClInclude Include="Node\BaseNode.h" />
-    <ClInclude Include="Node\Client\TweetDLoader.h" />
+    <ClInclude Include="Node\Client\Client.h" />
     <ClInclude Include="Node\FullNode.h" />
     <ClInclude Include="Node\NodeFactory.h" />
     <ClInclude Include="Node\Server\Connection.h" />

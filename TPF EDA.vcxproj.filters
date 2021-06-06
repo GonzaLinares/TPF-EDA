@@ -96,7 +96,7 @@
     <ClCompile Include="Node\Server\Server.cpp">
       <Filter>Source Files\Node\Server</Filter>
     </ClCompile>
-    <ClCompile Include="Node\Client\TweetDLoader.cpp">
+    <ClCompile Include="Node\Client\Client.cpp">
       <Filter>Source Files\Node\Client</Filter>
     </ClCompile>
     <ClCompile Include="Node\BaseNode.cpp">
@@ -179,7 +179,7 @@
     <ClInclude Include="Node\Server\Server.h">
       <Filter>Header Files\Node\Server</Filter>
     </ClInclude>
-    <ClInclude Include="Node\Client\TweetDLoader.h">
+    <ClInclude Include="Node\Client\Client.h">
       <Filter>Header Files\Node\Client</Filter>
     </ClInclude>
     <ClInclude Include="Node\BaseNode.h">
