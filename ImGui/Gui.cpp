@@ -339,9 +339,8 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 void Gui::showNodesTable(NodeFactory& nodes) {
 
 	vector<BaseNode*> node = nodes.getNodes();
-
-	static int e = 0;
 	const ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+	char buffer[32];
 
 	const ImGuiTableFlags flags =
 		ImGuiTableFlags_Reorderable | ImGuiTableFlags_Hideable | ImGuiTableFlags_Sortable | ImGuiTableFlags_SortMulti
@@ -366,19 +365,19 @@ void Gui::showNodesTable(NodeFactory& nodes) {
 		while (clipper.Step())
 			for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)
 			{
+				sprintf_s(buffer, "###radio%d", i);
 				BaseNode* current = node[i];
 				ImGui::TableNextRow();
 				ImGui::TableNextColumn();
-				ImGui::Text("%s", "SPV");
+				ImGui::Text("%s", current->getNodeType().c_str());
 				ImGui::TableNextColumn();
-				ImGui::Text("%s", "134.56.235.7");
+				ImGui::Text("%s", current->getIP().c_str());
 				ImGui::TableNextColumn();
-				ImGui::Text("%s", "8080");
+				ImGui::Text("%s", current->getPort().c_str());
 				ImGui::TableNextColumn();
-				ImGui::RadioButton("###radio a", &e); e++;
+				ImGui::RadioButton(buffer, &currentNodeActive, i);// e++;
 				ImGui::TableNextColumn();
-				if (true) { //Si tiene conexiones
-					char buffer[32];
+				if (false) { //Si tiene conexiones
 					sprintf_s(buffer, "Show###%d", i);
 					if (ImGui::SmallButton(buffer)) {
 						ImGui::OpenPopup(buffer);
