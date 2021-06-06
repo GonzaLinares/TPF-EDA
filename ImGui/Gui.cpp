@@ -14,6 +14,8 @@ Gui::Gui() {
 	state = RUNNING;
 	blockPage = 0;
 	currentNodeActive = 0;
+	comboBoxNodesIndex = 0;
+	comboBoxActionNodesIndex = 0;
 	filename = "";
 	nodeIp = "";
 	nodePort = "";
@@ -254,9 +256,11 @@ void Gui::showConnectBox(NodeFactory& nodes) {
 	ImGui::InputText("###IP:Port002", &connPort1);
 	nSpacing(1);
 	if (ImGui::Button("Link")) {
+		//*nodes.getNodes()[currentNodeActive]
 		linkedSuccess = false;
 	}
 	nSpacing(4);
+
 	if (!linkedSuccess) {
 		ImGui::Text("Mustn't be linked two SPV nodes");
 	}
@@ -265,10 +269,82 @@ void Gui::showConnectBox(NodeFactory& nodes) {
 
 void Gui::showActionsBox(NodeFactory& nodes) {
 
+	vector<BaseNode*> node = nodes.getNodes();
+	vector<string> actionList;
+	vector<string> nodesIDs;	//Vector con las labels de los nodos para mostrar en la combobox
+
+	for (int i = 0; i < node.size(); i++) {
+		//nodesIDs.push_back(node[i]->get);
+	}
+
+	//const char* items[] = { "AAAA", "BBBB", "CCCC", "DDDD", "EEEE", "FFFF", "GGGG", "HHHH", "IIII", "JJJJ", "KKKK", "LLLLLLL", "MMMM", "OOOOOOO" };
+
+	if (node.size() > 0) {
+
+		ImGui::SetCursorPos(ImVec2(0, 400));
+		ImGui::BeginChild("MessageTab", ImVec2(0, 180), true);
+
+		ImGui::Text("3) Actions");
+		nSpacing(3);
+		ImGui::Text("Receiver IP:Port");
+		ImGui::SameLine();
+		if (ImGui::BeginCombo("###Receiver IP:Port", nodesIDs[comboBoxNodesIndex].c_str()))
+		{
+			for (int i = 0; i < node.size(); i++)
+			{
+				const bool is_selected = (comboBoxNodesIndex == i);
+				if (ImGui::Selectable(nodesIDs[i].c_str(), is_selected)) {
+					comboBoxNodesIndex = i;
+				}
+
+				// Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+				if (is_selected) {
+					ImGui::SetItemDefaultFocus();
+				}
+
+			}
+			ImGui::EndCombo();
+		}
+
+		actionList = (*node[currentNodeActive]).getActionList();
+		ImGui::Text("Message:");
+		ImGui::SameLine();
+		if (ImGui::BeginCombo("###Message:", actionList[comboBoxActionNodesIndex].c_str()))
+		{
+			for (int i = 0; i < actionList.size(); i++)
+			{
+				const bool is_selected = (comboBoxActionNodesIndex == i);
+				if (ImGui::Selectable(actionList[i].c_str(), is_selected))
+					comboBoxActionNodesIndex = i;
+
+				// Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndCombo();
+		}
+
+		if (true) { //Message send crypto == true
+			ImGui::Text("Public key: ");
+			ImGui::SameLine();
+			//ImGui::InputText("###Public key :", &publicKey);
+			ImGui::SameLine();
+			ImGui::Text("Amount: ");
+			ImGui::SameLine();
+			//ImGui::InputInt("###Amount:", &coinAmount);
+			nSpacing(5);
+			ImGui::Button("Send Message");
+		}
+		ImGui::EndChild();
+	}
+}
+
+void Gui::showNodesTable(NodeFactory& nodes) {
+
+	vector<BaseNode*> node = nodes.getNodes();
+
+	static int e = 0;
 	const ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-	const char* items[] = { "AAAA", "BBBB", "CCCC", "DDDD", "EEEE", "FFFF", "GGGG", "HHHH", "IIII", "JJJJ", "KKKK", "LLLLLLL", "MMMM", "OOOOOOO" };
-	static int item_current_idx = 0; // Here we store our selection data as an index.
-	const char* combo_label = items[item_current_idx];  // Label to preview before opening the combo (technically it could be anything)
 
 	const ImGuiTableFlags flags =
 		ImGuiTableFlags_Reorderable | ImGuiTableFlags_Hideable | ImGuiTableFlags_Sortable | ImGuiTableFlags_SortMulti
@@ -289,16 +365,11 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 		ImGui::TableHeadersRow();
 
 		ImGuiListClipper clipper;
-		//clipper.Begin(items.Size);
-		clipper.Begin(20);
+		clipper.Begin(node.size());
 		while (clipper.Step())
-			//cout << clipper.DisplayStart << endl;
-			for (int row_n = clipper.DisplayStart; row_n < clipper.DisplayEnd; row_n++)
+			for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)
 			{
-				static int e = 0;
-				// Display a data item
-				//MyItem* item = &items[row_n];
-				//ImGui::PushID(item->ID);
+				BaseNode* current = node[i];
 				ImGui::TableNextRow();
 				ImGui::TableNextColumn();
 				ImGui::Text("%s", "SPV");
@@ -311,12 +382,12 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 				ImGui::TableNextColumn();
 				if (true) { //Si tiene conexiones
 					char buffer[32];
-					sprintf_s(buffer, "Show###%d", row_n);
+					sprintf_s(buffer, "Show###%d", i);
 					if (ImGui::SmallButton(buffer)) {
 						ImGui::OpenPopup(buffer);
 					}
 
-					sprintf_s(buffer, "Connections###%d", row_n);
+					sprintf_s(buffer, "Connections###%d", i);
 					ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
 					if (ImGui::BeginPopupModal(buffer, NULL, ImGuiWindowFlags_AlwaysAutoResize))
 					{
@@ -334,64 +405,8 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 				}
 				ImGui::TableNextColumn();
 				ImGui::Text("Receiving");
-				//ImGui::PopID();
 			}
 		ImGui::EndTable();
-	}
-	ImGui::EndChild();
-}
-
-void Gui::showNodesTable(NodeFactory& nodes) {
-
-	ImGui::SetCursorPos(ImVec2(0, 400));
-	ImGui::BeginChild("MessageTab", ImVec2(0, 180), true);
-
-	ImGui::Text("3) Actions");
-	nSpacing(3);
-	ImGui::Text("Receiver IP:Port");
-	ImGui::SameLine();
-	if (ImGui::BeginCombo("###Receiver IP:Port", combo_label))
-	{
-		for (int n = 0; n < IM_ARRAYSIZE(items); n++)
-		{
-			const bool is_selected = (item_current_idx == n);
-			if (ImGui::Selectable(items[n], is_selected))
-				item_current_idx = n;
-
-			// Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
-			if (is_selected)
-				ImGui::SetItemDefaultFocus();
-		}
-		ImGui::EndCombo();
-	}
-
-	ImGui::Text("Message:");
-	ImGui::SameLine();
-	if (ImGui::BeginCombo("###Message:", combo_label))
-	{
-		for (int n = 0; n < IM_ARRAYSIZE(items); n++)
-		{
-			const bool is_selected = (item_current_idx == n);
-			if (ImGui::Selectable(items[n], is_selected))
-				item_current_idx = n;
-
-			// Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
-			if (is_selected)
-				ImGui::SetItemDefaultFocus();
-		}
-		ImGui::EndCombo();
-	}
-
-	if (true) { //Message send crypto == true
-		ImGui::Text("Public key: ");
-		ImGui::SameLine();
-		ImGui::InputText("###Public key :", &publicKey);
-		ImGui::SameLine();
-		ImGui::Text("Amount: ");
-		ImGui::SameLine();
-		ImGui::InputInt("###Amount:", &coinAmount);
-		nSpacing(5);
-		ImGui::Button("Send Message");
 	}
 	ImGui::EndChild();
 }
