@@ -8,8 +8,6 @@ using json = nlohmann::json;
 
 std::vector<std::string> FullNode::actionsVector{ "BlockPost", "TransactionPost", "MerkleBlockPost", "GetBlocksPost" };
 
-
-
 FullNode::FullNode(boost::asio::io_context& ioContext, std::string path2blockchain, std::string port)
     : BaseNode(ioContext, boost::bind(&FullNode::receivedMsgCB, this, boost::placeholders::_1, boost::placeholders::_2), stoi(port))
 {

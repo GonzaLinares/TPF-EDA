@@ -7,10 +7,10 @@
 
 enum { IDLE = 0, DOWNLOADING, DISPLAYING };
 
-class TweetDLoader
+class Client
 {
 public:
-	TweetDLoader(const char* API_key, const char* API_SecretKey);
+	Client(const char* API_key, const char* API_SecretKey);
 
 	int getStatus();
 	bool download(std::list<std::string>& buffer, const char* usrname, unsigned int tweetCount = 0);
