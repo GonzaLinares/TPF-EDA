@@ -8,7 +8,7 @@ public:
 
     SPVNode(boost::asio::io_context& ioContext, std::string port, std::string path2blockchain);
     SPVNode(boost::asio::io_context& ioContext, std::string port);
-    virtual std::string getNodeType();
+    virtual std::string getNodeType() override;
 
     // Inherited via BaseNode
     virtual bool createBlockchainFromFile(std::string&) override;

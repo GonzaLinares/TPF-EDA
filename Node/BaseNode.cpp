@@ -3,7 +3,7 @@
 
 BaseNode::BaseNode(boost::asio::io_context& ioContext, boost::function<std::string(std::string, std::string)> msgReceivedCb, int portNum)
     : server(ioContext, msgReceivedCb, portNum),
-    state(0),
+    state(IDLE),
     client(msgReceivedCb, portNum + 1)
 {
 
@@ -75,6 +75,7 @@ void BaseNode::commSend(std::string host, std::string path, std::string& msg)
     if (host.size() != 0 && msg.size() != 0)
     {
         client.POST(host, path, msg);
+        state = SENDING;
     }
 
 }
@@ -84,6 +85,7 @@ void BaseNode::commSend(std::string host, std::string path)
     if (host.size() != 0)
     {
         client.GET(host, path);
+        state = SENDING;
     }
 }
 
@@ -97,24 +99,9 @@ std::string BaseNode::getPort()
     return server.getLocalEndpointPort();
 }
 
-std::string BaseNode::getState()
+node_state_t BaseNode::getState()
 {
-    std::string currentState = "Not implemented";
-    switch (state) {
-        case 1:
-            currentState = "Idle";
-            break;
-        case 2:
-            currentState = "Conected";
-            break;
-        case 3:
-            currentState = "Receiving";
-            break;
-        case 4:
-            currentState = "Bla bla bla"; //TODO: poner los correctos
-            break;
-    }
-    return currentState;
+    return state;
 }
 
 
@@ -122,6 +109,18 @@ bool BaseNode::addNeighbour(std::string ipAndPort, std::string nodeType)
 {
     neighbours.push_back(std::pair<std::string, std::string>(ipAndPort, nodeType));
 
+    return false;
+}
+
+bool BaseNode::deleteNeighbour(int indexNum)
+{
+    if (indexNum < neighbours.size())
+    {
+        auto it = neighbours.begin();
+        it += indexNum;
+        neighbours.erase(it);
+        return true;
+    }
     return false;
 }
 

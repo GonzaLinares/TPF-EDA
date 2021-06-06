@@ -6,7 +6,7 @@
 
 #define TIMEOUTLIMIT 30L
 
-enum { IDLE = 0, DOWNLOADING};
+enum { WAITING = 0, DOWNLOADING};
 
 class Client
 {

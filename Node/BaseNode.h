@@ -14,6 +14,7 @@
 #include <vector>
 #include <iostream>
 
+typedef enum {IDLE = 0, RECEIVING, SENDING} node_state_t;
 
 /******************************************************************************
 * CLASS BASE NODE
@@ -80,10 +81,11 @@ public:
 	* Resulta: 
 	*=====================================================*/
 	virtual bool addNeighbour(std::string ipAndPort, std::string nodeType);
+	virtual bool deleteNeighbour(int indexNum);
 
 	virtual std::string getIP();
 	virtual std::string getPort();
-	virtual std::string getState();
+	virtual node_state_t getState();
 	virtual std::vector <std::pair<std::string, std::string>>& getNeighbours();
 	virtual bool hasNeighbours();
 
