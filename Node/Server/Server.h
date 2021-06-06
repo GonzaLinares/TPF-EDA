@@ -12,6 +12,7 @@ public:
 	std::string getLocalEndpoint();
 	std::string getLocalEndpointIP();
 	std::string getLocalEndpointPort();
+	void poll();
 
 
 private:
