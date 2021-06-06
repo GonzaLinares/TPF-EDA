@@ -14,6 +14,8 @@
 #include <vector>
 #include <iostream>
 
+typedef enum { SPV = 0, FULL} node_type_t;
+typedef enum {IDLE = 0, RECEIIVING, SENDING} node_state_t;
 
 /******************************************************************************
 * CLASS BASE NODE
@@ -72,7 +74,7 @@ public:
 	* Entra: -
 	* Resulta: -
 	*=====================================================*/
-	virtual std::string getNodeType(void) = 0;
+	virtual node_type_t getNodeType(void) = 0;
 
 	/*=====================================================
 	* Name: addNeighbour
@@ -83,7 +85,7 @@ public:
 
 	virtual std::string getIP();
 	virtual std::string getPort();
-	virtual std::string getState();
+	virtual node_state_t getState();
 	virtual std::vector <std::pair<std::string, std::string>>& getNeighbours();
 	virtual bool hasNeighbours();
 
@@ -112,6 +114,6 @@ protected:
 	Client client;
 	Server server;
 	std::vector <Block> blockchain;		//blockchain con los datos
-	int state;	//Estado del nodo (recibió mensaje, manda mensaje, escucha, etc.)
+	node_state_t state;	//Estado del nodo (recibió mensaje, manda mensaje, escucha, etc.)
 	std::vector <std::string> IPsSentList;
 };

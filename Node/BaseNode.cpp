@@ -97,24 +97,9 @@ std::string BaseNode::getPort()
     return server.getLocalEndpointPort();
 }
 
-std::string BaseNode::getState()
+node_state_t BaseNode::getState()
 {
-    std::string currentState = "Not implemented";
-    switch (state) {
-        case 1:
-            currentState = "Idle";
-            break;
-        case 2:
-            currentState = "Conected";
-            break;
-        case 3:
-            currentState = "Receiving";
-            break;
-        case 4:
-            currentState = "Bla bla bla"; //TODO: poner los correctos
-            break;
-    }
-    return currentState;
+    return state;
 }
 
 
