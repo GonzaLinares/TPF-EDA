@@ -23,7 +23,7 @@ class FullNode : public BaseNode
 public:
 
 
-	FullNode(boost::asio::io_context& ioContext, std::string path2blockchain, std::string port);
+	FullNode(boost::asio::io_context& ioContext, std::string port, std::string path2blockchain);
 	FullNode(boost::asio::io_context& ioContext, std::string port);
 	// Inherited via BaseNode
 	// override specifier ensures that the function is virtual and is overriding a virtual function from a base class
