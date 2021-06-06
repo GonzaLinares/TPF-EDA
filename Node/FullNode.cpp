@@ -69,6 +69,18 @@ bool FullNode::createBlockchainFromFile(std::string& path)
     return false;
 }
 
+std::string FullNode::getNodeType()
+{
+    return std::string("FullNode");
+}
+
+bool FullNode::addNeighbour(std::string ipAndPort, std::string nodeType)
+{
+    neighbours.insert(std::pair<std::string, std::string>(ipAndPort, nodeType));
+
+    return false;
+}
+
 bool FullNode::blockPost(std::string host)
 {
     std::string answer = std::string("{ ""status"": true,\n ""result"": ");

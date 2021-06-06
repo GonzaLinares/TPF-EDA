@@ -19,6 +19,7 @@
 #include "../Node/FullNode.h"
 #include "../Hashing.h"
 #include "../MerkleTree.h"
+#include "../Node/NodeFactory.h"
 
 /*******************************************************************************
 * ENUMERATIONS AND STRUCTURES AND TYPEDEFS
@@ -50,7 +51,7 @@ public:
 	* Entra: Objeto nodo de la red que se esta representando
 	* Resulta: Genera un refresto en base al estado interno del display
 	*=====================================================*/
-	void update(std::vector<BaseNode*>& nodes);
+	void update(NodeFactory& nodes);
 	
 	/*=====================================================
 	* Name: getState
@@ -62,6 +63,10 @@ public:
 private:
 
 	int state;				//Estado de la GUI
+	int currentNodeActive;
+	std::string nodeIp;
+	std::string nodePort;
+	std::string connPort1;
 	int blockPage;			//Indice de pagina cuando se muestran los bloques
 	std::string filename;	//String que mantiene el path al archivo con la blockchain
 	ALLEGRO_DISPLAY* display;	//Display y cola de eventos de allegro
@@ -85,7 +90,12 @@ private:
 	*=====================================================*/
 	void showBlocksTab(BaseNode& node);
 
-	void showNodesTab(std::vector<BaseNode*>& nodes);
+	void showNodesTab(NodeFactory& nodes);
+
+	void showCreateBox(NodeFactory& nodes);
+	void showConnectBox(NodeFactory& nodes);
+	void showActionsBox(NodeFactory& nodes);
+	void showNodesTable(NodeFactory& nodes);
 
 	/*=====================================================
 	* Name: openSubTreeNode

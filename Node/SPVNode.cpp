@@ -18,6 +18,18 @@ SPVNode::SPVNode(boost::asio::io_context& ioContext, std::string port)
 {
 }
 
+std::string SPVNode::getNodeType()
+{
+    return std::string("SPVNode");
+}
+
+bool SPVNode::addNeighbour(std::string ipAndPort, std::string nodeType)
+{
+    neighbours.insert(std::pair<std::string, std::string>(ipAndPort, nodeType));
+
+    return false;
+}
+
 bool SPVNode::createBlockchainFromFile(std::string& path)
 {
 
