@@ -77,12 +77,6 @@ std::string FullNode::getNodeType()
     return std::string("Full");
 }
 
-bool FullNode::addNeighbour(std::string ipAndPort, std::string nodeType)
-{
-    neighbours.push_back(std::pair<std::string, std::string>(ipAndPort, nodeType));
-
-    return false;
-}
 
 bool FullNode::blockPost(std::string host)
 {
