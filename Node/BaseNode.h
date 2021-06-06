@@ -26,7 +26,7 @@ public:
 	
 	/*=====================================================
 	* Name: getActionList
-	* Entra: 
+	* Entra:  
 	* Resulta: 
 	*=====================================================*/
 	virtual std::vector<std::string> getActionList() = 0;
@@ -88,6 +88,7 @@ public:
 	virtual node_state_t getState();
 	virtual std::vector <std::pair<std::string, std::string>>& getNeighbours();
 	virtual bool hasNeighbours();
+	virtual std::string getLastReceivedClient();
 
 	virtual bool poll();
 

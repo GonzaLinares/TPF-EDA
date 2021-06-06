@@ -64,6 +64,10 @@ bool BaseNode::getBlocksID(std::vector<std::string>& buffer, int numOfBlocks, in
     return result;
 }
 
+std::string BaseNode::getLastReceivedClient() {
+    return lastReClient;
+}
+
 int BaseNode::getBlockQuant(void)
 {
     return blockchain.size();

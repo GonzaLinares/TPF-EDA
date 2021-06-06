@@ -144,19 +144,21 @@ void Gui::update(NodeFactory& nodes) {
 		if (ImGui::BeginTabItem("Nodes"))		//Tab para completar
 		{
 			showNodesTab(nodes);
-			ImGui::EndTabItem();
+			ImGui::EndTabItem(); 
 		}
 		if (nodes.getNodes().size() > 0 && ImGui::BeginTabItem("Blocks"))	//Tab de los bloques
 		{
 			showBlocksTab(*nodes.getNodes()[currentNodeActive]);
 			ImGui::EndTabItem();
 		}
+		/*
 		if (ImGui::BeginTabItem("DemoWindows"))	//Tab de los bloques
 		{
 			bool show_demo_window = true;
 			ImGui::ShowDemoWindow(&show_demo_window);
 			ImGui::EndTabItem();
 		}
+		*/
 		ImGui::EndTabBar();
 	}
     ImGui::End();
@@ -186,11 +188,14 @@ void Gui::deleteMerkleDic()
 
 void Gui::showNodesTab(NodeFactory& nodes) {
 
-	showCreateBox(nodes);  
-	showConnectBox(nodes);
+	showCreateBox(nodes);
+	if (nodes.getNodes().size() > 0) {
+		showConnectBox(nodes);
+	}
 	showNodesTable(nodes);
 	if (nodes.getNodes().size() > 0) {
 		showActionsBox(nodes);
+		
 	}
 }
 
@@ -403,6 +408,7 @@ void Gui::showNodesTable(NodeFactory& nodes) {
 	vector<BaseNode*> node = nodes.getNodes();
 	const ImVec2 center = ImGui::GetMainViewport()->GetCenter();
 	char buffer[32];
+	string aux;
 
 	const ImGuiTableFlags flags =
 		ImGuiTableFlags_Reorderable | ImGuiTableFlags_Hideable | ImGuiTableFlags_Sortable | ImGuiTableFlags_SortMulti
@@ -484,7 +490,10 @@ void Gui::showNodesTable(NodeFactory& nodes) {
 						ImGui::Text("Sending");
 						break;
 					case RECEIVING:
+						aux = "Last message received from " + current->getLastReceivedClient();
 						ImGui::Text("Receiving");
+						ImGui::SameLine();
+						HelpMarker(aux.c_str());
 						break;
 				}
 
@@ -547,46 +556,48 @@ void Gui::showBlocksTab(BaseNode& node) {
 		ImGui::Text("Number of transactions: %d", currentBlock->getnTx());
 		ImGui::Text("Nonce: %d", currentBlock->getNonce());
 		ImGui::Text("Merkle root: %s", currentBlock->getMerkleRoot().c_str());
-		aux = "Calculate Merkle Tree##" + currentID;
-		
-		//Si se presiono el boton de calcular el merkle root
-		if (ImGui::Button(aux.c_str())) {
-			std::vector<std::string> currentTrxs;	//Creamos el merkle root en base a las transacciones que tiene el bloque
-			currentBlock->getTxsID(currentTrxs);
-			merkleTrees.insert(pair<string, MerkleTree<hash32>*>(currentID, new MerkleTree<hash32>(currentTrxs)));
-		}
-		
-		std::map<string, MerkleTree<hash32>*>::iterator merkleIt = merkleTrees.find(currentID);	//Buscamos el par id del bloque/merkle tree
-		if (merkleIt != merkleTrees.end()) {
 
-			//Tilde que indica si esta bien calculado en merkle tree
-			ImGui::Text("Calculated: %s", (*merkleIt).second->getMerkleRoot().c_str());
-			if (merkleTrees.count(currentID) > 0 && currentBlock->getMerkleRoot() == (*merkleIt).second->getMerkleRoot()) {	//Si el merkle tree fue creado y conicide el id calculado con el que tiene el bloque
-				merkleRootOk = true;
+		if (node.getNodeType() != "SPV") {
+			aux = "Calculate Merkle Tree##" + currentID;
+			//Si se presiono el boton de calcular el merkle root
+			if (ImGui::Button(aux.c_str())) {
+				std::vector<std::string> currentTrxs;	//Creamos el merkle root en base a las transacciones que tiene el bloque
+				currentBlock->getTxsID(currentTrxs);
+				merkleTrees.insert(pair<string, MerkleTree<hash32>*>(currentID, new MerkleTree<hash32>(currentTrxs)));
 			}
-			ImGui::SameLine();
-			aux = "##" + currentID;
-			ImGui::Checkbox(aux.c_str(), &merkleRootOk);
 
-			//Arbol de pestanias que muestran el merkle tree
-			if (ImGui::TreeNode((const void*)(++label), "Merkle Tree", i))
-			{
-				MerkleNode* merkleNodeRoot = (*merkleIt).second->getRootNode();
+			std::map<string, MerkleTree<hash32>*>::iterator merkleIt = merkleTrees.find(currentID);	//Buscamos el par id del bloque/merkle tree
+			if (merkleIt != merkleTrees.end()) {
 
-				//Mostramos el arbol
-				if (ImGui::TreeNode((const void*)(++label), "Root:")) {
-					ImGui::SameLine();
-					ImGui::Text(merkleNodeRoot->getHash().c_str());
+				//Tilde que indica si esta bien calculado en merkle tree
+				ImGui::Text("Calculated: %s", (*merkleIt).second->getMerkleRoot().c_str());
+				if (merkleTrees.count(currentID) > 0 && currentBlock->getMerkleRoot() == (*merkleIt).second->getMerkleRoot()) {	//Si el merkle tree fue creado y conicide el id calculado con el que tiene el bloque
+					merkleRootOk = true;
+				}
+				ImGui::SameLine();
+				aux = "##" + currentID;
+				ImGui::Checkbox(aux.c_str(), &merkleRootOk);
 
-					openSubTreeNode(merkleNodeRoot, label);
+				//Arbol de pestanias que muestran el merkle tree
+				if (ImGui::TreeNode((const void*)(++label), "Merkle Tree", i))
+				{
+					MerkleNode* merkleNodeRoot = (*merkleIt).second->getRootNode();
 
+					//Mostramos el arbol
+					if (ImGui::TreeNode((const void*)(++label), "Root:")) {
+						ImGui::SameLine();
+						ImGui::Text(merkleNodeRoot->getHash().c_str());
+
+						openSubTreeNode(merkleNodeRoot, label);
+
+						ImGui::TreePop();
+					}
 					ImGui::TreePop();
 				}
-				ImGui::TreePop();
 			}
-		}
-		else {
-			ImGui::Text("Calculated: Press Calculate Merkle Tree");
+			else {
+				ImGui::Text("Calculated: Press Calculate Merkle Tree");
+			}
 		}
 		
 		nSpacing(1);
@@ -633,5 +644,18 @@ void Gui::openSubTreeNode(MerkleNode* node, int& id) {
 void Gui::nSpacing(int n) {
 	for (int i = 0; i < n; i++) {
 		ImGui::Spacing();
+	}
+}
+
+void Gui::HelpMarker(const char* desc)
+{
+	ImGui::TextDisabled("(?)");
+	if (ImGui::IsItemHovered())
+	{
+		ImGui::BeginTooltip();
+		ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+		ImGui::TextUnformatted(desc);
+		ImGui::PopTextWrapPos();
+		ImGui::EndTooltip();
 	}
 }
