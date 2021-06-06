@@ -17,6 +17,7 @@
 #include <map>
 #include <vector>
 #include "../Node/FullNode.h"
+#include "../Node/SPVNode.h"
 #include "../Hashing.h"
 #include "../MerkleTree.h"
 #include "../Node/NodeFactory.h"
