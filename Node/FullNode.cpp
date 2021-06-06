@@ -555,9 +555,13 @@ std::string FullNode::getBlocksReceived(std::string blockID, int count)
     return answer;
 }
 
-std::string FullNode::receivedMsgCB(std::string client, std::string msg) 
+std::string FullNode::receivedMsgCB(std::string client, std::string msg)
 {
-    std::string answer; //Acá copiaré las respuestas que me den las funciones
+    std::string answer = std::string("Cualquier banana"); //Acá copiaré las respuestas que me den las funciones
+
+    return answer;
+
+    //client.erase(0, client.find_first_of())
 
     std::string path; //TODO: Acá guardo el path para averiguar de que se trata
 
