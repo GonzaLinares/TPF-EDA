@@ -10,11 +10,11 @@ public:
 	NodeFactory(boost::asio::io_context& ioContext_);
 	std::vector <BaseNode*>& getNodes(void);
 
-	bool createFullNode(boost::asio::io_context& ioContext, std::string port, std::string path2blockchain);
-	bool createFullNode(boost::asio::io_context& ioContext, std::string port);
+	bool createFullNode(std::string port, std::string path2blockchain);
+	bool createFullNode(std::string port);
 
-	bool createSPVNode(boost::asio::io_context& ioContext, std::string port, std::string path2blockchain);
-	bool createSPVNode(boost::asio::io_context& ioContext, std::string port);
+	bool createSPVNode(std::string port, std::string path2blockchain);
+	bool createSPVNode(std::string port);
 
 private:
 	boost::asio::io_context& ioContext;

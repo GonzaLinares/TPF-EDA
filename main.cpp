@@ -21,10 +21,8 @@ using namespace std;
 int main(int argc, char** argv) {
 
 	Gui menu;
-	NodeFactory nodes;
 	boost::asio::io_context contexto;
-	FullNode pene(contexto, "25565");
-	FullNode penelo(contexto, "24465");
+	NodeFactory nodes(contexto);
 
 	while (menu.getState() == RUNNING) {
 
