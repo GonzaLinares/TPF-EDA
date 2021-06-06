@@ -39,7 +39,7 @@ bool Client::POST(std::string host, std::string path, std::string& msg)
 		curl_slist_append(list, "Content-Type: text/json");
 
 		curl_easy_setopt(curl, CURLOPT_POST, 1L);
-		aux = host.substr(0, host.rfind(':') - 1) + path;
+		aux = host.substr(0, host.rfind(':')) + "/" + path;
 		curl_easy_setopt(curl, CURLOPT_URL, aux.c_str());
 		aux = host.substr(host.rfind(':') + 1);
 		curl_easy_setopt(curl, CURLOPT_PORT, std::stoi(aux));
