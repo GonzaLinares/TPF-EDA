@@ -15,7 +15,7 @@
 #include <iostream>
 
 typedef enum { SPV = 0, FULL} node_type_t;
-typedef enum {IDLE = 0, RECEIIVING, SENDING} node_state_t;
+typedef enum {IDLE = 0, RECEIVING, SENDING} node_state_t;
 
 /******************************************************************************
 * CLASS BASE NODE
