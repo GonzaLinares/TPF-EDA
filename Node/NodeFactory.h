@@ -17,7 +17,7 @@ public:
 	bool createSPVNode(boost::asio::io_context& ioContext, std::string port);
 
 private:
-	boost::asio::io_context ioContext;
+	boost::asio::io_context& ioContext;
 	std::vector <BaseNode*> nodes;
 };
 
