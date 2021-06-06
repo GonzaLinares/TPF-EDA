@@ -41,7 +41,7 @@ void Connection::readDataHandler( int recievedBytes, Connection::pointer thisCon
 	if (!error)
 	{
 
-		elaborateMessage(conSocket.remote_endpoint().address().to_string());	//Parseo la entrada de datos y creo una respuesta en toSendMesage
+		elaborateMessage(conSocket.remote_endpoint().address().to_string() + ":" + std::to_string(conSocket.remote_endpoint().port()));	//Parseo la entrada de datos y creo una respuesta en toSendMesage
 
 		//Se envia el mensaje de respuesta
 		boost::asio::async_write(this->conSocket, boost::asio::dynamic_buffer(this->toSendMsg),

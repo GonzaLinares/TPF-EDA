@@ -552,6 +552,9 @@ std::string FullNode::receivedMsgCB(std::string client, std::string msg)
 {
     std::string answer = std::string("damy value"); //Acá copiaré las respuestas que me den las funciones
 
+    std::string host = client.substr(0, client.find_first_of('/', 0));
+    lastReClient = host;
+
     client.erase(0, client.find_first_of('/', 0));
 
         if (client == std::string("/eda_coin/send_block")) {
