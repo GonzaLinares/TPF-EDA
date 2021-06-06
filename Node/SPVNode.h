@@ -6,7 +6,7 @@ class SPVNode :
 {
 public:
 
-    SPVNode(boost::asio::io_context& ioContext, std::string path2blockchain, std::string port);
+    SPVNode(boost::asio::io_context& ioContext, std::string port, std::string path2blockchain);
     SPVNode(boost::asio::io_context& ioContext, std::string port);
 
     // Inherited via BaseNode
