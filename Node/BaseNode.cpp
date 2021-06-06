@@ -64,7 +64,7 @@ int BaseNode::getBlockQuant(void)
 BaseNode::BaseNode(boost::asio::io_context& ioContext, boost::function<std::string(std::string, std::string)> msgReceivedCb, int portNum)
 	: server(ioContext, msgReceivedCb, portNum),
 	state(0),
-    client(msgReceivedCb)
+    client(msgReceivedCb, portNum + 1)
 {
 
 }
@@ -73,7 +73,7 @@ void BaseNode::commSend(std::string host, std::string path, std::string& msg)
 {
     if (host.size() != 0 && msg.size() != 0)
     {
-        client.POST(host + path, msg);
+        client.POST(host, path, msg);
     }
 
 }
@@ -82,7 +82,7 @@ void BaseNode::commSend(std::string host, std::string path)
 {
     if (host.size() != 0)
     {
-        client.GET(host + path);
+        client.GET(host, path);
     }
 }
 
@@ -94,4 +94,12 @@ std::string BaseNode::getIP()
 std::string BaseNode::getPort()
 {
     return server.getLocalEndpointPort();
+}
+
+bool BaseNode::poll()
+{
+    client.poll();
+    server.poll();
+
+    return true;        //todo: Chequear devolucion
 }

@@ -16,6 +16,8 @@ public:
 	bool createSPVNode(std::string port, std::string path2blockchain);
 	bool createSPVNode(std::string port);
 
+	bool pollAllNodes();
+
 private:
 	boost::asio::io_context& ioContext;
 	std::vector <BaseNode*> nodes;

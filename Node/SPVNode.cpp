@@ -116,9 +116,9 @@ bool SPVNode::filterPost(std::string host)
     return false;
 }
 
-bool SPVNode::getBlockHeader(std::string blockId, std::string blockCount, std::string host)
+bool SPVNode::getBlockHeader(std::string blockId, std::string blockCount, std::string host)         //TODO: Dami no te hagas el vivo y pedi un numero en block count
 {
-    char buf[50];
+    char buf[100];
 
     sprintf_s(buf, "eda_coin/get_block_header?block_id=%s&count=%s", blockId.c_str(), blockCount.c_str());
     commSend(host, std::string(buf));

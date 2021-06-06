@@ -40,3 +40,14 @@ bool NodeFactory::createSPVNode(std::string port)
 	return true;
 }
 
+bool NodeFactory::pollAllNodes()
+{
+
+	for (auto it : nodes)
+	{
+		it->poll();
+	}
+
+	return true;		//TODO: chequear devolucion
+}
+
