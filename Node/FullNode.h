@@ -34,7 +34,7 @@ public:
 	//POST HTTP	*********************************************************
 	bool blockPost(std::string host);
 	bool transactionPost(std::string publicKey, int amount, std::string host);
-	bool merkleBlockPost(std::string blockId, std::string host, int position);
+	bool merkleBlockPost(std::string blockId, int position, std::string host);
 
 	//*********************************************************//
 
@@ -51,11 +51,11 @@ public:
 	* result-> En el caso de que hubo error, mandas 1 si hubo error de formato y 2 si hubo error de contenido
 	* Resulta: -
 	*=====================================================*/
-	bool blockPostReceived(bool error, int result, std::string host);
+	std::string blockPostReceived(bool error, int result);
 
-	bool transactionPostReceived(bool error, int result, std::string host);
+	std::string transactionPostReceived(bool error, int result);
 
-	bool filterPostReceived(bool error, int result, std::string host);
+	std::string filterPostReceived(bool error, int result);
 
 	/*=====================================================
 	* Name: getBlockHeaderReceived
@@ -64,9 +64,9 @@ public:
 	* host->
 	* Resulta: -
 	*=====================================================*/
-	bool getBlockHeaderReceived(std::string blockID, int count, std::string host);
+	std::string getBlockHeaderReceived(std::string blockID, int count);
 
-	bool getBlocksReceived(std::string blockID, int count, std::string host);
+	std::string getBlocksReceived(std::string blockID, int count);
 
 	//*********************************************************//
 

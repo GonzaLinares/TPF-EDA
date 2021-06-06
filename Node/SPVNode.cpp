@@ -111,7 +111,7 @@ bool SPVNode::getBlockHeader(std::string blockId, std::string blockCount, std::s
     return false;
 }
 
-bool SPVNode::merkleBlockPostReceived(bool error, int result, std::string host)
+std::string SPVNode::merkleBlockPostReceived(bool error, int result)
 {
     std::string answer;
 
@@ -131,12 +131,16 @@ bool SPVNode::merkleBlockPostReceived(bool error, int result, std::string host)
         answer = std::string("{ ""status"": true,\n ""result"": null }");
     }
 
-    commSend(host, "eda_coin/send_merkle_block/", answer);
-
-    return false;
+    return answer;
 }
 
-std::string SPVNode::receivedMsgCB(std::string client, std::string msg)     // TODO: Implementar
+std::string SPVNode::receivedMsgCB(std::string client, std::string msg)
 {
-    return client + msg;
+    if (msg != std::string("")) {
+
+        //Aca podria por ejemplo hacer algo con el mensaje que nos enviaron
+    }
+    return merkleBlockPostReceived(false, 0);
+
+    //El unico caso en el que llegan mensajes es para la recepción del MerkleBlock
 }
