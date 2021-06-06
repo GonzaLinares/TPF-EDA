@@ -7,6 +7,15 @@ NodeFactory::NodeFactory(boost::asio::io_context& ioContext_)
 {
 }
 
+NodeFactory::~NodeFactory()
+{
+	for (auto it : nodes)
+	{
+		delete it;
+	}
+	nodes.clear();
+}
+
 std::vector<BaseNode*>& NodeFactory::getNodes(void)
 {
 	return nodes;
@@ -39,6 +48,22 @@ bool NodeFactory::createSPVNode(std::string port)
 
 	return true;
 }
+
+bool NodeFactory::deleteNode(int nodeIndex)
+{
+	if (nodes.size() > nodeIndex)
+	{
+		auto it = nodes.begin();
+		it += nodeIndex;
+		delete *it;
+		nodes.erase(it);
+		return true;
+	}
+
+	return false;
+}
+
+
 
 bool NodeFactory::pollAllNodes()
 {
