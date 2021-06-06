@@ -11,7 +11,10 @@ std::vector<std::string> FullNode::actionsVector{ "BlockPost", "TransactionPost"
 FullNode::FullNode(boost::asio::io_context& ioContext, std::string port, std::string path2blockchain)
     : BaseNode(ioContext, boost::bind(&FullNode::receivedMsgCB, this, boost::placeholders::_1, boost::placeholders::_2), stoi(port))
 {
-
+    if (path2blockchain.size() != 0)
+    {
+        this->createBlockchainFromFile(path2blockchain);
+    }
 }
 
 FullNode::FullNode(boost::asio::io_context& ioContext, std::string port)

@@ -10,7 +10,10 @@ std::vector<std::string> SPVNode::actionsVector{"TransactionPost" , "FilterPost"
 SPVNode::SPVNode(boost::asio::io_context& ioContext, std::string path2blockchain, std::string port)
     : BaseNode(ioContext, boost::bind(&SPVNode::receivedMsgCB, this, boost::placeholders::_1, boost::placeholders::_2), stoi(port))
 {
-
+    if (path2blockchain.size() != 0)
+    {
+        this->createBlockchainFromFile(path2blockchain);
+    }
 }
 
 SPVNode::SPVNode(boost::asio::io_context& ioContext, std::string port)

@@ -71,10 +71,19 @@ BaseNode::BaseNode(boost::asio::io_context& ioContext, boost::function<std::stri
 
 void BaseNode::commSend(std::string host, std::string path, std::string& msg)
 {
+    if (host.size() != 0 && msg.size() != 0)
+    {
+        client.POST(host + path, msg);
+    }
+
 }
 
 void BaseNode::commSend(std::string host, std::string path)
 {
+    if (host.size() != 0)
+    {
+        client.GET(host + path);
+    }
 }
 
 std::string BaseNode::getIP()
