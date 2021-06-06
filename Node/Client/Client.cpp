@@ -91,7 +91,7 @@ bool Client::poll()
 }
 
 
-
+/*
 bool Client::download(std::list<std::string>& buffer, const char* usrname, unsigned int tweetCount)
 {
 	if (this->status == IDLE)
@@ -135,7 +135,7 @@ bool Client::download(std::list<std::string>& buffer, const char* usrname, unsig
 				curl_easy_cleanup(this->curl);
 				curl_multi_cleanup(this->multiCurl);
 				json receivedJSON = json::parse(this->receivedData);
-				if (1/*procesamiento(receivedJSON, buffer)*/)
+				if (1procesamiento(receivedJSON, buffer))
 				{
 
 				}
@@ -147,7 +147,7 @@ bool Client::download(std::list<std::string>& buffer, const char* usrname, unsig
 	return 1;
 
 }
-
+*/
 
 
 static size_t recieveCallback(char* ptr, size_t size, size_t nmemb, void* userdata)

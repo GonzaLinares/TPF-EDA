@@ -63,7 +63,8 @@ int BaseNode::getBlockQuant(void)
 
 BaseNode::BaseNode(boost::asio::io_context& ioContext, boost::function<std::string(std::string, std::string)> msgReceivedCb, int portNum)
 	: server(ioContext, msgReceivedCb, portNum),
-	state(0)
+	state(0),
+    client(msgReceivedCb)
 {
 
 }

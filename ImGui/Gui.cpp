@@ -201,9 +201,9 @@ void Gui::showCreateBox(NodeFactory& nodes) {
 	ImGui::BeginChild("CreateNode", ImVec2(300, 130), true);
 	ImGui::Text("1) Create node");
 	nSpacing(3);
-	ImGui::Text("IP:Port");
+	ImGui::Text("Port");
 	ImGui::SameLine();
-	ImGui::InputText("###IP:Port001", &nodeIp);
+	ImGui::InputText("###Port001", &nodePort);
 	ImGui::Text("Blockchain file");
 	ImGui::SameLine();
 	ImGui::InputText("", &filename);
@@ -272,12 +272,9 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 	vector<BaseNode*> node = nodes.getNodes();
 	vector<string> actionList;
 	vector<string> nodesIDs;	//Vector con las labels de los nodos para mostrar en la combobox
-
 	for (int i = 0; i < node.size(); i++) {
-		//nodesIDs.push_back(node[i]->get);
+		nodesIDs.push_back(node[i]->getPort());
 	}
-
-	//const char* items[] = { "AAAA", "BBBB", "CCCC", "DDDD", "EEEE", "FFFF", "GGGG", "HHHH", "IIII", "JJJJ", "KKKK", "LLLLLLL", "MMMM", "OOOOOOO" };
 
 	if (node.size() > 0) {
 

@@ -81,6 +81,9 @@ public:
 	*=====================================================*/
 	virtual bool addNeighbour(std::string ipAndPort, std::string nodeType) = 0;
 
+	virtual std::string getIP();
+	virtual std::string getPort();
+
 protected:
 
 	std::map <std::string, std::string> neighbours;
@@ -100,9 +103,6 @@ protected:
 	* Resulta: envia un mensaje al nodo conectado.
 	*=====================================================*/
 	virtual void commSend(std::string host, std::string path);
-
-	virtual std::string getIP();
-	virtual std::string getPort();
 
 	Client client;
 	Server server;
