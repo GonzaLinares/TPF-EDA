@@ -68,13 +68,22 @@ public:
 	virtual int getBlockQuant(void);
 
 	/*=====================================================
-	* Name: getBlockQuant
+	* Name: getNodeType
 	* Entra: -
-	* Resulta: Numero de bloques cargados
+	* Resulta: -
 	*=====================================================*/
-	virtual std::string getNodeType() = 0;
+	virtual std::string getNodeType(void) = 0;
+
+	/*=====================================================
+	* Name: addNeighbour
+	* Entra: -
+	* Resulta: 
+	*=====================================================*/
+	virtual bool addNeighbour(std::string ipAndPort, std::string nodeType) = 0;
 
 protected:
+
+	std::map <std::string, std::string> neighbours;
 
 	BaseNode(boost::asio::io_context& ioContext, boost::function<std::string(std::string, std::string)> msgReceivedCb, int portNum);
 
