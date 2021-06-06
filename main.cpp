@@ -25,11 +25,11 @@ int main(int argc, char** argv) {
 	boost::asio::io_context contexto;
 	NodeFactory nodes(contexto);
 
-	/*
+	
 	nodes.createFullNode(std::to_string(12344) ,std::string("blockchain_sample_0.json"));
-	nodes.createSPVNode(std::to_string(12366));
-	((SPVNode*)nodes.getNodes()[0])->getBlockHeader("13878957", std::to_string(1), "127.0.0.1:12344");
-	*/
+	nodes.createFullNode(std::to_string(12366));
+	nodes.getNodes()[0]->addNeighbour("127.0.0.1:12366", std::string("Full"));
+	
 	
 	while (menu.getState() == RUNNING) {
 
