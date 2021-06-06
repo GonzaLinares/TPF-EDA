@@ -151,12 +151,17 @@ std::string SPVNode::receivedMsgCB(std::string client, std::string msg)
 
     lastReClient = host;
 
-    if (msg != std::string("")) {
+    client.erase(0, client.find_first_of('/', 0));
 
-        //Aca podria por ejemplo hacer algo con el mensaje que nos enviaron
+    if (client == std::string("/eda_coin/send_merkle_block")) {
+
+        if (msg != std::string("")) {
+
+            //Aca podria por ejemplo hacer algo con el mensaje que nos enviaron
+        }
+
+        answer = merkleBlockPostReceived(false, 0);
     }
-
-    answer = merkleBlockPostReceived(false, 0);
 
     return answer;
 
