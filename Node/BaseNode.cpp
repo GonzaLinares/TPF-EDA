@@ -75,6 +75,7 @@ void BaseNode::commSend(std::string host, std::string path, std::string& msg)
     if (host.size() != 0 && msg.size() != 0)
     {
         client.POST(host, path, msg);
+        state = SENDING;
     }
 
 }
@@ -84,6 +85,7 @@ void BaseNode::commSend(std::string host, std::string path)
     if (host.size() != 0)
     {
         client.GET(host, path);
+        state = SENDING;
     }
 }
 
