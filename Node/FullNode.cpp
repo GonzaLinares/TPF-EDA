@@ -71,7 +71,7 @@ bool FullNode::createBlockchainFromFile(std::string& path)
 
 std::string FullNode::getNodeType()
 {
-    return std::string("FullNode");
+    return std::string("Full");
 }
 
 bool FullNode::addNeighbour(std::string ipAndPort, std::string nodeType)
