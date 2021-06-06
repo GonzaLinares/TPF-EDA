@@ -82,7 +82,7 @@ public:
 	* Entra: -
 	* Resulta: 
 	*=====================================================*/
-	virtual bool addNeighbour(std::string ipAndPort, std::string nodeType) = 0;
+	virtual bool addNeighbour(std::string ipAndPort, std::string nodeType);
 
 	virtual std::string getIP();
 	virtual std::string getPort();
