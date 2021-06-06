@@ -105,9 +105,13 @@ node_state_t BaseNode::getState()
 
 bool BaseNode::addNeighbour(std::string ipAndPort, std::string nodeType)
 {
-    neighbours.push_back(std::pair<std::string, std::string>(ipAndPort, nodeType));
-
-    return false;
+    if (this->getNodeType() == "SPV" && nodeType == "SPV") {
+        return false;
+    }
+    else {
+        neighbours.push_back(std::pair<std::string, std::string>(ipAndPort, nodeType));
+    }
+    return true;
 }
 
 bool BaseNode::deleteNeighbour(int indexNum)

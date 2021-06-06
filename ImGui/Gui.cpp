@@ -216,10 +216,6 @@ void Gui::showCreateBox(NodeFactory& nodes) {
 		else {
 			nodes.createSPVNode(nodePort);
 		}
-		//deleteMerkleDic();		//Esto estaba del TP anterior
-		//merkleTrees.clear();
-		//currentNode[currentNodeActive]->deleteBlockchain();
-		//fileFound = currentNode[currentNodeActive]->createBlockchainFromFile(filename);
 		blockPage = 0;
 		comboBoxNodesIndex = 0;
 		comboBoxActionNodesIndex = 0;
@@ -232,10 +228,6 @@ void Gui::showCreateBox(NodeFactory& nodes) {
 		else {
 			nodes.createFullNode(nodePort);
 		}
-		//deleteMerkleDic();
-		//merkleTrees.clear();
-		//nodes[currentNodeActive]->deleteBlockchain();
-		//fileFound = nodes[currentNodeActive]->createBlockchainFromFile(filename);
 		blockPage = 0;
 		comboBoxNodesIndex = 0;
 		comboBoxActionNodesIndex = 0;
@@ -260,13 +252,11 @@ void Gui::showConnectBox(NodeFactory& nodes) {
 	ImGui::InputText("###IP:Port002", &connPort1);
 	nSpacing(1);
 	if (ImGui::Button("SPV")) {
-		nodes.getNodes()[currentNodeActive]->addNeighbour(connPort1, "SPV");
-		linkedSuccess = true;
+		linkedSuccess = nodes.getNodes()[currentNodeActive]->addNeighbour(connPort1, "SPV");
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("Full")) {
-		nodes.getNodes()[currentNodeActive]->addNeighbour(connPort1, "Full");
-		linkedSuccess = true;
+		linkedSuccess = nodes.getNodes()[currentNodeActive]->addNeighbour(connPort1, "Full");
 	}
 	nSpacing(4);
 
@@ -332,7 +322,7 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 
 		ImGui::Text("Public key: ");
 		ImGui::SameLine();
-		ImGui::InputText("###Public key :", &publicKeyWritten);
+		ImGui::InputText("###Public key :", &actionGetBlockPublicKeyWritten);
 		ImGui::SameLine();
 		ImGui::Text("Amount: ");
 		ImGui::SameLine();
@@ -341,10 +331,10 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 		if (ImGui::Button("Send Message")) {
 
 			if (currentNode->getNodeType() == std::string("Full")) {
-				((FullNode*)currentNode)->transactionPost(publicKeyWritten, amountWritten, neigh[comboBoxNodesIndex].first);
+				((FullNode*)currentNode)->transactionPost(actionGetBlockPublicKeyWritten, amountWritten, neigh[comboBoxNodesIndex].first);
 			}
 			else {
-				((SPVNode*)currentNode)->transactionPost(publicKeyWritten, amountWritten, neigh[comboBoxNodesIndex].first);
+				((SPVNode*)currentNode)->transactionPost(actionGetBlockPublicKeyWritten, amountWritten, neigh[comboBoxNodesIndex].first);
 			}
 		}
 	}
@@ -358,7 +348,7 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 
 		ImGui::Text("BlockID: ");
 		ImGui::SameLine();
-		ImGui::InputText("###BlockID :", &blockIDWritten);
+		ImGui::InputText("###BlockID :", &actionGetBlockIDWritten);
 		ImGui::SameLine();
 		ImGui::Text("Position: ");
 		ImGui::SameLine();
@@ -366,14 +356,14 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 		nSpacing(5);
 		if (ImGui::Button("Send Message")) {
 
-			((FullNode*)currentNode)->merkleBlockPost(blockIDWritten, positionWritten, neigh[comboBoxNodesIndex].first);
+			((FullNode*)currentNode)->merkleBlockPost(actionGetBlockIDWritten, positionWritten, neigh[comboBoxNodesIndex].first);
 		}
 	}
 	else if (actionList[comboBoxActionNodesIndex] == std::string("GetBlocksPost")) {
 
 		ImGui::Text("BlockID: ");
 		ImGui::SameLine();
-		ImGui::InputText("###BlockID :", &blockIDWritten);
+		ImGui::InputText("###BlockID :", &actionGetBlockIDWritten);
 		ImGui::SameLine();
 		ImGui::Text("Blocks Quantity: ");
 		ImGui::SameLine();
@@ -381,7 +371,7 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 		nSpacing(5);
 		if (ImGui::Button("Send Message")) {
 
-			((FullNode*)currentNode)->getBlocks(blockIDWritten, std::to_string(blockQuantityWritten), neigh[comboBoxNodesIndex].first);
+			((FullNode*)currentNode)->getBlocks(actionGetBlockIDWritten, std::to_string(blockQuantityWritten), neigh[comboBoxNodesIndex].first);
 		}
 	}
 	else if (actionList[comboBoxActionNodesIndex] == std::string("FilterPost")) {
@@ -394,7 +384,7 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 
 		ImGui::Text("BlockID: ");
 		ImGui::SameLine();
-		ImGui::InputText("###BlockID :", &blockIDWritten);
+		ImGui::InputText("###BlockID :", &actionGetBlockIDWritten);
 		ImGui::SameLine();
 		ImGui::Text("Blocks Quantity: ");
 		ImGui::SameLine();
@@ -402,7 +392,7 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 		nSpacing(5);
 		if (ImGui::Button("Send Message")) {
 
-			((SPVNode*)currentNode)->getBlockHeader(blockIDWritten, std::to_string(blockQuantityWritten), neigh[comboBoxNodesIndex].first);
+			((SPVNode*)currentNode)->getBlockHeader(actionGetBlockIDWritten, std::to_string(blockQuantityWritten), neigh[comboBoxNodesIndex].first);
 		}
 	}
 	ImGui::EndChild();
@@ -465,8 +455,10 @@ void Gui::showNodesTable(NodeFactory& nodes) {
 					if (ImGui::BeginPopupModal(buffer, NULL, ImGuiWindowFlags_AlwaysAutoResize))
 					{
 						for (int i = 0; i < neigh.size(); i++) {
-							if (ImGui::Button("X")) {
-								//delete current neigh from map
+							
+							sprintf_s(buffer, "X###%d", i);
+							if (ImGui::Button(buffer)) {
+								current->deleteNeighbour(i);
 							}
 							ImGui::SameLine();
 							ImGui::Text("IP/Port: %s", neigh[i].first.c_str());
@@ -485,13 +477,13 @@ void Gui::showNodesTable(NodeFactory& nodes) {
 				ImGui::TableNextColumn();
 
 				switch(current->getState()) {
-					case 1:
+					case IDLE:
 						ImGui::Text("Idle");
 						break;
-					case 2:
+					case SENDING:
 						ImGui::Text("Sending");
 						break;
-					case 3:
+					case RECEIVING:
 						ImGui::Text("Receiving");
 						break;
 				}
@@ -529,7 +521,9 @@ void Gui::showBlocksTab(BaseNode& node) {
 	blocksQuant = currentPageBlockIDs.size();
 
 	nSpacing(4);
-	ImGui::Text("Page %d of %d", (int)ceil(blockPage/pageSize+1), (int)ceil((double)node.getBlockQuant()/(double)pageSize));
+	if (blocksQuant > 0) {
+		ImGui::Text("Page %d of %d", (int)ceil(blockPage / pageSize + 1), (int)ceil((double)node.getBlockQuant() / (double)pageSize));
+	}
 	nSpacing(4);
 	ImGui::SetNextItemWidth(ImGui::GetFontSize() * 8);	//Configuramos las columnas
 	ImGui::Columns(cols, NULL, true);
