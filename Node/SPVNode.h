@@ -21,8 +21,7 @@ public:
     bool getBlockHeader(std::string blockId, std::string blockCount, std::string host);
 
     //FUNCIONES RESPUESTA DE POSTS Y GETS
-    bool merkleBlockPostReceived(bool error, int result, std::string host);
-
+    std::string merkleBlockPostReceived(bool error, int result);
 
 private:
 
