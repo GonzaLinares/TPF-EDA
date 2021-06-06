@@ -77,7 +77,6 @@ std::string FullNode::getNodeType()
     return std::string("Full");
 }
 
-
 bool FullNode::blockPost(std::string host)
 {
     std::string answer = std::string("{ ""status"": true,\n ""result"": ");
