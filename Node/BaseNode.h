@@ -67,6 +67,13 @@ public:
 	*=====================================================*/
 	virtual int getBlockQuant(void);
 
+	/*=====================================================
+	* Name: getBlockQuant
+	* Entra: -
+	* Resulta: Numero de bloques cargados
+	*=====================================================*/
+	virtual std::string getNodeType() = 0;
+
 protected:
 
 	BaseNode(boost::asio::io_context& ioContext, boost::function<std::string(std::string, std::string)> msgReceivedCb, int portNum);
