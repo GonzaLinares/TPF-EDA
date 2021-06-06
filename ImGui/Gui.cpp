@@ -299,7 +299,7 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 
 	if (ImGui::BeginCombo("###Receiver IP:Port", neigh[comboBoxNodesIndex].first.c_str()))
 	{
-		for (int i = 0; i < neigh.size(); i++)
+		for (unsigned int i = 0; i < neigh.size(); i++)
 		{
 			if (ImGui::Selectable(neigh[i].first.c_str(), comboBoxNodesIndex == i)) {
 				comboBoxNodesIndex = i;
@@ -315,7 +315,7 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 	ImGui::SameLine();
 	if (ImGui::BeginCombo("###Message:", actionList[comboBoxActionNodesIndex].c_str()))
 	{
-		for (int i = 0; i < actionList.size(); i++)
+		for (unsigned int i = 0; i < actionList.size(); i++)
 		{
 			const bool is_selected = (comboBoxActionNodesIndex == i);
 			if (ImGui::Selectable(actionList[i].c_str(), is_selected))

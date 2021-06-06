@@ -4,6 +4,8 @@
 #include <list>
 #include <boost/function.hpp>
 
+#define TIMEOUTLIMIT 30L
+
 enum { IDLE = 0, DOWNLOADING};
 
 class Client
