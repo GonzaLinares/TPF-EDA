@@ -19,8 +19,11 @@ Client::Client(boost::function<std::string(std::string, std::string)> msgReceive
 
 Client::~Client()
 {
+	while (status)
+	{
+		curl_multi_perform(multiCurl, &status);
+	}
 	curl_multi_cleanup(multiCurl);
-	curl_easy_cleanup(curl);
 }
 
 bool Client::POST(std::string host, std::string path, std::string& msg)
@@ -36,7 +39,7 @@ bool Client::POST(std::string host, std::string path, std::string& msg)
 		curl_slist_append(list, "Content-Type: text/json");
 
 		curl_easy_setopt(curl, CURLOPT_POST, 1L);
-		aux = host.substr(0, host.rfind(':') - 1) + path;
+		aux = host.substr(0, host.rfind(':')) + "/" + path;
 		curl_easy_setopt(curl, CURLOPT_URL, aux.c_str());
 		aux = host.substr(host.rfind(':') + 1);
 		curl_easy_setopt(curl, CURLOPT_PORT, std::stoi(aux));
@@ -47,6 +50,8 @@ bool Client::POST(std::string host, std::string path, std::string& msg)
 		curl_easy_setopt(curl, CURLOPT_HTTPHEADER, list);
 		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, msg.c_str());
 		curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, msg.size());
+		curl_easy_setopt(curl, CURLOPT_TIMEOUT, TIMEOUTLIMIT);
+
 
 #ifdef _DEBUG
 		curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
@@ -56,6 +61,7 @@ bool Client::POST(std::string host, std::string path, std::string& msg)
 		curl_slist_free_all(list);
 
 		curl_multi_add_handle(multiCurl, curl);
+		curl = NULL;
 
 		return true;
 	}
@@ -81,6 +87,7 @@ bool Client::GET(std::string host, std::string path)
 		curl_easy_setopt(curl, CURLOPT_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, recieveCallback);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &receivedData);
+		curl_easy_setopt(curl, CURLOPT_TIMEOUT, TIMEOUTLIMIT);
 
 #ifdef _DEBUG
 		curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
@@ -109,6 +116,11 @@ bool Client::poll()
 	if (msgs != NULL && msgs->msg == CURLMSG_DONE)
 	{
 		msgReceivedCb(lastHost, receivedData);
+		curl_easy_cleanup(msgs->easy_handle);
+	}
+	else if (msgs != NULL)
+	{
+		curl_easy_cleanup(msgs->easy_handle);
 	}
 	return status;
 }

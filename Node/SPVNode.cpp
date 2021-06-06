@@ -5,7 +5,7 @@
 
 using json = nlohmann::json;
 
-std::vector<std::string> SPVNode::actionsVector{"TransactionPost" , "FilterPost" , "GetBlockPost"};
+std::vector<std::string> SPVNode::actionsVector{"TransactionPost" , "FilterPost" , "GetBlockHeadersPost"};
 
 SPVNode::SPVNode(boost::asio::io_context& ioContext, std::string port, std::string path2blockchain)
     : BaseNode(ioContext, boost::bind(&SPVNode::receivedMsgCB, this, boost::placeholders::_1, boost::placeholders::_2), stoi(port))
@@ -26,12 +26,6 @@ std::string SPVNode::getNodeType()
     return std::string("SPV");
 }
 
-bool SPVNode::addNeighbour(std::string ipAndPort, std::string nodeType)
-{
-    neighbours.push_back(std::pair<std::string, std::string>(ipAndPort, nodeType));
-
-    return false;
-}
 
 bool SPVNode::createBlockchainFromFile(std::string& path)
 {
@@ -151,11 +145,16 @@ std::string SPVNode::merkleBlockPostReceived(bool error, int result)
 
 std::string SPVNode::receivedMsgCB(std::string client, std::string msg)
 {
+    std::string answer;
+
     if (msg != std::string("")) {
 
         //Aca podria por ejemplo hacer algo con el mensaje que nos enviaron
     }
-    return merkleBlockPostReceived(false, 0);
+
+    answer = merkleBlockPostReceived(false, 0);
+
+    return answer;
 
     //El unico caso en el que llegan mensajes es para la recepción del MerkleBlock
 }

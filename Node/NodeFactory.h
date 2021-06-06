@@ -8,6 +8,8 @@ class NodeFactory
 public:
 
 	NodeFactory(boost::asio::io_context& ioContext_);
+	~NodeFactory();
+
 	std::vector <BaseNode*>& getNodes(void);
 
 	bool createFullNode(std::string port, std::string path2blockchain);
@@ -15,6 +17,8 @@ public:
 
 	bool createSPVNode(std::string port, std::string path2blockchain);
 	bool createSPVNode(std::string port);
+
+	bool deleteNode(unsigned int nodeIndex);
 
 	bool pollAllNodes();
 

@@ -271,7 +271,7 @@ void Gui::showConnectBox(NodeFactory& nodes) {
 	nSpacing(4);
 
 	if (!linkedSuccess) {
-		ImGui::Text("Mustn't be linked two SPV nodes");
+		ImGui::Text("two SPV nodes can't be linked");
 	}
 	ImGui::EndChild();
 }
@@ -299,7 +299,7 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 
 	if (ImGui::BeginCombo("###Receiver IP:Port", neigh[comboBoxNodesIndex].first.c_str()))
 	{
-		for (int i = 0; i < neigh.size(); i++)
+		for (unsigned int i = 0; i < neigh.size(); i++)
 		{
 			if (ImGui::Selectable(neigh[i].first.c_str(), comboBoxNodesIndex == i)) {
 				comboBoxNodesIndex = i;
@@ -315,7 +315,7 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 	ImGui::SameLine();
 	if (ImGui::BeginCombo("###Message:", actionList[comboBoxActionNodesIndex].c_str()))
 	{
-		for (int i = 0; i < actionList.size(); i++)
+		for (unsigned int i = 0; i < actionList.size(); i++)
 		{
 			const bool is_selected = (comboBoxActionNodesIndex == i);
 			if (ImGui::Selectable(actionList[i].c_str(), is_selected))
@@ -328,16 +328,90 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 		ImGui::EndCombo();
 	}
 
-	if (true) { //Message send crypto == true
+	if (actionList[comboBoxActionNodesIndex] == std::string("TransactionPost")) { //Message send crypto == true
+
+		std::string publicKey = std::string("");
+		int coinAmount = 0;
 		ImGui::Text("Public key: ");
 		ImGui::SameLine();
-		//ImGui::InputText("###Public key :", &publicKey);
+		ImGui::InputText("###Public key :", &publicKey);
 		ImGui::SameLine();
 		ImGui::Text("Amount: ");
 		ImGui::SameLine();
-		//ImGui::InputInt("###Amount:", &coinAmount);
+		ImGui::InputInt("###Amount:", &coinAmount);
 		nSpacing(5);
-		ImGui::Button("Send Message");
+		if (ImGui::Button("Send Message")) {
+
+			if (currentNode->getNodeType() == std::string("Full")) {
+				((FullNode*)currentNode)->transactionPost(publicKey, coinAmount, neigh[comboBoxNodesIndex].first);
+			}
+			else {
+				((SPVNode*)currentNode)->transactionPost(publicKey, coinAmount, neigh[comboBoxNodesIndex].first);
+			}
+		}
+	}
+	else if (actionList[comboBoxActionNodesIndex] == std::string("BlockPost")) {
+
+		if (ImGui::Button("Send Message")) {
+			((FullNode*)currentNode)->blockPost(neigh[comboBoxNodesIndex].first);
+		}
+	}
+	else if (actionList[comboBoxActionNodesIndex] == std::string("MerkleBlockPost")) {
+
+		std::string blockID = std::string("");
+		int position = 0;
+		ImGui::Text("BlockID: ");
+		ImGui::SameLine();
+		ImGui::InputText("###BlockID :", &blockID);
+		ImGui::SameLine();
+		ImGui::Text("Position: ");
+		ImGui::SameLine();
+		ImGui::InputInt("###Position:", &position);
+		nSpacing(5);
+		if (ImGui::Button("Send Message")) {
+
+			((FullNode*)currentNode)->merkleBlockPost(blockID, position, neigh[comboBoxNodesIndex].first);
+		}
+	}
+	else if (actionList[comboBoxActionNodesIndex] == std::string("GetBlocksPost")) {
+
+		std::string blockID = std::string("");
+		int blockCount = 0;
+		ImGui::Text("BlockID: ");
+		ImGui::SameLine();
+		ImGui::InputText("###BlockID :", &blockID);
+		ImGui::SameLine();
+		ImGui::Text("Blocks Quantity: ");
+		ImGui::SameLine();
+		ImGui::InputInt("###Blocks Quantity:", &blockCount);
+		nSpacing(5);
+		if (ImGui::Button("Send Message")) {
+
+			((FullNode*)currentNode)->getBlocks(blockID, std::to_string(blockCount), neigh[comboBoxNodesIndex].first);
+		}
+	}
+	else if (actionList[comboBoxActionNodesIndex] == std::string("FilterPost")) {
+
+		if (ImGui::Button("Send Message")) {
+			((SPVNode*)currentNode)->filterPost(neigh[comboBoxNodesIndex].first);
+		}
+	}
+	else if (actionList[comboBoxActionNodesIndex] == std::string("GetBlockHeadersPost")) {
+
+		std::string blockID = std::string("");
+		int blockCount = 0;
+		ImGui::Text("BlockID: ");
+		ImGui::SameLine();
+		ImGui::InputText("###BlockID :", &blockID);
+		ImGui::SameLine();
+		ImGui::Text("Blocks Quantity: ");
+		ImGui::SameLine();
+		ImGui::InputInt("###Blocks Quantity:", &blockCount);
+		nSpacing(5);
+		if (ImGui::Button("Send Message")) {
+
+			((SPVNode*)currentNode)->getBlockHeader(blockID, std::to_string(blockCount), neigh[comboBoxNodesIndex].first);
+		}
 	}
 	ImGui::EndChild();
 	

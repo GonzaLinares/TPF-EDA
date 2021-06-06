@@ -26,7 +26,7 @@ FullNode::FullNode(boost::asio::io_context& ioContext, std::string port)
 bool FullNode::createBlockchainFromFile(std::string& path)
 {
     if (path.size() > 0)
-    {
+    { 
         std::ifstream file(path);
 
         if (file.is_open())
@@ -555,15 +555,13 @@ std::string FullNode::getBlocksReceived(std::string blockID, int count)
     return answer;
 }
 
-std::string FullNode::receivedMsgCB(std::string client, std::string msg) 
+std::string FullNode::receivedMsgCB(std::string client, std::string msg)
 {
-    std::string answer; //Acá copiaré las respuestas que me den las funciones
+    std::string answer = std::string("damy value"); //Acá copiaré las respuestas que me den las funciones
 
-    std::string path; //TODO: Acá guardo el path para averiguar de que se trata
+    client.erase(0, client.find_first_of('/', 0));
 
-    if ( path.find('?') == std::string::npos) {
-
-        if (path == std::string("eda_coin/send_block/")) {
+        if (client == std::string("/eda_coin/send_block")) {
 
             if (msg != std::string("")) {
 
@@ -571,7 +569,7 @@ std::string FullNode::receivedMsgCB(std::string client, std::string msg)
             }
             answer = blockPostReceived(false, 0);
         }
-        else if (path == std::string("eda_coin/send_tx/")) {
+        else if (client == std::string("/eda_coin/send_tx")) {
 
             if (msg != std::string("")) {
 
@@ -579,7 +577,7 @@ std::string FullNode::receivedMsgCB(std::string client, std::string msg)
             }
             answer = transactionPostReceived(false, 0);
         }
-        else if (path == std::string("eda_coin/send_filter/")) {
+        else if (client == std::string("/eda_coin/send_filter")) {
 
             if (msg != std::string("")) {
 
@@ -587,23 +585,18 @@ std::string FullNode::receivedMsgCB(std::string client, std::string msg)
             }
             answer = filterPostReceived(false, 0);
         }
-    }
-    else {
+        else if (client == std::string("/eda_coin/get_block")) {
 
-        std::string blockId = "01010101"; 
-        int count = 0;
-
-        //Tengo que conseguir los datos que estan en el comando
-
-        if (path == std::string("get_block")) {
-            
-            answer = getBlocksReceived(blockId, count);
+            std::string blockID = msg.substr(msg.find_first_of("blockid=", 0) + 9, 8);
+            std::string temp = msg.substr(msg.find("count=", 0) + 6, msg.find_first_of('"', 5)); //TODO: Sirve mientras no haya nada despues de count
+            answer = getBlocksReceived(blockID, stoi(temp));
         }
-        else if (path == std::string("get_block_header")) {
+        else if (client == std::string("/eda_coin/get_block_header")) {
 
-            answer = getBlockHeaderReceived(blockId, count);
+            std::string blockID = msg.substr(msg.find("blockid=", 0) + 10, 8);
+            std::string temp = msg.substr(msg.find("count=", 0) + 6, msg.find_first_of('"', 5)); //TODO: Sirve mientras no haya nada despues de count
+            answer = getBlockHeaderReceived(blockID, stoi(temp));
         }
-    }
 
     return answer;
 }

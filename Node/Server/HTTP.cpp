@@ -12,8 +12,6 @@ void HTTP::elaborateMessage(std::string client) {
 
     int error = 0;  //Detecta cuando es momento de enviar el mensaje de error
 
-    ifstream file;
-
     string auxString;               //String auxiliar con el que realizare los recortes
     string parameters;              //String para los parametros(este server no los utiliza)
     int auxPositionINICIAL = 0;
@@ -49,19 +47,20 @@ void HTTP::elaborateMessage(std::string client) {
     if (auxPositionINICIAL != -1)
     {
 
-        parameters = auxString.substr(auxPositionINICIAL, auxPositionFINAL - auxPositionINICIAL);
+        parameters = auxString.substr(auxPositionINICIAL + 1, auxPositionFINAL - auxPositionINICIAL);
         auxString.erase(auxPositionINICIAL, auxPositionFINAL - auxPositionINICIAL);                 //borro los parametros del path
 
     }
 
     this->path = auxString;                                     //guardo el path
-    auxString.erase(0, 1);                                      //Borro la primera /
 
 
-    if (!error) {   //LECTURA DEL PATH
+    if (!error) {   //Armado del response
         
+        auxString = generateReplyData(client + path, parameters);
+
         auxPositionINICIAL = toSendMsg.find(string("text/html"), 0);
-        toSendMsg.replace(auxPositionINICIAL, string("text/html").length(), "Conten-Type: text/json");
+        toSendMsg.replace(auxPositionINICIAL, string("text/html").length(), "text/json");
     
 
         auxPositionINICIAL = toSendMsg.find(string("filenameContent"), 0);
@@ -78,7 +77,6 @@ void HTTP::elaborateMessage(std::string client) {
         toSendMsg.replace(auxPositionINICIAL, 1, this->path);   //Escribo el path
 
 
-        file.close();
         
     }
 
