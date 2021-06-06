@@ -10,6 +10,7 @@
 ******************************************************************************/
 #include "../Block/Block.h"
 #include "Server/Server.h"
+#include "Client/Client.h"
 #include <vector>
 #include <iostream>
 
@@ -84,7 +85,9 @@ protected:
 	*=====================================================*/
 	virtual void commSend(std::string host, std::string path);
 
+	virtual std::string getIP();
 
+	Client client;
 	Server server;
 	std::vector <Block> blockchain;		//blockchain con los datos
 	int state;	//Estado del nodo (recibió mensaje, manda mensaje, escucha, etc.)

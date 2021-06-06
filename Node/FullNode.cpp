@@ -8,8 +8,6 @@ using json = nlohmann::json;
 
 std::vector<std::string> FullNode::actionsVector{ "BlockPost", "TransactionPost", "MerkleBlockPost", "GetBlocksPost" };
 
-
-
 FullNode::FullNode(boost::asio::io_context& ioContext, std::string port, std::string path2blockchain)
     : BaseNode(ioContext, boost::bind(&FullNode::receivedMsgCB, this, boost::placeholders::_1, boost::placeholders::_2), stoi(port))
 {
@@ -191,7 +189,7 @@ bool FullNode::transactionPost(std::string publicKey, int amount, std::string ho
     return false;
 }
 
-bool FullNode::merkleBlockPost(std::string blockId, std::string host, int position)
+bool FullNode::merkleBlockPost(std::string blockId, int position, std::string host)
 {
     std::string answer;
     bool startCopying = false;
@@ -324,7 +322,7 @@ bool FullNode::getBlocks(std::string blockId, std::string blockCount, std::strin
     return false;
 }
 
-bool FullNode::blockPostReceived(bool error, int result, std::string host)
+std::string FullNode::blockPostReceived(bool error, int result)
 {
     std::string answer;
 
@@ -344,12 +342,10 @@ bool FullNode::blockPostReceived(bool error, int result, std::string host)
         answer = std::string("{ ""status"": true,\n ""result"": null }");
     }
 
-    commSend(host, "eda_coin/send_block/", answer);
-
-    return false;
+    return answer;
 }
 
-bool FullNode::transactionPostReceived(bool error, int result, std::string host)
+std::string FullNode::transactionPostReceived(bool error, int result)
 {
     std::string answer;
 
@@ -369,13 +365,11 @@ bool FullNode::transactionPostReceived(bool error, int result, std::string host)
         answer = std::string("{ ""status"": true,\n ""result"": null }");
     }
 
-    commSend(host, "eda_coin/send_tx/", answer);
-
-    return false;
+    return answer;
 }
 
-bool FullNode::filterPostReceived(bool error, int result, std::string host)
-{   //TODO: Esto en principio es igual que BlockPostReceived
+std::string FullNode::filterPostReceived(bool error, int result)
+{   
     std::string answer;
 
     if (error == true) {
@@ -394,12 +388,10 @@ bool FullNode::filterPostReceived(bool error, int result, std::string host)
         answer = std::string("{ ""status"": true,\n ""result"": null }");
     }
 
-    commSend(host, "eda_coin/send_filter/", answer);
-
-    return false;
+    return answer;
 }
 
-bool FullNode::getBlockHeaderReceived(std::string blockID, int count, std::string host)
+std::string FullNode::getBlockHeaderReceived(std::string blockID, int count)
 {
 
     std::string answer = std::string("{ ""status"": true,\n ""result"": ");
@@ -438,16 +430,10 @@ bool FullNode::getBlockHeaderReceived(std::string blockID, int count, std::strin
         }
     }
 
-    char buf[50];
-
-    sprintf_s(buf, "eda_coin/get_block_header?block_id=%s&count=%d", blockID.c_str(), count);
-
-    commSend(host, std::string(buf), answer);
-
-    return false;
+    return answer;
 }
 
-bool FullNode::getBlocksReceived(std::string blockID, int count, std::string host)
+std::string FullNode::getBlocksReceived(std::string blockID, int count)
 {
     std::string answer = std::string("{ ""status"": true,\n ""result"": ");
     bool startCopying = false;
@@ -551,52 +537,60 @@ bool FullNode::getBlocksReceived(std::string blockID, int count, std::string hos
         }
     }
 
-    char buf[50];
-
-    sprintf_s(buf, "eda_coin/get_blocks?block_id=%s&count=%d", blockID.c_str(), count);
-
-    commSend(host, std::string("cual vergas es el path"), answer);
-
-    return false;
+    return answer;
 }
 
-std::string FullNode::receivedMsgCB(std::string client, std::string msg)        // TODO: Implementar
+std::string FullNode::receivedMsgCB(std::string client, std::string msg) 
 {
-    std::string path;  
+    std::string answer; //Acá copiaré las respuestas que me den las funciones
+
+    std::string path; //TODO: Acá guardo el path para averiguar de que se trata
 
     if ( path.find('?') == std::string::npos) {
 
         if (path == std::string("eda_coin/send_block/")) {
 
-            //Tengo que parsear para hacer la llamada aca
-            //getBlocksReceived();
+            if (msg != std::string("")) {
+
+                //Aca podria por ejemplo hacer algo con el mensaje que nos enviaron
+            }
+            answer = blockPostReceived(false, 0);
         }
         else if (path == std::string("eda_coin/send_tx/")) {
 
+            if (msg != std::string("")) {
 
+                //Aca podria por ejemplo hacer algo con el mensaje que nos enviaron
+            }
+            answer = transactionPostReceived(false, 0);
         }
         else if (path == std::string("eda_coin/send_filter/")) {
 
+            if (msg != std::string("")) {
 
+                //Aca podria por ejemplo hacer algo con el mensaje que nos enviaron
+            }
+            answer = filterPostReceived(false, 0);
         }
     }
     else {
 
-        std::string blockId;
-        int count;
+        std::string blockId = "01010101"; 
+        int count = 0;
+
         //Tengo que conseguir los datos que estan en el comando
 
         if (path == std::string("get_block")) {
             
-
+            answer = getBlocksReceived(blockId, count);
         }
         else if (path == std::string("get_block_header")) {
 
-
+            answer = getBlockHeaderReceived(blockId, count);
         }
     }
 
-    return std::string("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    return answer;
 }
 
 std::vector<std::string> FullNode::getActionList()
