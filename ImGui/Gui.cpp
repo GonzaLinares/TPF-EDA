@@ -343,17 +343,17 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 		if (ImGui::Button("Send Message")) {
 
 			if (currentNode->getNodeType() == std::string("Full")) {
-				//((FullNode*)currentNode)->transactionPost(publicKey, coinAmount, EL PUERTO SELECCIONADO)
+				((FullNode*)currentNode)->transactionPost(publicKey, coinAmount, neigh[comboBoxNodesIndex].first);
 			}
 			else {
-				//((SPVNode*)currentNode)->transactionPost(publicKey, coinAmount, EL PUERTO SELECCIONADO)
+				((SPVNode*)currentNode)->transactionPost(publicKey, coinAmount, neigh[comboBoxNodesIndex].first);
 			}
 		}
 	}
 	else if (actionList[comboBoxActionNodesIndex] == std::string("BlockPost")) {
 
 		if (ImGui::Button("Send Message")) {
-			//((FullNode*)currentNode)->blockPost(EL PUERTO SELECCIONADO);
+			((FullNode*)currentNode)->blockPost(neigh[comboBoxNodesIndex].first);
 		}
 	}
 	else if (actionList[comboBoxActionNodesIndex] == std::string("MerkleBlockPost")) {
@@ -370,7 +370,7 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 		nSpacing(5);
 		if (ImGui::Button("Send Message")) {
 
-			//((FullNode*)currentNode)->merkleBlockPost(blockID, position, ELPUERTO SELECCIONADO);
+			((FullNode*)currentNode)->merkleBlockPost(blockID, position, neigh[comboBoxNodesIndex].first);
 		}
 	}
 	else if (actionList[comboBoxActionNodesIndex] == std::string("GetBlocksPost")) {
@@ -387,13 +387,13 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 		nSpacing(5);
 		if (ImGui::Button("Send Message")) {
 
-			//((FullNode*)currentNode)->getBlocks(blockID, blockCount, ELPUERTO SELECCIONADO);
+			((FullNode*)currentNode)->getBlocks(blockID, std::to_string(blockCount), neigh[comboBoxNodesIndex].first);
 		}
 	}
 	else if (actionList[comboBoxActionNodesIndex] == std::string("FilterPost")) {
 
 		if (ImGui::Button("Send Message")) {
-			//((SPVNode*)currentNode)->filterPost(ELPUERTO SELECCIONADO);
+			((SPVNode*)currentNode)->filterPost(neigh[comboBoxNodesIndex].first);
 		}
 	}
 	else if (actionList[comboBoxActionNodesIndex] == std::string("GetBlockHeadersPost")) {
@@ -410,7 +410,7 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 		nSpacing(5);
 		if (ImGui::Button("Send Message")) {
 
-			//((SPVNode*)currentNode)->getBlockHeader(blockID, blockCount, ELPUERTOSELECCCIONADO);
+			((SPVNode*)currentNode)->getBlockHeader(blockID, std::to_string(blockCount), neigh[comboBoxNodesIndex].first);
 		}
 	}
 	ImGui::EndChild();

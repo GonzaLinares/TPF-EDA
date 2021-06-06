@@ -26,7 +26,7 @@ FullNode::FullNode(boost::asio::io_context& ioContext, std::string port)
 bool FullNode::createBlockchainFromFile(std::string& path)
 {
     if (path.size() > 0)
-    {
+    { 
         std::ifstream file(path);
 
         if (file.is_open())
