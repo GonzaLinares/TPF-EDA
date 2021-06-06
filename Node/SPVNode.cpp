@@ -28,7 +28,7 @@ std::string SPVNode::getNodeType()
 
 bool SPVNode::addNeighbour(std::string ipAndPort, std::string nodeType)
 {
-    neighbours.insert(std::pair<std::string, std::string>(ipAndPort, nodeType));
+    neighbours.push_back(std::pair<std::string, std::string>(ipAndPort, nodeType));
 
     return false;
 }

@@ -97,6 +97,39 @@ std::string BaseNode::getPort()
     return server.getLocalEndpointPort();
 }
 
+std::string BaseNode::getState()
+{
+    std::string currentState = "Not implemented";
+    switch (state) {
+        case 1:
+            currentState = "Idle";
+            break;
+        case 2:
+            currentState = "Conected";
+            break;
+        case 3:
+            currentState = "Receiving";
+            break;
+        case 4:
+            currentState = "Bla bla bla"; //TODO: poner los correctos
+            break;
+    }
+    return currentState;
+}
+
+std::vector <std::pair<std::string, std::string>>& BaseNode::getNeighbours() {
+    return neighbours;
+}
+
+bool BaseNode::hasNeighbours() {
+    if (neighbours.empty()) {
+        return false;
+    }
+    else {
+        return true;
+    }
+}
+
 bool BaseNode::poll()
 {
     client.poll();
