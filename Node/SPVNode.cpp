@@ -26,12 +26,6 @@ std::string SPVNode::getNodeType()
     return std::string("SPV");
 }
 
-bool SPVNode::addNeighbour(std::string ipAndPort, std::string nodeType)
-{
-    neighbours.push_back(std::pair<std::string, std::string>(ipAndPort, nodeType));
-
-    return false;
-}
 
 bool SPVNode::createBlockchainFromFile(std::string& path)
 {

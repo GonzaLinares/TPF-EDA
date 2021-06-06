@@ -117,6 +117,8 @@ std::string BaseNode::getState()
     return currentState;
 }
 
+
+
 std::vector <std::pair<std::string, std::string>>& BaseNode::getNeighbours() {
     return neighbours;
 }
