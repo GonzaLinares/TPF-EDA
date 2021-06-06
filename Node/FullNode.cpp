@@ -555,7 +555,12 @@ std::string FullNode::receivedMsgCB(std::string client, std::string msg)
     std::string host = client.substr(0, client.find_first_of('/', 0));
     lastReClient = host;
 
+    std::cout << getIP() + ":" + getPort() << std::endl;
+    std::cout << msg << std::endl;
+    std::cout << std::endl << std::endl << std::endl;
+
     client.erase(0, client.find_first_of('/', 0));
+
 
         if (client == std::string("/eda_coin/send_block")) {
 
