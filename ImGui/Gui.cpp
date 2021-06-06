@@ -271,7 +271,7 @@ void Gui::showConnectBox(NodeFactory& nodes) {
 	nSpacing(4);
 
 	if (!linkedSuccess) {
-		ImGui::Text("Mustn't be linked two SPV nodes");
+		ImGui::Text("two SPV nodes can't be linked");
 	}
 	ImGui::EndChild();
 }
@@ -328,16 +328,90 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 		ImGui::EndCombo();
 	}
 
-	if (true) { //Message send crypto == true
+	if (actionList[comboBoxActionNodesIndex] == std::string("TransactionPost")) { //Message send crypto == true
+
+		std::string publicKey = std::string("");
+		int coinAmount = 0;
 		ImGui::Text("Public key: ");
 		ImGui::SameLine();
-		//ImGui::InputText("###Public key :", &publicKey);
+		ImGui::InputText("###Public key :", &publicKey);
 		ImGui::SameLine();
 		ImGui::Text("Amount: ");
 		ImGui::SameLine();
-		//ImGui::InputInt("###Amount:", &coinAmount);
+		ImGui::InputInt("###Amount:", &coinAmount);
 		nSpacing(5);
-		ImGui::Button("Send Message");
+		if (ImGui::Button("Send Message")) {
+
+			if (currentNode->getNodeType() == std::string("Full")) {
+				//((FullNode*)currentNode)->transactionPost(publicKey, coinAmount, EL PUERTO SELECCIONADO)
+			}
+			else {
+				//((SPVNode*)currentNode)->transactionPost(publicKey, coinAmount, EL PUERTO SELECCIONADO)
+			}
+		}
+	}
+	else if (actionList[comboBoxActionNodesIndex] == std::string("BlockPost")) {
+
+		if (ImGui::Button("Send Message")) {
+			//((FullNode*)currentNode)->blockPost(EL PUERTO SELECCIONADO);
+		}
+	}
+	else if (actionList[comboBoxActionNodesIndex] == std::string("MerkleBlockPost")) {
+
+		std::string blockID = std::string("");
+		int position = 0;
+		ImGui::Text("BlockID: ");
+		ImGui::SameLine();
+		ImGui::InputText("###BlockID :", &blockID);
+		ImGui::SameLine();
+		ImGui::Text("Position: ");
+		ImGui::SameLine();
+		ImGui::InputInt("###Position:", &position);
+		nSpacing(5);
+		if (ImGui::Button("Send Message")) {
+
+			//((FullNode*)currentNode)->merkleBlockPost(blockID, position, ELPUERTO SELECCIONADO);
+		}
+	}
+	else if (actionList[comboBoxActionNodesIndex] == std::string("GetBlocksPost")) {
+
+		std::string blockID = std::string("");
+		int blockCount = 0;
+		ImGui::Text("BlockID: ");
+		ImGui::SameLine();
+		ImGui::InputText("###BlockID :", &blockID);
+		ImGui::SameLine();
+		ImGui::Text("Blocks Quantity: ");
+		ImGui::SameLine();
+		ImGui::InputInt("###Blocks Quantity:", &blockCount);
+		nSpacing(5);
+		if (ImGui::Button("Send Message")) {
+
+			//((FullNode*)currentNode)->getBlocks(blockID, blockCount, ELPUERTO SELECCIONADO);
+		}
+	}
+	else if (actionList[comboBoxActionNodesIndex] == std::string("FilterPost")) {
+
+		if (ImGui::Button("Send Message")) {
+			//((SPVNode*)currentNode)->filterPost(ELPUERTO SELECCIONADO);
+		}
+	}
+	else if (actionList[comboBoxActionNodesIndex] == std::string("GetBlockHeadersPost")) {
+
+		std::string blockID = std::string("");
+		int blockCount = 0;
+		ImGui::Text("BlockID: ");
+		ImGui::SameLine();
+		ImGui::InputText("###BlockID :", &blockID);
+		ImGui::SameLine();
+		ImGui::Text("Blocks Quantity: ");
+		ImGui::SameLine();
+		ImGui::InputInt("###Blocks Quantity:", &blockCount);
+		nSpacing(5);
+		if (ImGui::Button("Send Message")) {
+
+			//((SPVNode*)currentNode)->getBlockHeader(blockID, blockCount, ELPUERTOSELECCCIONADO);
+		}
 	}
 	ImGui::EndChild();
 	
