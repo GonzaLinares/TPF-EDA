@@ -559,6 +559,7 @@ std::string FullNode::receivedMsgCB(std::string client, std::string msg)
 
         if (client == std::string("/eda_coin/send_block")) {
 
+            state = RECEIVING;
             if (msg != std::string("")) {
 
                 //Aca podria por ejemplo hacer algo con el mensaje que nos enviaron
@@ -567,6 +568,7 @@ std::string FullNode::receivedMsgCB(std::string client, std::string msg)
         }
         else if (client == std::string("/eda_coin/send_tx")) {
 
+            state = RECEIVING;
             if (msg != std::string("")) {
 
                 //Aca podria por ejemplo hacer algo con el mensaje que nos enviaron
@@ -575,6 +577,7 @@ std::string FullNode::receivedMsgCB(std::string client, std::string msg)
         }
         else if (client == std::string("/eda_coin/send_filter")) {
 
+            state = RECEIVING;
             if (msg != std::string("")) {
 
                 //Aca podria por ejemplo hacer algo con el mensaje que nos enviaron
@@ -583,12 +586,14 @@ std::string FullNode::receivedMsgCB(std::string client, std::string msg)
         }
         else if (client == std::string("/eda_coin/get_block")) {
 
+            state = RECEIVING;
             std::string blockID = msg.substr(msg.find_first_of("blockid=", 0) + 9, 8);
             std::string temp = msg.substr(msg.find("count=", 0) + 6, msg.find_first_of('"', 5)); //TODO: Sirve mientras no haya nada despues de count
             answer = getBlocksReceived(blockID, stoi(temp));
         }
         else if (client == std::string("/eda_coin/get_block_header")) {
 
+            state = RECEIVING;
             std::string blockID = msg.substr(msg.find("blockid=", 0) + 10, 8);
             std::string temp = msg.substr(msg.find("count=", 0) + 6, msg.find_first_of('"', 5)); //TODO: Sirve mientras no haya nada despues de count
             answer = getBlockHeaderReceived(blockID, stoi(temp));
