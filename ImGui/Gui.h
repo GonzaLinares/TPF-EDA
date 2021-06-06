@@ -63,11 +63,13 @@ public:
 private:
 
 	int state;				//Estado de la GUI
-	int currentNodeActive;
-	std::string nodeIp;
-	std::string nodePort;
-	std::string connPort1;
+	int currentNodeActive;	//Indice del nodo actual
 	int blockPage;			//Indice de pagina cuando se muestran los bloques
+	int comboBoxNodesIndex;
+	int comboBoxActionNodesIndex;
+	std::string nodeIp;		//IP ingresada por la GUI
+	std::string nodePort;	//Puerto ingresado por la GUI
+	std::string connPort1;	//Puerto del nodo a conectar con el actual
 	std::string filename;	//String que mantiene el path al archivo con la blockchain
 	ALLEGRO_DISPLAY* display;	//Display y cola de eventos de allegro
 	ALLEGRO_EVENT_QUEUE* queue; 
