@@ -49,7 +49,7 @@ bool NodeFactory::createSPVNode(std::string port)
 	return true;
 }
 
-bool NodeFactory::deleteNode(int nodeIndex)
+bool NodeFactory::deleteNode(unsigned int nodeIndex)
 {
 	if (nodes.size() > nodeIndex)
 	{

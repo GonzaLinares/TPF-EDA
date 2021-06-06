@@ -18,7 +18,7 @@ public:
 	bool createSPVNode(std::string port, std::string path2blockchain);
 	bool createSPVNode(std::string port);
 
-	bool deleteNode(int nodeIndex);
+	bool deleteNode(unsigned int nodeIndex);
 
 	bool pollAllNodes();
 
