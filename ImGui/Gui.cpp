@@ -423,14 +423,15 @@ void Gui::showNodesTable(NodeFactory& nodes) {
 	ImGui::BeginChild("NodeList", ImVec2(480, 300), true);
 	if (ImGui::BeginTable("table_sorting", 6, flags))
 	{
-		ImGui::TableSetupColumn("Type", ImGuiTableColumnFlags_PreferSortDescending | ImGuiTableColumnFlags_WidthFixed, 0.0f, TYPE_TABLE_IDENTIFIER);
+		ImGui::TableSetupColumn("Type", ImGuiTableColumnFlags_DefaultSort | ImGuiTableColumnFlags_WidthFixed, 0.0f, TYPE_TABLE_IDENTIFIER);
 		ImGui::TableSetupColumn("IP", ImGuiTableColumnFlags_DefaultSort | ImGuiTableColumnFlags_WidthFixed, 0.0f, IP_TABLE_IDENTIFIER);
-		ImGui::TableSetupColumn("Port", ImGuiTableColumnFlags_WidthFixed, 0.0f, PORT_TABLE_IDENTIFIER);
+		ImGui::TableSetupColumn("Port", ImGuiTableColumnFlags_DefaultSort | ImGuiTableColumnFlags_WidthFixed, 0.0f, PORT_TABLE_IDENTIFIER);
 		ImGui::TableSetupColumn("Active", ImGuiTableColumnFlags_NoSort | ImGuiTableColumnFlags_WidthFixed, 0.0f, CONNECTIONS_TABLE_IDENTIFIER);
 		ImGui::TableSetupColumn("Connections", ImGuiTableColumnFlags_NoSort | ImGuiTableColumnFlags_WidthFixed, 0.0f, CONNECTIONS_TABLE_IDENTIFIER);
 		ImGui::TableSetupColumn("Status", ImGuiTableColumnFlags_NoSort | ImGuiTableColumnFlags_WidthFixed, 0.0f, CONNECTIONS_TABLE_IDENTIFIER);
 		ImGui::TableSetupScrollFreeze(0, 1); // Make row always visible
 		ImGui::TableHeadersRow();
+
 
 		ImGuiListClipper clipper;
 		clipper.Begin(node.size());
@@ -463,14 +464,14 @@ void Gui::showNodesTable(NodeFactory& nodes) {
 					ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
 					if (ImGui::BeginPopupModal(buffer, NULL, ImGuiWindowFlags_AlwaysAutoResize))
 					{
-						for (auto n : neigh) {
+						for (int i = 0; i < neigh.size(); i++) {
 							if (ImGui::Button("X")) {
 								//delete current neigh from map
 							}
 							ImGui::SameLine();
-							ImGui::Text("IP/Port: %s", "AAA");
+							ImGui::Text("IP/Port: %s", neigh[i].first.c_str());
 							ImGui::SameLine();
-							ImGui::Text("Type: %s", "SPV or Full");
+							ImGui::Text("Type: %s", neigh[i].second.c_str());
 						}
 
 						if (ImGui::Button("Close", ImVec2(120, 0))) { ImGui::CloseCurrentPopup(); }
@@ -482,7 +483,18 @@ void Gui::showNodesTable(NodeFactory& nodes) {
 					ImGui::Text("%s", "Empty");
 				}
 				ImGui::TableNextColumn();
-				ImGui::Text("%s", current->getState().c_str());
+
+				switch(current->getState()) {
+					case 1:
+						ImGui::Text("Idle");
+						break;
+					case 2:
+						ImGui::Text("Sending");
+						break;
+					case 3:
+						ImGui::Text("Receiving");
+						break;
+				}
 
 				blockPage = 0;
 			}
