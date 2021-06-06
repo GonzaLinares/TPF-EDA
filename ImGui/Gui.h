@@ -71,8 +71,8 @@ private:
 	int amountWritten;	//Entero donde se guarda la cantidad ingresada
 	int blockQuantityWritten;	//Entero donde se guarda la cantidad de bloques ingresada
 	int positionWritten;		//Entero donde se guarda la posicion ingresada
-	std::string nodeIp;			//IP ingresada por la GUI
 	std::string nodePort;		//Puerto ingresado por la GUI
+	std::string nodeIp;			//IP ingresada por la GUI
 	std::string connPort1;		//Puerto del nodo a conectar con el actual
 	std::string filename;		//String que mantiene el path al archivo con la blockchain
 	std::string actionGetBlockIDWritten;	//String donde se escriben los blockID para los mensajes
