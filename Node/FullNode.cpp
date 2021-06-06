@@ -557,17 +557,11 @@ std::string FullNode::getBlocksReceived(std::string blockID, int count)
 
 std::string FullNode::receivedMsgCB(std::string client, std::string msg)
 {
-    std::string answer = std::string("Cualquier banana"); //Acá copiaré las respuestas que me den las funciones
+    std::string answer; //Acá copiaré las respuestas que me den las funciones
 
-    return answer;
+    client.erase(0, client.find_first_of('/', 0));
 
-    //client.erase(0, client.find_first_of())
-
-    std::string path; //TODO: Acá guardo el path para averiguar de que se trata
-
-    if ( path.find('?') == std::string::npos) {
-
-        if (path == std::string("eda_coin/send_block/")) {
+        if (client == std::string("eda_coin/send_block/")) {
 
             if (msg != std::string("")) {
 
@@ -575,7 +569,7 @@ std::string FullNode::receivedMsgCB(std::string client, std::string msg)
             }
             answer = blockPostReceived(false, 0);
         }
-        else if (path == std::string("eda_coin/send_tx/")) {
+        else if (client == std::string("eda_coin/send_tx/")) {
 
             if (msg != std::string("")) {
 
@@ -583,7 +577,7 @@ std::string FullNode::receivedMsgCB(std::string client, std::string msg)
             }
             answer = transactionPostReceived(false, 0);
         }
-        else if (path == std::string("eda_coin/send_filter/")) {
+        else if (client == std::string("eda_coin/send_filter/")) {
 
             if (msg != std::string("")) {
 
@@ -591,23 +585,18 @@ std::string FullNode::receivedMsgCB(std::string client, std::string msg)
             }
             answer = filterPostReceived(false, 0);
         }
-    }
-    else {
+        if (client == std::string("get_block")) {
 
-        std::string blockId = "01010101"; 
-        int count = 0;
-
-        //Tengo que conseguir los datos que estan en el comando
-
-        if (path == std::string("get_block")) {
-            
-            answer = getBlocksReceived(blockId, count);
+            std::string blockID = msg.substr(msg.find_first_of("blockid=", 0), 8);
+            int count = stoi(msg.substr(msg.find_first_of("count=", 0), msg.find_first_of("""", msg.find_first_of("count=", 0))));
+            answer = getBlocksReceived(blockID, count);
         }
-        else if (path == std::string("get_block_header")) {
+        else if (client == std::string("get_block_header")) {
 
-            answer = getBlockHeaderReceived(blockId, count);
+            std::string blockID = msg.substr(msg.find_first_of("blockid=", 0), 8);
+            int count = stoi(msg.substr(msg.find_first_of("count=", 0), msg.find_first_of("""", msg.find_first_of("count=", 0))));
+            answer = getBlockHeaderReceived(blockID, count);
         }
-    }
 
     return answer;
 }
