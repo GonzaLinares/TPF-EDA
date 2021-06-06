@@ -23,26 +23,13 @@ class FullNode : public BaseNode
 public:
 
 
-	FullNode(boost::asio::io_context& ioContext, std::string path2blockchain, std::string port);
+	FullNode(boost::asio::io_context& ioContext, std::string port, std::string path2blockchain);
 	FullNode(boost::asio::io_context& ioContext, std::string port);
 	// Inherited via BaseNode
 	// override specifier ensures that the function is virtual and is overriding a virtual function from a base class
 
-	virtual void commSend(std::string host, std::string path, std::string& msg);
-	virtual void commSend(std::string host, std::string path);
-
-
-	virtual void commReceive(void) ;
-
-	virtual Block * getBlock(std::string id) override;
-
-	virtual bool getBlocksID(std::vector<std::string>& buffer, int numOfBlocks = 0, int offset = 0) override;
-
-	virtual int getBlockQuant(void) override;
-
 	virtual bool createBlockchainFromFile(std::string&) override;
 
-	virtual void deleteBlockchain() override;
 		
 	//POST HTTP	*********************************************************
 	bool blockPost(std::string host);

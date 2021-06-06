@@ -7,17 +7,31 @@ std::vector<BaseNode*>& NodeFactory::getNodes(void)
 	return nodes;
 }
 
-bool NodeFactory::createFullNode(void)
+bool NodeFactory::createFullNode(boost::asio::io_context& ioContext, std::string port, std::string path2blockchain)
 {
+	nodes.push_back( new FullNode(ioContext, port, path2blockchain));
 
-	nodes.push_back(new FullNode());
-
-	return true;
+	return false;
 }
 
-bool NodeFactory::createSPVNode(void)
+bool NodeFactory::createFullNode(boost::asio::io_context& ioContext, std::string port)
 {
-	nodes.push_back(new SPVNode());
+	nodes.push_back(new FullNode(ioContext, port));
 
-	return true;
+	return false;
 }
+
+bool NodeFactory::createSPVNode(boost::asio::io_context& ioContext, std::string port, std::string path2blockchain)
+{
+	nodes.push_back(new SPVNode(ioContext, port, path2blockchain));
+
+	return false;
+}
+
+bool NodeFactory::createSPVNode(boost::asio::io_context& ioContext, std::string port)
+{
+	nodes.push_back(new SPVNode(ioContext, port));
+
+	return false;
+}
+

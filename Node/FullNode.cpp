@@ -10,7 +10,7 @@ std::vector<std::string> FullNode::actionsVector{ "BlockPost", "TransactionPost"
 
 
 
-FullNode::FullNode(boost::asio::io_context& ioContext, std::string path2blockchain, std::string port)
+FullNode::FullNode(boost::asio::io_context& ioContext, std::string port, std::string path2blockchain)
     : BaseNode(ioContext, boost::bind(&FullNode::receivedMsgCB, this, boost::placeholders::_1, boost::placeholders::_2), stoi(port))
 {
 
@@ -22,80 +22,8 @@ FullNode::FullNode(boost::asio::io_context& ioContext, std::string port)
 
 }
 
-void FullNode::commSend(std::string host, std::string path, std::string& msg)
-{
-
-}
-
-void FullNode::commSend(std::string host, std::string path)
-{
-
-}
-
-void FullNode::commReceive(void)
-{
-}
-
-//Devuelve un puntero al bloque del id pedido, en el caso de no encontrar ninguno, devuelve NULL
-Block* FullNode::getBlock(std::string id)
-{
-    Block* salida = nullptr;
-    for (std::vector<Block>::iterator it = blockchain.begin(); it != blockchain.end(); it++) {
-
-        if ((it->getId()) == id) {
-
-            salida = &(*it);
-        }
-    }
-
-    return salida;
-}
-
-bool FullNode::getBlocksID(std::vector<std::string>& buffer, int numOfBlocks, int offset)
-{
-    bool result = true;
-    if (blockchain.size() == 0)
-    {
-        return false;
-    }
-
-    if ((int)blockchain.size() - offset < numOfBlocks)
-    {
-        numOfBlocks = blockchain.size() - offset;
-        result = false;
-    }
-
-    std::vector<Block>::reverse_iterator it = blockchain.rbegin();
-
-    if (numOfBlocks == 0 && offset == 0)
-    {
-        for (int i = 1; i <= (int)blockchain.size(); it++, i++) {
-
-            buffer.push_back(it->getId());
-        }
-    }
-    else
-    {
-        it += offset;
-
-        for (int i = 1; i <= numOfBlocks ; it++, i++) {
-
-            buffer.push_back(it->getId());
-        }
-    }
-    
-
-    return result;
-}
-
-int FullNode::getBlockQuant(void)
-{
-    return blockchain.size();
-}
-
 bool FullNode::createBlockchainFromFile(std::string& path)
 {
-
     if (path.size() > 0)
     {
         std::ifstream file(path);
@@ -141,11 +69,6 @@ bool FullNode::createBlockchainFromFile(std::string& path)
         }
     }
     return false;
-}
-
-void FullNode::deleteBlockchain()
-{
-    blockchain.clear();
 }
 
 bool FullNode::blockPost(std::string host)
@@ -637,7 +560,7 @@ bool FullNode::getBlocksReceived(std::string blockID, int count, std::string hos
     return false;
 }
 
-std::string FullNode::receivedMsgCB(std::string client, std::string msg)
+std::string FullNode::receivedMsgCB(std::string client, std::string msg)        // TODO: Implementar
 {
     std::string path;  
 

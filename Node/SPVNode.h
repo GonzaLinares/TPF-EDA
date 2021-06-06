@@ -6,12 +6,11 @@ class SPVNode :
 {
 public:
 
+    SPVNode(boost::asio::io_context& ioContext, std::string port, std::string path2blockchain);
+    SPVNode(boost::asio::io_context& ioContext, std::string port);
+
     // Inherited via BaseNode
     virtual bool createBlockchainFromFile(std::string&) override;
-    virtual void deleteBlockchain() override;
-    virtual Block* getBlock(std::string id) override;
-    virtual bool getBlocksID(std::vector<std::string>& buffer, int numOfBlocks = 0, int offset = 0) override;
-    virtual int getBlockQuant(void) override;
     virtual std::vector<std::string> getActionList() override;
 
     //POST HTTP
@@ -26,6 +25,8 @@ public:
 
 
 private:
+
+    std::string receivedMsgCB(std::string client, std::string msg);
 
     static std::vector<std::string> actionsVector;    //Vector con los nombres de las acciones posibles
 };
