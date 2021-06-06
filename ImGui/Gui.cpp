@@ -87,7 +87,7 @@ Gui::~Gui()
 	al_destroy_display(display);
 }
 
-void Gui::update(vector<BaseNode*>& nodes) {
+void Gui::update(NodeFactory& nodes) {
 
 	ALLEGRO_EVENT ev;
 	const ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);	//Color de fondo de pantalla
@@ -185,7 +185,7 @@ void Gui::showNodesTab(vector<BaseNode*>& nodes) {
 
 	static string nodeIp = "";
 	static string nodePort = "";
-
+	 
 	static string connPort1 = "";
 	static string connPort2 = "";
 

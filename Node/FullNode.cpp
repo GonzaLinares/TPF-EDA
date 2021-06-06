@@ -10,7 +10,7 @@ std::vector<std::string> FullNode::actionsVector{ "BlockPost", "TransactionPost"
 
 
 
-FullNode::FullNode(boost::asio::io_context& ioContext, std::string path2blockchain, std::string port)
+FullNode::FullNode(boost::asio::io_context& ioContext, std::string port, std::string path2blockchain)
     : BaseNode(ioContext, boost::bind(&FullNode::receivedMsgCB, this, boost::placeholders::_1, boost::placeholders::_2), stoi(port))
 {
 
@@ -562,7 +562,41 @@ bool FullNode::getBlocksReceived(std::string blockID, int count, std::string hos
 
 std::string FullNode::receivedMsgCB(std::string client, std::string msg)        // TODO: Implementar
 {
-    return client + msg;
+    std::string path;  
+
+    if ( path.find('?') == std::string::npos) {
+
+        if (path == std::string("eda_coin/send_block/")) {
+
+            //Tengo que parsear para hacer la llamada aca
+            //getBlocksReceived();
+        }
+        else if (path == std::string("eda_coin/send_tx/")) {
+
+
+        }
+        else if (path == std::string("eda_coin/send_filter/")) {
+
+
+        }
+    }
+    else {
+
+        std::string blockId;
+        int count;
+        //Tengo que conseguir los datos que estan en el comando
+
+        if (path == std::string("get_block")) {
+            
+
+        }
+        else if (path == std::string("get_block_header")) {
+
+
+        }
+    }
+
+    return std::string("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 }
 
 std::vector<std::string> FullNode::getActionList()

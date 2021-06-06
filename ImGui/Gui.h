@@ -19,6 +19,7 @@
 #include "../Node/FullNode.h"
 #include "../Hashing.h"
 #include "../MerkleTree.h"
+#include "../Node/NodeFactory.h"
 
 /*******************************************************************************
 * ENUMERATIONS AND STRUCTURES AND TYPEDEFS
@@ -50,7 +51,7 @@ public:
 	* Entra: Objeto nodo de la red que se esta representando
 	* Resulta: Genera un refresto en base al estado interno del display
 	*=====================================================*/
-	void update(std::vector<BaseNode*>& nodes);
+	void update(NodeFactory& nodes);
 	
 	/*=====================================================
 	* Name: getState
