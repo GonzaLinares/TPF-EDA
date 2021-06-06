@@ -301,19 +301,25 @@ bool FullNode::merkleBlockPost(std::string blockId, int position, std::string ho
     answer += std::to_string(position) + std::string(",\n");
     answer += std::string(" ""merklePath"": [\n ");
 
+    if (blockchain.size() > 0) {
+        MerkleTree<hash32> mtree = MerkleTree<hash32>(merkleTxsIDs);
+        std::vector <std::string> merklePaths;
+        mtree.getMerklePath(txIDchosen, merklePaths);
 
-    MerkleTree<hash32> mtree = MerkleTree<hash32>(merkleTxsIDs);
-    std::vector <std::string> merklePaths;
-    mtree.getMerklePath(txIDchosen, merklePaths);
+        for (std::vector<std::string>::iterator it = merklePaths.begin(); it != merklePaths.end(); it++) {
 
-    for (std::vector<std::string>::iterator it = merklePaths.begin(); it != merklePaths.end(); it++) {
+            answer += std::string(" ""Id"": ");
+            answer += std::string("""") + *it + std::string(""",\n");
+        }
 
-        answer += std::string(" ""Id"": ");
-        answer += std::string("""") + *it + std::string(""",\n");
+        answer += std::string(" ],\n}\n");
+
     }
+    else {
 
-    answer += std::string(" ],\n}\n");
-
+        answer += std::string("There is no blockchain");
+    }
+    
     commSend(host, std::string("eda_coin/send_merkle_block/"), answer);
 
     return false;
