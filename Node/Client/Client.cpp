@@ -7,7 +7,7 @@ using json = nlohmann::json;
 static size_t recieveCallback(char* ptr, size_t size, size_t nmemb, void* userdata);
 
 
-Client::Client()
+Client::Client(boost::function<std::string(std::string, std::string)> msgReceivedCb_)
 {
 	
 	this->curl = curl_easy_init();

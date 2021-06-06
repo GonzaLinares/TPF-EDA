@@ -10,6 +10,9 @@ public:
 	Server(boost::asio::io_context& _ioContext, boost::function<std::string(std::string, std::string)> msgReceivedCb_, int portNum);
 
 	std::string getLocalEndpoint();
+	std::string getLocalEndpointIP();
+	std::string getLocalEndpointPort();
+
 
 private:
 
