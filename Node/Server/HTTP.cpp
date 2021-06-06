@@ -61,7 +61,7 @@ void HTTP::elaborateMessage(std::string client) {
     if (!error) {   //LECTURA DEL PATH
         
         auxPositionINICIAL = toSendMsg.find(string("text/html"), 0);
-        toSendMsg.replace(auxPositionINICIAL, string("text/html").length(), "Conten-Type: text/json");
+        toSendMsg.replace(auxPositionINICIAL, string("text/html").length(), "text/json");
     
 
         auxPositionINICIAL = toSendMsg.find(string("filenameContent"), 0);

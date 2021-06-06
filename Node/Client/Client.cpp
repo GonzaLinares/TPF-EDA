@@ -109,6 +109,11 @@ bool Client::poll()
 	if (msgs != NULL && msgs->msg == CURLMSG_DONE)
 	{
 		msgReceivedCb(lastHost, receivedData);
+		curl_easy_cleanup(msgs->easy_handle);
+	}
+	else if (msgs != NULL)
+	{
+		curl_easy_cleanup(msgs->easy_handle);
 	}
 	return status;
 }
