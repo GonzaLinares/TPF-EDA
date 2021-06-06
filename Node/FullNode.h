@@ -30,7 +30,6 @@ public:
 
 	virtual bool createBlockchainFromFile(std::string&) override;
 	virtual std::string getNodeType();
-	virtual bool addNeighbour(std::string ipAndPort, std::string nodeType);
 		
 	//POST HTTP	*********************************************************
 	bool blockPost(std::string host);
