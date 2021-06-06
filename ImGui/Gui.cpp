@@ -468,9 +468,9 @@ void Gui::showNodesTable(NodeFactory& nodes) {
 								//delete current neigh from map
 							}
 							ImGui::SameLine();
-							ImGui::Text("IP/Port: %s", "AAA");
+							ImGui::Text("IP/Port: %s", n.first.c_str());
 							ImGui::SameLine();
-							ImGui::Text("Type: %s", "SPV or Full");
+							ImGui::Text("Type: %s", n.second.c_str());
 						}
 
 						if (ImGui::Button("Close", ImVec2(120, 0))) { ImGui::CloseCurrentPopup(); }
