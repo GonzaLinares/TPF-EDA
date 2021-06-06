@@ -28,7 +28,7 @@ bool Client::POST(std::string url, std::string& msg)
 
 		this->curl = curl_easy_init();
 
-		curl_slist* list;
+		curl_slist* list = NULL;
 		curl_slist_append(list, "Content-Type: text/json");
 
 		curl_easy_setopt(curl, CURLOPT_POST, 1L);

@@ -7,7 +7,7 @@ using json = nlohmann::json;
 
 std::vector<std::string> SPVNode::actionsVector{"TransactionPost" , "FilterPost" , "GetBlockPost"};
 
-SPVNode::SPVNode(boost::asio::io_context& ioContext, std::string path2blockchain, std::string port)
+SPVNode::SPVNode(boost::asio::io_context& ioContext, std::string port, std::string path2blockchain)
     : BaseNode(ioContext, boost::bind(&SPVNode::receivedMsgCB, this, boost::placeholders::_1, boost::placeholders::_2), stoi(port))
 {
     if (path2blockchain.size() != 0)

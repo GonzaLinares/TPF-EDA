@@ -16,27 +16,27 @@ bool NodeFactory::createFullNode(std::string port, std::string path2blockchain)
 {
 	nodes.push_back( new FullNode(ioContext, port, path2blockchain));
 
-	return false;
+	return true; //TODO: Chequear errores de carga
 }
 
 bool NodeFactory::createFullNode(std::string port)
 {
 	nodes.push_back(new FullNode(ioContext, port));
 
-	return false;
+	return true;
 }
 
 bool NodeFactory::createSPVNode(std::string port, std::string path2blockchain)
 {
 	nodes.push_back(new SPVNode(ioContext, port, path2blockchain));
 
-	return false;
+	return true;
 }
 
 bool NodeFactory::createSPVNode(std::string port)
 {
 	nodes.push_back(new SPVNode(ioContext, port));
 
-	return false;
+	return true;
 }
 
