@@ -85,6 +85,8 @@ protected:
 	*=====================================================*/
 	virtual void commSend(std::string host, std::string path);
 
+	virtual std::string getIP();
+
 	Client client;
 	Server server;
 	std::vector <Block> blockchain;		//blockchain con los datos
