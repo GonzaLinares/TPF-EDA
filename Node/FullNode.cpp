@@ -594,8 +594,7 @@ std::string FullNode::receivedMsgCB(std::string client, std::string msg)
         else if (client == std::string("/eda_coin/get_block_header")) {
 
             std::string blockID = msg.substr(msg.find("blockid=", 0) + 10, 8);
-            std::string temp = msg.substr(msg.find("count=", 0) + 6, msg.find_first_of('"', 5));
-            //int count = stoi());  //TODO: Sirve mientras no haya nada despues de count
+            std::string temp = msg.substr(msg.find("count=", 0) + 6, msg.find_first_of('"', 5)); //TODO: Sirve mientras no haya nada despues de count
             answer = getBlockHeaderReceived(blockID, stoi(temp));
         }
 
