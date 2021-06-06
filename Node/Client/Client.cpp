@@ -11,21 +11,42 @@ Client::Client(boost::function<std::string(std::string, std::string)> msgReceive
 	: err(CURLM_OK),
 	status(IDLE)
 {
-	
-	this->curl = curl_easy_init();
 	this->multiCurl = curl_multi_init();
-	
+}
+
+Client::~Client()
+{
+	curl_multi_cleanup(multiCurl);
+	curl_easy_cleanup(curl);
 }
 
 bool Client::POST(std::string url, std::string& msg)
 {
-	if (url.size() != 0 && msg.size() != 0)
+	if (url.size() != 0 && msg.size() != 0 && status == IDLE)
 	{
+		status = DOWNLOADING;
+
+		this->curl = curl_easy_init();
+
+		curl_slist* list;
+		curl_slist_append(list, "Content-Type: text/json");
+
 		curl_easy_setopt(curl, CURLOPT_POST, 1L);
 		curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-		curl_easy_setopt(curl, CURLOPT_READFUNCTION, recieveCallback);
-		curl_easy_setopt(curl, CURLOPT_READDATA);
-		curl_easy_setopt(curl, CURLOPT_POST);
+		curl_easy_setopt(curl, CURLOPT_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);
+		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, recieveCallback);
+		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &receivedData);
+		curl_easy_setopt(curl, CURLOPT_HTTPHEADER, list);
+		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, msg.c_str());
+		curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, msg.size());
+
+		curl_slist_free_all(list);
+
+		curl_multi_add_handle(&multiCurl, &curl);
+
+		curl_easy_cleanup(&curl);
+
+		return true;
 	}
 	else
 	{
@@ -35,12 +56,38 @@ bool Client::POST(std::string url, std::string& msg)
 
 bool Client::GET(std::string url)
 {
-	return false;
+	if (url.size() != 0 && status == IDLE)
+	{
+		status = DOWNLOADING;
+
+		this->curl = curl_easy_init();
+
+		curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+		curl_easy_setopt(curl, CURLOPT_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);
+		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, recieveCallback);
+		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &receivedData);
+
+		curl_multi_add_handle(&multiCurl, &curl);
+
+		curl_easy_cleanup(&curl);
+
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 int Client::getStatus()
 {
 	return this->status;
+}
+
+bool Client::poll()
+{
+	err = curl_multi_perform(multiCurl, &status);
+	return status;
 }
 
 
@@ -61,7 +108,7 @@ bool Client::download(std::list<std::string>& buffer, const char* usrname, unsig
 
 			//curl_easy_setopt(curl, CURLOPT_URL, );
 			curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
-			curl_easy_setopt(curl, CURLOPT_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);
+
 
 			curl_easy_setopt(curl, CURLOPT_READFUNCTION, recieveCallback);
 			curl_easy_setopt(curl, CURLOPT_WRITEDATA, &this->receivedData);
