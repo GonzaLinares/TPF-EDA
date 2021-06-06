@@ -330,23 +330,21 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 
 	if (actionList[comboBoxActionNodesIndex] == std::string("TransactionPost")) { //Message send crypto == true
 
-		std::string publicKey = std::string("");
-		int coinAmount = 0;
 		ImGui::Text("Public key: ");
 		ImGui::SameLine();
-		ImGui::InputText("###Public key :", &publicKey);
+		ImGui::InputText("###Public key :", &publicKeyWritten);
 		ImGui::SameLine();
 		ImGui::Text("Amount: ");
 		ImGui::SameLine();
-		ImGui::InputInt("###Amount:", &coinAmount);
+		ImGui::InputInt("###Amount:", &amountWritten);
 		nSpacing(5);
 		if (ImGui::Button("Send Message")) {
 
 			if (currentNode->getNodeType() == std::string("Full")) {
-				((FullNode*)currentNode)->transactionPost(publicKey, coinAmount, neigh[comboBoxNodesIndex].first);
+				((FullNode*)currentNode)->transactionPost(publicKeyWritten, amountWritten, neigh[comboBoxNodesIndex].first);
 			}
 			else {
-				((SPVNode*)currentNode)->transactionPost(publicKey, coinAmount, neigh[comboBoxNodesIndex].first);
+				((SPVNode*)currentNode)->transactionPost(publicKeyWritten, amountWritten, neigh[comboBoxNodesIndex].first);
 			}
 		}
 	}
@@ -358,36 +356,32 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 	}
 	else if (actionList[comboBoxActionNodesIndex] == std::string("MerkleBlockPost")) {
 
-		std::string blockID = std::string("");
-		int position = 0;
 		ImGui::Text("BlockID: ");
 		ImGui::SameLine();
-		ImGui::InputText("###BlockID :", &blockID);
+		ImGui::InputText("###BlockID :", &blockIDWritten);
 		ImGui::SameLine();
 		ImGui::Text("Position: ");
 		ImGui::SameLine();
-		ImGui::InputInt("###Position:", &position);
+		ImGui::InputInt("###Position:", &positionWritten);
 		nSpacing(5);
 		if (ImGui::Button("Send Message")) {
 
-			((FullNode*)currentNode)->merkleBlockPost(blockID, position, neigh[comboBoxNodesIndex].first);
+			((FullNode*)currentNode)->merkleBlockPost(blockIDWritten, positionWritten, neigh[comboBoxNodesIndex].first);
 		}
 	}
 	else if (actionList[comboBoxActionNodesIndex] == std::string("GetBlocksPost")) {
 
-		std::string blockID = std::string("");
-		int blockCount = 0;
 		ImGui::Text("BlockID: ");
 		ImGui::SameLine();
-		ImGui::InputText("###BlockID :", &blockID);
+		ImGui::InputText("###BlockID :", &blockIDWritten);
 		ImGui::SameLine();
 		ImGui::Text("Blocks Quantity: ");
 		ImGui::SameLine();
-		ImGui::InputInt("###Blocks Quantity:", &blockCount);
+		ImGui::InputInt("###Blocks Quantity:", &blockQuantityWritten);
 		nSpacing(5);
 		if (ImGui::Button("Send Message")) {
 
-			((FullNode*)currentNode)->getBlocks(blockID, std::to_string(blockCount), neigh[comboBoxNodesIndex].first);
+			((FullNode*)currentNode)->getBlocks(blockIDWritten, std::to_string(blockQuantityWritten), neigh[comboBoxNodesIndex].first);
 		}
 	}
 	else if (actionList[comboBoxActionNodesIndex] == std::string("FilterPost")) {
@@ -398,23 +392,20 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 	}
 	else if (actionList[comboBoxActionNodesIndex] == std::string("GetBlockHeadersPost")) {
 
-		std::string blockID = std::string("");
-		int blockCount = 0;
 		ImGui::Text("BlockID: ");
 		ImGui::SameLine();
-		ImGui::InputText("###BlockID :", &blockID);
+		ImGui::InputText("###BlockID :", &blockIDWritten);
 		ImGui::SameLine();
 		ImGui::Text("Blocks Quantity: ");
 		ImGui::SameLine();
-		ImGui::InputInt("###Blocks Quantity:", &blockCount);
+		ImGui::InputInt("###Blocks Quantity:", &blockQuantityWritten);
 		nSpacing(5);
 		if (ImGui::Button("Send Message")) {
 
-			((SPVNode*)currentNode)->getBlockHeader(blockID, std::to_string(blockCount), neigh[comboBoxNodesIndex].first);
+			((SPVNode*)currentNode)->getBlockHeader(blockIDWritten, std::to_string(blockQuantityWritten), neigh[comboBoxNodesIndex].first);
 		}
 	}
 	ImGui::EndChild();
-	
 }
 
 void Gui::showNodesTable(NodeFactory& nodes) {
