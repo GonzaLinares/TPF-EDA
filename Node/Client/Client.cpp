@@ -8,10 +8,34 @@ static size_t recieveCallback(char* ptr, size_t size, size_t nmemb, void* userda
 
 
 Client::Client(boost::function<std::string(std::string, std::string)> msgReceivedCb_)
+	: err(CURLM_OK),
+	status(IDLE)
 {
 	
 	this->curl = curl_easy_init();
+	this->multiCurl = curl_multi_init();
 	
+}
+
+bool Client::POST(std::string url, std::string& msg)
+{
+	if (url.size() != 0 && msg.size() != 0)
+	{
+		curl_easy_setopt(curl, CURLOPT_POST, 1L);
+		curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+		curl_easy_setopt(curl, CURLOPT_READFUNCTION, recieveCallback);
+		curl_easy_setopt(curl, CURLOPT_READDATA);
+		curl_easy_setopt(curl, CURLOPT_POST);
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool Client::GET(std::string url)
+{
+	return false;
 }
 
 int Client::getStatus()
@@ -19,12 +43,6 @@ int Client::getStatus()
 	return this->status;
 }
 
-void Client::cancelDownload()
-{
-	curl_easy_cleanup(this->curl);
-	curl_multi_cleanup(this->multiCurl);
-	this->status = IDLE;
-}
 
 
 bool Client::download(std::list<std::string>& buffer, const char* usrname, unsigned int tweetCount)

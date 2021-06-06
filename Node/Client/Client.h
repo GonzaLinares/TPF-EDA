@@ -14,10 +14,9 @@ public:
 	Client(boost::function<std::string(std::string, std::string)> msgReceivedCb_);
 
 	bool POST(std::string url, std::string& msg);
+	bool GET(std::string url);
 
 	int getStatus();
-	bool download(std::list<std::string>& buffer, const char* usrname, unsigned int tweetCount = 0);
-	void cancelDownload();
 
 private:
 	int status;

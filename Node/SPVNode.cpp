@@ -65,7 +65,7 @@ bool SPVNode::createBlockchainFromFile(std::string& path)
 
 std::vector<std::string> SPVNode::getActionList()
 {
-    return std::vector<std::string>();
+    return actionsVector;
 }
 
 bool SPVNode::transactionPost(std::string publicKey, int amount, std::string host)
