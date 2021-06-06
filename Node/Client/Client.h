@@ -10,7 +10,9 @@ enum { IDLE = 0, DOWNLOADING, DISPLAYING };
 class Client
 {
 public:
-	Client(const char* API_key, const char* API_SecretKey);
+	Client();
+
+	bool POST(std::string url, std::string& msg);
 
 	int getStatus();
 	bool download(std::list<std::string>& buffer, const char* usrname, unsigned int tweetCount = 0);
@@ -18,11 +20,7 @@ public:
 
 private:
 	int status;
-	const char* APIKey;
-	const char* APISecretKey;
-	std::string token;
 	std::string receivedData;
-	std::string queryLink;
 	CURL* curl;
 	CURLM* multiCurl;
 	CURLMcode err;

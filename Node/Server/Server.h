@@ -9,6 +9,8 @@ public:
 
 	Server(boost::asio::io_context& _ioContext, boost::function<std::string(std::string, std::string)> msgReceivedCb_, int portNum);
 
+	std::string getLocalEndpoint();
+
 private:
 
 	/*Funcion startListening: Comienza a aceptar conexiones del exterior, se llama automaticamente al instanciar la clase*/
@@ -21,5 +23,6 @@ private:
 	boost::function<std::string(std::string, std::string)> msgReceivedCb;
 	boost::asio::io_context& ioContext;
 	tcp::acceptor acceptor;
+	std::string localEndpoint;
 };
 
