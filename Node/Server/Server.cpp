@@ -16,6 +16,16 @@ std::string Server::getLocalEndpoint()
 	return localEndpoint;
 }
 
+std::string Server::getLocalEndpointIP()
+{
+	return acceptor.local_endpoint().address().to_string();
+}
+
+std::string Server::getLocalEndpointPort()
+{
+	return std::to_string(acceptor.local_endpoint().port());
+}
+
 
 void Server::startListening()
 {

@@ -86,6 +86,7 @@ protected:
 	virtual void commSend(std::string host, std::string path);
 
 	virtual std::string getIP();
+	virtual std::string getPort();
 
 	Client client;
 	Server server;
