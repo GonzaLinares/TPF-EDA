@@ -9,7 +9,7 @@ static size_t recieveCallback(char* ptr, size_t size, size_t nmemb, void* userda
 
 Client::Client(boost::function<std::string(std::string, std::string)> msgReceivedCb_, long port_)
 	: err(CURLM_OK),
-	status(IDLE),
+	status(WAITING),
 	msgReceivedCb(msgReceivedCb_),
 	curl(NULL),
 	port(port_)
@@ -28,7 +28,7 @@ Client::~Client()
 
 bool Client::POST(std::string host, std::string path, std::string& msg)
 {
-	if ((host + path).size() != 0 && msg.size() != 0 && status == IDLE)
+	if ((host + path).size() != 0 && msg.size() != 0 && status == WAITING)
 	{
 		std::string aux;
 		status = DOWNLOADING;
@@ -73,7 +73,7 @@ bool Client::POST(std::string host, std::string path, std::string& msg)
 
 bool Client::GET(std::string host, std::string path)
 {
-	if ((host + path).size() != 0 && status == IDLE)
+	if ((host + path).size() != 0 && status == WAITING)
 	{
 		std::string aux;
 		status = DOWNLOADING;
@@ -132,63 +132,3 @@ static size_t recieveCallback(char* ptr, size_t size, size_t nmemb, void* userda
 	usrdata->append(ptr);
 	return realsize;
 }
-
-/*
-bool Client::download(std::list<std::string>& buffer, const char* usrname, unsigned int tweetCount)
-{
-	if (this->status == IDLE)
-	{
-
-		this->curl = curl_easy_init();
-		this->multiCurl = curl_multi_init();
-		this->receivedData.clear();
-
-		if (this->curl && this->multiCurl)
-		{
-
-			curl_multi_add_handle(this->multiCurl, this->curl);
-
-			//curl_easy_setopt(curl, CURLOPT_URL, );
-			curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
-
-
-			curl_easy_setopt(curl, CURLOPT_READFUNCTION, recieveCallback);
-			curl_easy_setopt(curl, CURLOPT_WRITEDATA, &this->receivedData);
-
-		}
-		else
-		{
-			throw std::exception("ERR: Unable to initialize cURL");
-		}
-	}
-	else
-	{
-		this->err = curl_multi_perform(this->multiCurl, &this->status);
-		if (this->status == IDLE)
-		{
-			if (this->err != CURLM_OK)
-			{
-				curl_easy_cleanup(this->curl);
-				curl_multi_cleanup(this->multiCurl);
-				throw std::exception(curl_multi_strerror(this->err));
-			}
-			else
-			{
-				curl_easy_cleanup(this->curl);
-				curl_multi_cleanup(this->multiCurl);
-				json receivedJSON = json::parse(this->receivedData);
-				if (1procesamiento(receivedJSON, buffer))
-				{
-
-				}
-				//TODO: Agregar parseo a lista
-				return 0;
-			}
-		}
-	}
-	return 1;
-
-}
-*/
-
-

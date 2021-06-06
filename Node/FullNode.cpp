@@ -72,9 +72,9 @@ bool FullNode::createBlockchainFromFile(std::string& path)
     return false;
 }
 
-node_type_t FullNode::getNodeType()
+std::string FullNode::getNodeType()
 {
-    return FULL;
+    return std::string("Full");
 }
 
 bool FullNode::blockPost(std::string host)

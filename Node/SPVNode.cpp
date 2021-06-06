@@ -21,9 +21,9 @@ SPVNode::SPVNode(boost::asio::io_context& ioContext, std::string port)
 {
 }
 
-node_type_t SPVNode::getNodeType()
+std::string SPVNode::getNodeType()
 {
-    return SPV;
+    return std::string("SPV");
 }
 
 
