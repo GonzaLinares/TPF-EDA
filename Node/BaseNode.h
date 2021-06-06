@@ -74,9 +74,6 @@ public:
 	*=====================================================*/
 	virtual std::string getNodeType(void) = 0;
 
-
-	bool addNeighbour(std::string ipAndPort, std::string nodeType);
-
 	/*=====================================================
 	* Name: addNeighbour
 	* Entra: -

@@ -118,6 +118,12 @@ std::string BaseNode::getState()
 }
 
 
+bool BaseNode::addNeighbour(std::string ipAndPort, std::string nodeType)
+{
+    neighbours.push_back(std::pair<std::string, std::string>(ipAndPort, nodeType));
+
+    return false;
+}
 
 std::vector <std::pair<std::string, std::string>>& BaseNode::getNeighbours() {
     return neighbours;

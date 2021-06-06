@@ -68,10 +68,15 @@ private:
 	int blockPage;			//Indice de pagina cuando se muestran los bloques
 	int comboBoxNodesIndex;
 	int comboBoxActionNodesIndex;
-	std::string nodeIp;		//IP ingresada por la GUI
-	std::string nodePort;	//Puerto ingresado por la GUI
-	std::string connPort1;	//Puerto del nodo a conectar con el actual
-	std::string filename;	//String que mantiene el path al archivo con la blockchain
+	std::string nodeIp;			//IP ingresada por la GUI
+	std::string nodePort;		//Puerto ingresado por la GUI
+	std::string connPort1;		//Puerto del nodo a conectar con el actual
+	std::string filename;		//String que mantiene el path al archivo con la blockchain
+	std::string blockIDWritten;	//String donde se escriben los blockID para los mensajes
+	std::string publicKeyWritten;	//String donde se escibe la public Key
+	int amountWritten;	//Entero donde se guarda la cantidad ingresada
+	int blockQuantityWritten;	//Entero donde se guarda la cantidad de bloques ingresada
+	int positionWritten;		//Entero donde se guarda la posicion ingresada
 	ALLEGRO_DISPLAY* display;	//Display y cola de eventos de allegro
 	ALLEGRO_EVENT_QUEUE* queue; 
 	std::map<std::string, MerkleTree<hash32>*> merkleTrees;	//Diccionario para almacenar los Merkle Trees de los bloques al momento en que se solicitan
