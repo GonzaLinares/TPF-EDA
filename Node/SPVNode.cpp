@@ -151,11 +151,16 @@ std::string SPVNode::merkleBlockPostReceived(bool error, int result)
 
 std::string SPVNode::receivedMsgCB(std::string client, std::string msg)
 {
+    std::string answer;
+
     if (msg != std::string("")) {
 
         //Aca podria por ejemplo hacer algo con el mensaje que nos enviaron
     }
-    return merkleBlockPostReceived(false, 0);
+
+    answer = merkleBlockPostReceived(false, 0);
+
+    return answer;
 
     //El unico caso en el que llegan mensajes es para la recepción del MerkleBlock
 }
