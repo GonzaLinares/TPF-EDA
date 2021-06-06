@@ -75,7 +75,7 @@ private:
 	ALLEGRO_EVENT_QUEUE* queue; 
 	std::map<std::string, MerkleTree<hash32>*> merkleTrees;	//Diccionario para almacenar los Merkle Trees de los bloques al momento en que se solicitan
 
-	bool fileFounded;		//Estado del texto que muestra cuando no encuentra un archivo
+	bool fileFound;		//Estado del texto que muestra cuando no encuentra un archivo
 	bool linkedSuccess;
 
 	/*=====================================================

@@ -3,6 +3,7 @@
 #include "imgui.h"
 #include "imgui_impl_allegro5.h"
 #include "imgui_stdlib.h"
+#include <math.h>
 #include <stdexcept> 
 
 using namespace std;
@@ -20,7 +21,7 @@ Gui::Gui() {
 	nodeIp = "";
 	nodePort = "";
 	connPort1 = "";
-	fileFounded = true;
+	fileFound = true;
 	linkedSuccess = true;
 	merkleTrees.clear();
 
@@ -198,7 +199,7 @@ void Gui::showCreateBox(NodeFactory& nodes) {
 	ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f); //TODO: Ver porque no aparecen los bordes redondeados
 
 	nSpacing(3);
-	ImGui::BeginChild("CreateNode", ImVec2(300, 130), true);
+	ImGui::BeginChild("CreateNode", ImVec2(300, 150), true);
 	ImGui::Text("1) Create node");
 	nSpacing(3);
 	ImGui::Text("Port");
@@ -210,7 +211,7 @@ void Gui::showCreateBox(NodeFactory& nodes) {
 	nSpacing(2);
 	if (ImGui::Button("SPV")) {
 		if (filename.size() > 0) {
-			fileFounded = nodes.createSPVNode(nodePort, filename);
+			fileFound = nodes.createSPVNode(nodePort, filename);
 		}
 		else {
 			nodes.createSPVNode(nodePort);
@@ -218,13 +219,13 @@ void Gui::showCreateBox(NodeFactory& nodes) {
 		//deleteMerkleDic();
 		//merkleTrees.clear();
 		//node[currentNodeActive]->deleteBlockchain();
-		//fileFounded = node[currentNodeActive]->createBlockchainFromFile(filename);
+		//fileFound = node[currentNodeActive]->createBlockchainFromFile(filename);
 		blockPage = 0;
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("Full")) {
 		if (filename.size() > 0) {
-			fileFounded = nodes.createFullNode(nodePort, filename);
+			fileFound = nodes.createFullNode(nodePort, filename);
 		}
 		else {
 			nodes.createFullNode(nodePort);
@@ -232,11 +233,11 @@ void Gui::showCreateBox(NodeFactory& nodes) {
 		//deleteMerkleDic();
 		//merkleTrees.clear();
 		//nodes[currentNodeActive]->deleteBlockchain();
-		//fileFounded = nodes[currentNodeActive]->createBlockchainFromFile(filename);
+		//fileFound = nodes[currentNodeActive]->createBlockchainFromFile(filename);
 		blockPage = 0;
 	}
 
-	if (fileFounded == false) {		//Si no encontro el archivo mostramos el mensaje de error
+	if (fileFound == false) {		//Si no encontro el archivo mostramos el mensaje de error
 		nSpacing(1);
 		ImGui::Text("Blockchain not found!!");
 	}
@@ -248,7 +249,7 @@ void Gui::showCreateBox(NodeFactory& nodes) {
 
 void Gui::showConnectBox(NodeFactory& nodes) {
 
-	ImGui::BeginChild("Connect", ImVec2(300, 130), true);
+	ImGui::BeginChild("Connect", ImVec2(300, 150), true);
 	ImGui::Text("2) Connect");
 	nSpacing(3);
 	ImGui::Text("IP:Port");
@@ -271,9 +272,10 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 
 	vector<BaseNode*> node = nodes.getNodes();
 	vector<string> actionList;
-	vector<string> nodesIDs;	//Vector con las labels de los nodos para mostrar en la combobox
-	for (int i = 0; i < node.size(); i++) {
-		nodesIDs.push_back(node[i]->getPort());
+	vector<string> nodesIDs; // = node->get; //TODO: getNeightbords	//Vector con las labels de los nodos para mostrar en la combobox
+	
+	if (nodesIDs.empty()) {
+		nodesIDs.push_back("No connections");
 	}
 
 	if (node.size() > 0) {
@@ -285,6 +287,7 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 		nSpacing(3);
 		ImGui::Text("Receiver IP:Port");
 		ImGui::SameLine();
+
 		if (ImGui::BeginCombo("###Receiver IP:Port", nodesIDs[comboBoxNodesIndex].c_str()))
 		{
 			for (int i = 0; i < node.size(); i++)
@@ -375,7 +378,7 @@ void Gui::showNodesTable(NodeFactory& nodes) {
 				ImGui::TableNextColumn();
 				ImGui::Text("%s", current->getPort().c_str());
 				ImGui::TableNextColumn();
-				ImGui::RadioButton(buffer, &currentNodeActive, i);// e++;
+				ImGui::RadioButton(buffer, &currentNodeActive, i);
 				ImGui::TableNextColumn();
 				if (false) { //Si tiene conexiones
 					sprintf_s(buffer, "Show###%d", i);
@@ -400,7 +403,8 @@ void Gui::showNodesTable(NodeFactory& nodes) {
 					ImGui::Text("%s", "Empty");
 				}
 				ImGui::TableNextColumn();
-				ImGui::Text("Receiving");
+				blockPage = 0;
+				ImGui::Text("%s", "linea 405");
 			}
 		ImGui::EndTable();
 	}
@@ -432,6 +436,9 @@ void Gui::showBlocksTab(BaseNode& node) {
 	node.getBlocksID(currentPageBlockIDs, pageSize, blockPage);
 	blocksQuant = currentPageBlockIDs.size();
 
+	nSpacing(4);
+	ImGui::Text("Page %d of %d", (int)ceil(blockPage/pageSize+1), (int)ceil((double)node.getBlockQuant()/(double)pageSize));
+	nSpacing(4);
 	ImGui::SetNextItemWidth(ImGui::GetFontSize() * 8);	//Configuramos las columnas
 	ImGui::Columns(cols, NULL, true);
 	ImGui::SetColumnWidth(0, SCREENWIDTH/cols);
@@ -505,14 +512,14 @@ void Gui::showBlocksTab(BaseNode& node) {
 
 	//Verificamos que se pueda avanzar o retroceder la pagina que muestra los bloques
 	if (blocksQuant > 0) {
-		ImGui::SetCursorPos(ImVec2(SCREENWIDTH - 300, 20));
-		if (ImGui::Button("Prev", ImVec2(100, 50))) {
+		ImGui::SetCursorPos(ImVec2(SCREENWIDTH - 200, 83));
+		if (ImGui::Button("Prev", ImVec2(80, 40))) {
 			if (pageSize <= blockPage) {
 				blockPage -= pageSize;
 			}
 		}
 		ImGui::SameLine();
-		if (ImGui::Button("Next", ImVec2(100, 50))) {
+		if (ImGui::Button("Next", ImVec2(80, 40))) {
 			if (blockPage + pageSize < node.getBlockQuant()) {
 				blockPage += pageSize;
 			}
