@@ -84,6 +84,8 @@ public:
 	virtual std::string getIP();
 	virtual std::string getPort();
 
+	virtual bool poll();
+
 protected:
 
 	std::map <std::string, std::string> neighbours;

@@ -45,7 +45,7 @@ void HTTP::elaborateMessage(std::string client) {
 
     auxString = receivedMsg.substr(auxPositionINICIAL, auxPositionFINAL-auxPositionINICIAL);    //Extraigo el path
 
-    auxPositionINICIAL = auxString.find_first_of("&");          //Si hay parametros los extraigo
+    auxPositionINICIAL = auxString.find_first_of("?");          //Si hay parametros los extraigo
     if (auxPositionINICIAL != -1)
     {
 
@@ -56,31 +56,13 @@ void HTTP::elaborateMessage(std::string client) {
 
     this->path = auxString;                                     //guardo el path
     auxString.erase(0, 1);                                      //Borro la primera /
-    boost::filesystem::path path(auxString);
 
-    if (path.empty() || path.string().back() == '/') {          //Si el path esta vacio o no tiene filename, agrego el index.html por default
-        auxString += string("index.html");
-        path.append(string("index.html"));
-    }
-
-    file.open(auxString, ios::in | ios::binary);                //Abro el path y chequeo por errores
-
-    if (file.failbit == 1 || !file.is_open()) {
-
-        cout << "Error al intentar abrir el path" << endl;
-        write_error_message();
-        error = 1;
-    }
 
     if (!error) {   //LECTURA DEL PATH
         
         auxPositionINICIAL = toSendMsg.find(string("text/html"), 0);
-        toSendMsg.replace(auxPositionINICIAL, string("text/html").length(), http::server::mime_types::extension_to_type(boost::filesystem::extension(path)));
+        toSendMsg.replace(auxPositionINICIAL, string("text/html").length(), "Conten-Type: text/json");
     
-        stringstream strStream;
-        strStream << file.rdbuf(); //read the file
-
-        auxString = strStream.str(); //str holds the content of the file
 
         auxPositionINICIAL = toSendMsg.find(string("filenameContent"), 0);
         auxPositionFINAL = toSendMsg.find(string("\r\n\r\n"), 0) - auxPositionINICIAL;

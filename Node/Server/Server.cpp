@@ -6,7 +6,6 @@ Server::Server(boost::asio::io_context& _ioContext, boost::function<std::string(
 	acceptor(_ioContext, tcp::endpoint(tcp::v4(), portNum)),
 	msgReceivedCb(msgReceivedCb_)
 {
-	std::cout << msgReceivedCb_("hola", std::to_string(portNum)) << std::endl;	// Todo: sacar
 	localEndpoint = acceptor.local_endpoint().address().to_string() + ":" + std::to_string(acceptor.local_endpoint().port());
 	startListening();
 }
@@ -24,6 +23,11 @@ std::string Server::getLocalEndpointIP()
 std::string Server::getLocalEndpointPort()
 {
 	return std::to_string(acceptor.local_endpoint().port());
+}
+
+void Server::poll()
+{
+	int count = ioContext.poll();
 }
 
 
