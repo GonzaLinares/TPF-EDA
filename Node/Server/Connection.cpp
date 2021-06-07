@@ -3,9 +3,9 @@
 
 Connection::~Connection()			//Destructor solo para uso de debug
 {
-#ifdef DEBUG
+#ifdef _DEBUG
 	std::cerr << "Connection closed." << std::endl;
-#endif // DEBUG
+#endif // _DEBUG
 }
 
 Connection::Connection(boost::asio::io_context& ioContext, boost::function<std::string(std::string, std::string)> postReplyCB)	//Preparo el socket de la conexion con el constructor
@@ -57,7 +57,7 @@ void Connection::readDataHandler( int recievedBytes, Connection::pointer thisCon
 	}
 	else
 	{
-#ifdef DEBUG
+#ifdef _DEBUG
 		std::cerr << error.message() << std::endl;
 #endif // DEBUG
 	}
@@ -69,10 +69,10 @@ void Connection::sendDataHandler(int sentBytes, Connection::pointer thisCon, con
 {
 	if (error)	
 	{
-#ifdef DEBUG
+#ifdef _DEBUG
 		std::cerr << "Error ocurred while writting: " << error.message() << std::endl;
 #endif // DEBUG
 	}
 
-	this->conSocket.close();	//Como ya se respondio se cierra el socket
+	this->conSocket.shutdown(boost::asio::ip::tcp::socket::shutdown_send);	//Como ya se respondio se cierra el socket
 }

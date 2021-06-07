@@ -68,10 +68,12 @@ bool NodeFactory::deleteNode(unsigned int nodeIndex)
 bool NodeFactory::pollAllNodes()
 {
 
+	ioContext.poll();
 	for (auto it : nodes)
 	{
 		it->poll();
 	}
+
 
 	return true;		//TODO: chequear devolucion
 }

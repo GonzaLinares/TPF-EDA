@@ -25,17 +25,10 @@ std::string Server::getLocalEndpointPort()
 	return std::to_string(acceptor.local_endpoint().port());
 }
 
-void Server::poll()
-{
-	int count = ioContext.poll();
-}
-
 
 void Server::startListening()
 {
-
 	Connection::pointer newConnection = Connection::createConnection(ioContext, msgReceivedCb);		//Genero una nuevo conexion con un smart pointer para que se borre al terminar la misma
-
 	acceptor.async_accept(newConnection->getSocket(),
 		boost::bind(&Server::connectionHandler, this, newConnection, boost::asio::placeholders::error));	//comienzo a recibir en esa nueva conexion
 

@@ -148,7 +148,7 @@ bool BaseNode::hasNeighbours() {
 bool BaseNode::poll()
 {
     client.poll();
-    server.poll();
 
     return true;        //todo: Chequear devolucion
 }
+

@@ -12,6 +12,7 @@ Client::Client(boost::function<std::string(std::string, std::string)> msgReceive
 	status(WAITING),
 	msgReceivedCb(msgReceivedCb_),
 	curl(NULL),
+	list(NULL),
 	port(port_)
 {
 	this->multiCurl = curl_multi_init();
@@ -31,12 +32,15 @@ bool Client::POST(std::string host, std::string path, std::string& msg)
 	if ((host + path).size() != 0 && msg.size() != 0 && status == WAITING)
 	{
 		std::string aux;
+		this->toSendMsg = msg;
+		receivedData.clear();
 		status = DOWNLOADING;
 		lastHost = host;
 		this->curl = curl_easy_init();
 
-		curl_slist* list = NULL;
-		curl_slist_append(list, "Content-Type: text/json");
+
+		
+		list = curl_slist_append(list, "Content-Type: text/json");
 
 		curl_easy_setopt(curl, CURLOPT_POST, 1L);
 		aux = host.substr(0, host.rfind(':')) + "/" + path;
@@ -48,8 +52,10 @@ bool Client::POST(std::string host, std::string path, std::string& msg)
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, recieveCallback);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &receivedData);
 		curl_easy_setopt(curl, CURLOPT_HTTPHEADER, list);
-		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, msg.c_str());
-		curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, msg.size());
+		curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, toSendMsg.c_str());
+		curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, toSendMsg.size());
+		curl_easy_setopt(curl, CURLOPT_FRESH_CONNECT);
 		curl_easy_setopt(curl, CURLOPT_TIMEOUT, TIMEOUTLIMIT);
 
 
@@ -57,12 +63,9 @@ bool Client::POST(std::string host, std::string path, std::string& msg)
 		curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
 #endif // _DEBUG
 
-
-		curl_slist_free_all(list);
-
 		curl_multi_add_handle(multiCurl, curl);
 		curl = NULL;
-
+		
 		return true;
 	}
 	else
@@ -76,14 +79,18 @@ bool Client::GET(std::string host, std::string path)
 	if ((host + path).size() != 0 && status == WAITING)
 	{
 		std::string aux;
+		receivedData.clear();
 		status = DOWNLOADING;
 		lastHost = host;
 		this->curl = curl_easy_init();
 		aux = host.substr(0, host.rfind(':')) + "/" + path;
 		curl_easy_setopt(curl, CURLOPT_URL, aux.c_str());
+		curl_easy_setopt(curl, CURLOPT_HTTPGET);
+		curl_easy_setopt(curl, CURLOPT_FRESH_CONNECT);
 		aux = host.substr(host.rfind(':') + 1);
 		curl_easy_setopt(curl, CURLOPT_PORT, std::stoi(aux));
 		curl_easy_setopt(curl, CURLOPT_LOCALPORT, port);
+		curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
 		curl_easy_setopt(curl, CURLOPT_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, recieveCallback);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &receivedData);
@@ -117,10 +124,14 @@ bool Client::poll()
 	{
 		msgReceivedCb(lastHost, receivedData);
 		curl_easy_cleanup(msgs->easy_handle);
+		curl_slist_free_all(list);
+		list = NULL;
 	}
 	else if (msgs != NULL)
 	{
 		curl_easy_cleanup(msgs->easy_handle);
+		curl_slist_free_all(list);
+		list = NULL;
 	}
 	return status;
 }
