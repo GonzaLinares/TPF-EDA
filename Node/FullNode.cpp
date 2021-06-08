@@ -79,7 +79,7 @@ std::string FullNode::getNodeType()
 
 bool FullNode::blockPost(std::string host)
 {
-    std::string answer = std::string("{ ""status"": true,\n ""result"": ");
+    std::string answer = std::string("{");
     std::vector<Tx> tempTx;
     std::vector<InTx> tempInTx;
     std::vector<OutTx> tempOutTx;
@@ -88,30 +88,30 @@ bool FullNode::blockPost(std::string host)
 
     for (std::vector<Block>::iterator it = blockchain.begin(); it != blockchain.end(); it++) {
 
-        answer += std::string(" { ""blockid"": ");
-        answer += std::string("""") + it->getId() + std::string(""",\n");
-        answer += std::string(" ""height"": ");
+        answer += std::string(" { \"blockid\": ");
+        answer += std::string("\"") + it->getId() + std::string("\",\n");
+        answer += std::string(" \"height\": ");
         answer += std::to_string(it->getHeight()) + std::string(",\n");
-        answer += std::string(" ""merkleroot"": ");
-        answer += std::string("""") + it->getMerkleRoot() + std::string(""",\n");
-        answer += std::string(" ""nTx"": ");
+        answer += std::string(" \"merkleroot\": ");
+        answer += std::string("\"") + it->getMerkleRoot() + std::string("\",\n");
+        answer += std::string(" \"nTx\": ");
         answer += std::to_string(it->getnTx()) + std::string(",\n");
-        answer += std::string(" ""nonce"": ");
+        answer += std::string(" \"nonce\": ");
         answer += std::to_string(it->getNonce()) + std::string(",\n");
-        answer += std::string(" ""previousblockid"": ");
-        answer += std::string("""") + it->getPrevBlockId() + std::string(""",\n");
-        answer += std::string(" ""tx"": [ \n ");
+        answer += std::string(" \"previousblockid\": ");
+        answer += std::string("\"") + it->getPrevBlockId() + std::string("\",\n");
+        answer += std::string(" \"tx\": [ \n ");
         tempTx = it->getTxVector();
 
         for (std::vector<Tx>::iterator ut = tempTx.begin(); ut != tempTx.end(); ut++) {
 
             answer += std::string(" {\n");
-            answer += std::string(" ""nTxin"": ");
+            answer += std::string(" \"nTxin\": ");
             answer += std::to_string(ut->getVin().size()) + std::string(",\n");
-            answer += std::string(" ""nTxout"": ");
+            answer += std::string(" \"nTxout\": ");
             answer += std::to_string(ut->getVout().size()) + std::string(",\n");
-            answer += std::string("  ""txid"": ");
-            answer += std::string("""") + ut->getId() + std::string(""",\n");
+            answer += std::string("  \"txid\": ");
+            answer += std::string("\"") + ut->getId() + std::string("\",\n");
 
 
             //Imprimo las VIN
@@ -122,14 +122,14 @@ bool FullNode::blockPost(std::string host)
             for (std::vector<InTx>::iterator at = tempInTx.begin(); at != tempInTx.end(); at++) {
 
                 answer += std::string(" {\n");
-                answer += std::string(" ""blockid"": ");
-                answer += std::string("""") + at->getBlockId() + std::string(""",\n");
-                answer += std::string(" ""outputIndex"": ");
+                answer += std::string(" \"blockid\": ");
+                answer += std::string("\"") + at->getBlockId() + std::string("\",\n");
+                answer += std::string(" \"outputIndex\": ");
                 answer += std::to_string(at->getOutputIndex()) + std::string(",\n");
-                answer += std::string(" ""signature"": ");
-                answer += std::string("""") + at->getSignature() + std::string(""",\n");
+                answer += std::string(" \"signature\": ");
+                answer += std::string("\"") + at->getSignature() + std::string("\",\n");
                 answer += std::string(" ""txid"": ");
-                answer += std::string("""") + at->getTxid() + std::string(""",\n");
+                answer += std::string("\"") + at->getTxid() + std::string("\",\n");
 
                 if (at + 1 == tempInTx.end()) {
                     answer += std::string(" }\n");
@@ -142,15 +142,15 @@ bool FullNode::blockPost(std::string host)
             answer += std::string(" ],\n");
 
             //Imprimo las VOUT
-            answer += std::string(" ""vout"": [ \n ");
+            answer += std::string(" \"vout\": [ \n ");
 
             for (std::vector<OutTx>::iterator at = tempOutTx.begin(); at != tempOutTx.end(); at++) {
 
                 answer += std::string(" {\n");
-                answer += std::string(" ""amount"": ");
+                answer += std::string(" \"amount\": ");
                 answer += std::to_string(at->getAmount()) + std::string(",\n");
-                answer += std::string(" ""publicid"": ");
-                answer += std::string("""") + at->getPublicId() + std::string(""",\n");
+                answer += std::string(" \"publicid\": ");
+                answer += std::string("\"") + at->getPublicId() + std::string("\",\n");
 
                 if (at + 1 == tempOutTx.end()) {
 
@@ -165,6 +165,8 @@ bool FullNode::blockPost(std::string host)
         }
     }
 
+    answer += std::string("}");
+
     commSend(host, std::string("eda_coin/send_block/"), answer);
 
     return false;
@@ -174,21 +176,21 @@ bool FullNode::transactionPost(std::string publicKey, int amount, std::string ho
 {
     std::string answer;
 
-    answer += std::string(" ""tx"": [ \n ");
+    answer += std::string(" \"tx\": [ \n ");
     answer += std::string(" {\n");
 
     //VIN
-    answer += std::string(" ""vin"": [ \n ");
+    answer += std::string(" \"vin\": [ \n ");
     //Aca guardaria las vin
     answer += std::string(" ],\n");
 
     //VOUT
-    answer += std::string(" ""vout"": [ \n ");
+    answer += std::string(" \"vout\": [ \n ");
     answer += std::string(" {\n");
-    answer += std::string(" ""amount"": ");
+    answer += std::string(" \"amount\": ");
     answer += std::to_string(amount) + std::string(",\n");
-    answer += std::string(" ""publicid"": ");
-    answer += std::string("""") + publicKey + std::string(""",\n");
+    answer += std::string(" \"publicid\": ");
+    answer += std::string("\"") + publicKey + std::string("\",\n");
     answer += std::string(" },\n");
     answer += std::string("],\n");
 
@@ -217,9 +219,9 @@ bool FullNode::merkleBlockPost(std::string blockId, int position, std::string ho
         }
         if (startCopying == true) {
 
-            answer += std::string(" { ""blockid"": ");
-            answer += std::string("""") + it->getId() + std::string(""",\n");   
-            answer += std::string(" ""tx"": { \n ");
+            answer += std::string(" { \"blockid\": ");
+            answer += std::string("\"") + it->getId() + std::string("\",\n");   
+            answer += std::string(" \"tx\": { \n ");
             tempTx = it->getTxVector();
 
             for (std::vector<Tx>::iterator ut = tempTx.begin(); ut != tempTx.end(); ut++) {
@@ -231,30 +233,30 @@ bool FullNode::merkleBlockPost(std::string blockId, int position, std::string ho
                     txIDchosen = ut->getId();
 
                     answer += std::string(" {\n");
-                    answer += std::string(" ""nTxin"": ");
+                    answer += std::string(" \"nTxin\": ");
                     answer += std::to_string(ut->getVin().size()) + std::string(",\n");
-                    answer += std::string(" ""nTxout"": ");
+                    answer += std::string(" \"nTxout\": ");
                     answer += std::to_string(ut->getVout().size()) + std::string(",\n");
-                    answer += std::string("  ""txid"": ");
-                    answer += std::string("""") + ut->getId() + std::string(""",\n");
+                    answer += std::string("  \"txid\": ");
+                    answer += std::string("\"") + ut->getId() + std::string("\",\n");
 
 
                     //Imprimo las VIN
-                    answer += std::string(" ""vin"": [ \n ");
+                    answer += std::string(" \"vin\": [ \n ");
                     tempInTx = ut->getVin();
                     tempOutTx = ut->getVout();
 
                     for (std::vector<InTx>::iterator at = tempInTx.begin(); at != tempInTx.end(); at++) {
 
                         answer += std::string(" {\n");
-                        answer += std::string(" ""blockid"": ");
-                        answer += std::string("""") + at->getBlockId() + std::string(""",\n");
+                        answer += std::string(" \"blockid\": ");
+                        answer += std::string("\"") + at->getBlockId() + std::string("\",\n");
                         answer += std::string(" ""outputIndex"": ");
                         answer += std::to_string(at->getOutputIndex()) + std::string(",\n");
-                        answer += std::string(" ""signature"": ");
-                        answer += std::string("""") + at->getSignature() + std::string(""",\n");
+                        answer += std::string(" \"signature\": ");
+                        answer += std::string("\"") + at->getSignature() + std::string("\",\n");
                         answer += std::string(" ""txid"": ");
-                        answer += std::string("""") + at->getTxid() + std::string(""",\n");
+                        answer += std::string("\"") + at->getTxid() + std::string("\",\n");
 
                         if (at + 1 == tempInTx.end()) {
                             answer += std::string(" }\n");
@@ -272,10 +274,10 @@ bool FullNode::merkleBlockPost(std::string blockId, int position, std::string ho
                     for (std::vector<OutTx>::iterator at = tempOutTx.begin(); at != tempOutTx.end(); at++) {
 
                         answer += std::string(" {\n");
-                        answer += std::string(" ""amount"": ");
+                        answer += std::string(" \"amount\": ");
                         answer += std::to_string(at->getAmount()) + std::string(",\n");
-                        answer += std::string(" ""publicid"": ");
-                        answer += std::string("""") + at->getPublicId() + std::string(""",\n");
+                        answer += std::string(" \"publicid\": ");
+                        answer += std::string("\"") + at->getPublicId() + std::string("\",\n");
 
                         if (at + 1 == tempOutTx.end()) {
 
@@ -297,9 +299,9 @@ bool FullNode::merkleBlockPost(std::string blockId, int position, std::string ho
         }
     }
 
-    answer += std::string(" ""txPos"": ");
+    answer += std::string(" \"txPos\": ");
     answer += std::to_string(position) + std::string(",\n");
-    answer += std::string(" ""merklePath"": [\n ");
+    answer += std::string(" \"merklePath\": [\n ");
 
     if (blockchain.size() > 0) {
         MerkleTree<hash32> mtree = MerkleTree<hash32>(merkleTxsIDs);
@@ -308,8 +310,8 @@ bool FullNode::merkleBlockPost(std::string blockId, int position, std::string ho
 
         for (std::vector<std::string>::iterator it = merklePaths.begin(); it != merklePaths.end(); it++) {
 
-            answer += std::string(" ""Id"": ");
-            answer += std::string("""") + *it + std::string(""",\n");
+            answer += std::string(" \"Id\": ");
+            answer += std::string("\"") + *it + std::string("\",\n");
         }
 
         answer += std::string(" ],\n}\n");
@@ -344,16 +346,16 @@ std::string FullNode::blockPostReceived(bool error, int result)
         
         if (result == 1) {
 
-            answer = std::string("{ ""status"": true,\n ""result"": 1 }");
+            answer = std::string("{ \"status\": true,\n \"result\": 1 }");
         }
         else {
 
-            answer = std::string("{ ""status"": true,\n ""result"": 2 }");
+            answer = std::string("{ \"status\": true,\n \"result\": 2 }");
         }
     }
     else {
 
-        answer = std::string("{ ""status"": true,\n ""result"": null }");
+        answer = std::string("{ \"status\": true,\n \"result\": null }");
     }
 
     return answer;
@@ -367,16 +369,16 @@ std::string FullNode::transactionPostReceived(bool error, int result)
 
         if (result == 1) {
 
-            answer = std::string("{ ""status"": true,\n ""result"": 1 }");
+            answer = std::string("{ \"status\": true,\n \"result\": 1 }");
         }
         else {
 
-            answer = std::string("{ ""status"": true,\n ""result"": 2 }");
+            answer = std::string("{ \"status\": true,\n \"result\": 2 }");
         }
     }
     else {
 
-        answer = std::string("{ ""status"": true,\n ""result"": null }");
+        answer = std::string("{ \"status\": true,\n \"result\": null }");
     }
 
     return answer;
@@ -390,16 +392,16 @@ std::string FullNode::filterPostReceived(bool error, int result)
 
         if (result == 1) {
 
-            answer = std::string("{ ""status"": true,\n ""result"": 1 }");
+            answer = std::string("{ \"status\": true,\n \"result\": 1 }");
         }
         else {
 
-            answer = std::string("{ ""status"": true,\n ""result"": 2 }");
+            answer = std::string("{ \"status\": true,\n \"result\": 2 }");
         }
     }
     else {
 
-        answer = std::string("{ ""status"": true,\n ""result"": null }");
+        answer = std::string("{ \"status\": true,\n \"result\": null }");
     }
 
     return answer;
@@ -408,7 +410,7 @@ std::string FullNode::filterPostReceived(bool error, int result)
 std::string FullNode::getBlockHeaderReceived(std::string blockID, int count)
 {
 
-    std::string answer = std::string("{ ""status"": true,\n ""result"": ");
+    std::string answer = std::string("");
     bool startCopying = false;
     int i = 0;
 
@@ -423,18 +425,18 @@ std::string FullNode::getBlockHeaderReceived(std::string blockID, int count)
 
         if (startCopying == true) {
 
-            answer += std::string(" { ""blockid"": ");
-            answer += std::string("""") + it->getId() + std::string(""",\n");
-            answer += std::string(" ""height"": ");
+            answer += std::string(" { \"blockid\": ");
+            answer += std::string("\"") + it->getId() + std::string("\",\n");
+            answer += std::string(" \"height\": ");
             answer += std::to_string(it->getHeight()) + std::string(",\n");
-            answer += std::string(" ""merkleroot"": ");
-            answer += std::string("""") + it->getMerkleRoot() + std::string(""",\n");
-            answer += std::string(" ""nTx"": ");
+            answer += std::string(" \"merkleroot\": ");
+            answer += std::string("\"") + it->getMerkleRoot() + std::string("\",\n");
+            answer += std::string(" \"nTx\": ");
             answer += std::to_string(it->getnTx()) + std::string(",\n");
-            answer += std::string(" ""nonce"": ");
+            answer += std::string(" \"nonce\": ");
             answer += std::to_string(it->getNonce()) + std::string(",\n");
-            answer += std::string(" ""previousblockid"": ");
-            answer += std::string("""") + it->getPrevBlockId() + std::string(""",\n");
+            answer += std::string(" \"previousblockid\": ");
+            answer += std::string("\"") + it->getPrevBlockId() + std::string("\",\n");
             answer += std::string("},");
             i++;
         }
@@ -449,7 +451,7 @@ std::string FullNode::getBlockHeaderReceived(std::string blockID, int count)
 
 std::string FullNode::getBlocksReceived(std::string blockID, int count)
 {
-    std::string answer = std::string("{ ""status"": true,\n ""result"": ");
+    std::string answer = std::string("{ \"status\": true,\n \"result\": ");
     bool startCopying = false;
     int i = 0;
     std::vector<Tx> tempTx;
@@ -467,48 +469,48 @@ std::string FullNode::getBlocksReceived(std::string blockID, int count)
 
         if (startCopying == true) {
 
-            answer += std::string(" { ""blockid"": ");
-            answer += std::string("""") + it->getId() + std::string(""",\n");
-            answer += std::string(" ""height"": ");
+            answer += std::string(" { \"blockid\": ");
+            answer += std::string("\"") + it->getId() + std::string("\",\n");
+            answer += std::string(" \"height\": ");
             answer += std::to_string(it->getHeight()) + std::string(",\n");
-            answer += std::string(" ""merkleroot"": ");
-            answer += std::string("""") + it->getMerkleRoot() + std::string(""",\n");
-            answer += std::string(" ""nTx"": ");
+            answer += std::string(" \"merkleroot\": ");
+            answer += std::string("\"") + it->getMerkleRoot() + std::string("\",\n");
+            answer += std::string(" \"nTx\": ");
             answer += std::to_string(it->getnTx()) + std::string(",\n");
-            answer += std::string(" ""nonce"": ");
+            answer += std::string(" \"nonce\": ");
             answer += std::to_string(it->getNonce()) + std::string(",\n");
-            answer += std::string(" ""previousblockid"": ");
-            answer += std::string("""") + it->getPrevBlockId() + std::string(""",\n");
-            answer += std::string(" ""tx"": [ \n ");
+            answer += std::string(" \"previousblockid\": ");
+            answer += std::string("\"") + it->getPrevBlockId() + std::string("\",\n");
+            answer += std::string(" \"tx\": [ \n ");
             tempTx = it->getTxVector();
 
             for (std::vector<Tx>::iterator ut = tempTx.begin(); ut != tempTx.end(); ut++) {
                 
                 answer += std::string(" {\n");
-                answer += std::string(" ""nTxin"": ");
+                answer += std::string(" \"nTxin\": ");
                 answer += std::to_string(ut->getVin().size()) + std::string(",\n");
-                answer += std::string(" ""nTxout"": ");
+                answer += std::string(" \"nTxout\": ");
                 answer += std::to_string(ut->getVout().size()) + std::string(",\n");
-                answer += std::string("  ""txid"": ");
-                answer += std::string("""") + ut->getId() + std::string(""",\n");
+                answer += std::string("  \"txid\": ");
+                answer += std::string("\"") + ut->getId() + std::string("\",\n");
 
 
                 //Imprimo las VIN
-                answer += std::string(" ""vin"": [ \n ");
+                answer += std::string(" \"vin\": [ \n ");
                 tempInTx = ut->getVin();
                 tempOutTx = ut->getVout();
 
                 for (std::vector<InTx>::iterator at = tempInTx.begin(); at != tempInTx.end(); at++) {
 
                     answer += std::string(" {\n");
-                    answer += std::string(" ""blockid"": ");
-                    answer += std::string("""") + at->getBlockId() + std::string(""",\n");
+                    answer += std::string(" \"blockid\": ");
+                    answer += std::string("\"") + at->getBlockId() + std::string("\",\n");
                     answer += std::string(" ""outputIndex"": ");
                     answer += std::to_string(at->getOutputIndex()) + std::string(",\n");
                     answer += std::string(" ""signature"": ");
-                    answer += std::string("""") + at->getSignature() + std::string(""",\n");
-                    answer += std::string(" ""txid"": ");
-                    answer += std::string("""") + at->getTxid() + std::string(""",\n");
+                    answer += std::string("\"") + at->getSignature() + std::string("\",\n");
+                    answer += std::string(" \"txid\": ");
+                    answer += std::string("\"") + at->getTxid() + std::string("\",\n");
 
                     if (at + 1 == tempInTx.end()) {
                         answer += std::string(" }\n");
@@ -521,15 +523,15 @@ std::string FullNode::getBlocksReceived(std::string blockID, int count)
                 answer += std::string(" ],\n") ;
 
                 //Imprimo las VOUT
-                answer += std::string(" ""vout"": [ \n ");
+                answer += std::string(" \"vout\": [ \n ");
 
                 for (std::vector<OutTx>::iterator at = tempOutTx.begin(); at != tempOutTx.end(); at++) {
 
                     answer += std::string(" {\n");
-                    answer += std::string(" ""amount"": ");
+                    answer += std::string(" \"amount\": ");
                     answer += std::to_string(at->getAmount()) + std::string(",\n");
-                    answer += std::string(" ""publicid"": ");
-                    answer += std::string("""") + at->getPublicId() + std::string(""",\n");
+                    answer += std::string(" \"publicid\": ");
+                    answer += std::string("\"") + at->getPublicId() + std::string("\",\n");
 
                     if (at + 1 == tempOutTx.end()) {
 
