@@ -114,7 +114,7 @@ bool SPVNode::getBlockHeader(std::string blockId, std::string blockCount, std::s
 {
     char buf[100];
 
-    sprintf_s(buf, "eda_coin/get_block_header?block_id=%s&count=%s", blockId.c_str(), blockCount.c_str());
+    sprintf_s(buf, "eda_coin/get_block_header/?block_id=%s&count=%s", blockId.c_str(), blockCount.c_str());
     commSend(host, std::string(buf));
 
     return false;

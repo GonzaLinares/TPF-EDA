@@ -414,13 +414,17 @@ std::string FullNode::getBlockHeaderReceived(std::string blockID, int count)
 
     //Busco el bloque que me pidieron
 
-    if (blockID == std::string("0x00000000")) {
+    if (blockID == std::string("00000000")) {
 
         startCopying = true;
     }
 
     for (std::vector<Block>::iterator it = blockchain.begin(); it != blockchain.end() && i < count; it++) {
 
+        if ((it->getId()) == blockID) {
+
+            startCopying = true;
+        }
         if (startCopying == true) {
 
             answer += std::string(" { ""blockid"": ");
@@ -435,14 +439,21 @@ std::string FullNode::getBlockHeaderReceived(std::string blockID, int count)
             answer += std::to_string(it->getNonce()) + std::string(",\n");
             answer += std::string(" ""previousblockid"": ");
             answer += std::string("""") + it->getPrevBlockId() + std::string(""",\n");
-            answer += std::string("},");
+            if (i == count-1)
+            {
+                answer += std::string("}");
+            }
+            else
+            {
+                answer += std::string("},");
+            }
+            
             i++;
         }
-        if ((it->getId()) == blockID ) {
 
-            startCopying = true;
-        }
     }
+
+    answer += std::string("}");
 
     return answer;
 }
