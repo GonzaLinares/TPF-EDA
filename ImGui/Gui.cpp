@@ -385,7 +385,7 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 			((SPVNode*)currentNode)->filterPost(neigh[comboBoxNodesIndex].first);
 		}
 	}
-	else if (actionList[comboBoxActionNodesIndex] == std::string("GetBlockHeadersPost")) {
+	else if (actionList[comboBoxActionNodesIndex] == std::string("GetBlockHeaders")) {
 
 		ImGui::Text("BlockID: ");
 		ImGui::SameLine();
