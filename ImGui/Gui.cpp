@@ -331,7 +331,9 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 		ImGui::EndCombo();
 	}
 
-	if (actionList[comboBoxActionNodesIndex] == std::string("TransactionPost")) { //Message send crypto == true
+
+	if (actionList[comboBoxActionNodesIndex] == std::string("TransactionPost") && neigh[comboBoxNodesIndex].second != "SPV") { //Message send crypto == true
+
 
 		ImGui::Text("Public key: ");
 		ImGui::SameLine();
@@ -343,21 +345,21 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 		nSpacing(5);
 		if (ImGui::Button("Send Message")) {
 
-			if (currentNode->getNodeType() == std::string("Full")) {
+			if (currentNode->getNodeType() == std::string("Full") ) {
 				((FullNode*)currentNode)->transactionPost(actionGetBlockPublicKeyWritten, amountWritten, neigh[comboBoxNodesIndex].first);
 			}
-			else {
+			else if (currentNode->getNodeType() == std::string("SPV")) {
 				((SPVNode*)currentNode)->transactionPost(actionGetBlockPublicKeyWritten, amountWritten, neigh[comboBoxNodesIndex].first);
 			}
 		}
 	}
-	else if (actionList[comboBoxActionNodesIndex] == std::string("BlockPost")) {
+	else if (actionList[comboBoxActionNodesIndex] == std::string("BlockPost") && neigh[comboBoxNodesIndex].second != "SPV") {
 
 		if (ImGui::Button("Send Message")) {
 			((FullNode*)currentNode)->blockPost(neigh[comboBoxNodesIndex].first);
 		}
 	}
-	else if (actionList[comboBoxActionNodesIndex] == std::string("MerkleBlockPost")) {
+	else if (actionList[comboBoxActionNodesIndex] == std::string("MerkleBlockPost") && neigh[comboBoxNodesIndex].second != "Full") {
 
 		ImGui::Text("BlockID: ");
 		ImGui::SameLine();
@@ -372,7 +374,7 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 			((FullNode*)currentNode)->merkleBlockPost(actionGetBlockIDWritten, positionWritten, neigh[comboBoxNodesIndex].first);
 		}
 	}
-	else if (actionList[comboBoxActionNodesIndex] == std::string("GetBlocksPost")) {
+	else if (actionList[comboBoxActionNodesIndex] == std::string("GetBlocksPost") && neigh[comboBoxNodesIndex].second != "SPV") {
 
 		ImGui::Text("BlockID: ");
 		ImGui::SameLine();
@@ -387,13 +389,13 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 			((FullNode*)currentNode)->getBlocks(actionGetBlockIDWritten, std::to_string(blockQuantityWritten), neigh[comboBoxNodesIndex].first);
 		}
 	}
-	else if (actionList[comboBoxActionNodesIndex] == std::string("FilterPost")) {
+	else if (actionList[comboBoxActionNodesIndex] == std::string("FilterPost") && neigh[comboBoxNodesIndex].second != "SPV") {
 
 		if (ImGui::Button("Send Message")) {
 			((SPVNode*)currentNode)->filterPost(neigh[comboBoxNodesIndex].first);
 		}
 	}
-	else if (actionList[comboBoxActionNodesIndex] == std::string("GetBlockHeaders")) {
+	else if (actionList[comboBoxActionNodesIndex] == std::string("GetBlockHeaders") && neigh[comboBoxNodesIndex].second != "SPV") {
 
 		ImGui::Text("BlockID: ");
 		ImGui::SameLine();
@@ -409,6 +411,7 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 		}
 	}
 	ImGui::EndChild();
+
 }
 
 void Gui::showNodesTable(NodeFactory& nodes) {
