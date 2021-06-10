@@ -59,7 +59,7 @@ bool Client::POST(std::string host, std::string path, std::string& msg)
 		curl_easy_setopt(curl, CURLOPT_TIMEOUT, TIMEOUTLIMIT);
 
 
-#ifdef _DEBUG
+#ifdef DEBUGCLIENTCURL
 		curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
 #endif // _DEBUG
 
@@ -96,7 +96,7 @@ bool Client::GET(std::string host, std::string path)
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &receivedData);
 		curl_easy_setopt(curl, CURLOPT_TIMEOUT, TIMEOUTLIMIT);
 
-#ifdef _DEBUG
+#ifdef DEBUGCLIENTCURL
 		curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
 #endif // _DEBUG
 

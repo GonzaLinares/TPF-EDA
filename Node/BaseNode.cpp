@@ -111,7 +111,7 @@ node_state_t BaseNode::getState()
 
 bool BaseNode::addNeighbour(std::string ipAndPort, std::string nodeType)
 {
-    if (this->getNodeType() == "SPV" && nodeType == "SPV") {
+    if ((this->getNodeType() == "SPV" && nodeType == "SPV")){
         return false;
     }
     else {

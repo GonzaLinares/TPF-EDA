@@ -3,9 +3,6 @@
 
 Connection::~Connection()			//Destructor solo para uso de debug
 {
-#ifdef _DEBUG
-	std::cerr << "Connection closed." << std::endl;
-#endif // _DEBUG
 }
 
 Connection::Connection(boost::asio::io_context& ioContext, boost::function<std::string(std::string, std::string)> postReplyCB)	//Preparo el socket de la conexion con el constructor
@@ -49,15 +46,15 @@ void Connection::readDataHandler( int recievedBytes, Connection::pointer thisCon
 				boost::asio::placeholders::bytes_transferred, thisCon, boost::asio::placeholders::error));
 
 #ifdef DEBUGHTTP
-		std::cout << "Received request:" << std::endl << this->receivedMsg << std::endl << std::endl;
-		std::cout << "Sent response:" << std::endl << this->toSendMsg << std::endl;
+		std::cout << this->conSocket.local_endpoint().address().to_string() << ":" << std::to_string(this->conSocket.local_endpoint().port()) << " Server Received request:" << std::endl << "*************************" << std::endl << this->receivedMsg << std::endl << "*************************" << std::endl;
+		std::cout << this->conSocket.local_endpoint().address().to_string() << ":" << std::to_string(this->conSocket.local_endpoint().port()) << " Server Sent response:" << std::endl << "*************************" << std::endl << this->toSendMsg << std::endl << "*************************" << std::endl;
 #endif // DEBUGHTTP
 		this->receivedMsg = "";
 
 	}
 	else
 	{
-#ifdef _DEBUG
+#ifdef DEBUGSERVER
 		std::cerr << error.message() << std::endl;
 #endif // DEBUG
 	}
@@ -69,10 +66,17 @@ void Connection::sendDataHandler(int sentBytes, Connection::pointer thisCon, con
 {
 	if (error)	
 	{
-#ifdef _DEBUG
-		std::cerr << "Error ocurred while writting: " << error.message() << std::endl;
+#ifdef DEBUGSERVER
+		std::cerr << "Error ocurred in " << this->conSocket.local_endpoint().address().to_string() << ":" << std::to_string(this->conSocket.local_endpoint().port()) << " while writting: " << error.message() << std::endl;
 #endif // DEBUG
 	}
+	else
+	{
+#ifdef DEBUGSERVER
+		std::cerr << this->conSocket.local_endpoint().address().to_string() << ":" << std::to_string(this->conSocket.local_endpoint().port()) << " Server connection terminated" << std::endl;
+#endif // _DEBUG
+	}
+
 
 	this->conSocket.shutdown(boost::asio::ip::tcp::socket::shutdown_send);	//Como ya se respondio se cierra el socket
 }

@@ -414,6 +414,8 @@ std::string FullNode::getBlockHeaderReceived(std::string blockID, int count)
     bool startCopying = false;
     int i = 0;
 
+    answer = std::string("{ \"status\": true,\n \"result\": ");
+
     //Busco el bloque que me pidieron
 
     if (blockID == std::string("00000000")) {
@@ -453,6 +455,12 @@ std::string FullNode::getBlockHeaderReceived(std::string blockID, int count)
             i++;
         }
 
+    }
+
+    if (startCopying == false)
+    {
+        answer.replace(answer.find("true"), 4, "false");
+        answer += "NULL";
     }
 
     answer += std::string("}");
@@ -574,9 +582,8 @@ std::string FullNode::receivedMsgCB(std::string client, std::string msg)
     std::string host = client.substr(0, client.find_first_of('/', 0));
     lastReClient = host;
 
-    std::cout << getIP() + ":" + getPort() << std::endl;
-    std::cout << msg << std::endl;
-    std::cout << std::endl << std::endl << std::endl;
+
+    
 
     client.erase(0, client.find_first_of('/', 0));
 
@@ -621,6 +628,15 @@ std::string FullNode::receivedMsgCB(std::string client, std::string msg)
             std::string blockID = msg.substr(msg.find("blockid=", 0) + 10, 8);
             std::string temp = msg.substr(msg.find("count=", 0) + 6, msg.find_first_of('"', 5)); //TODO: Sirve mientras no haya nada despues de count
             answer = getBlockHeaderReceived(blockID, stoi(temp));
+        }
+        else
+        {
+#ifdef DEBUGCALLBACK
+            std::cout << "Recieved at:" << getIP() + ":" + std::to_string(std::stoi(getPort())+1) << std::endl;
+            std::cout << "*************************" << std::endl;
+            std::cout << msg << std::endl;
+            std::cout << "*************************" << std::endl << std::endl;
+#endif // DEBUGCALLBACK
         }
 
     return answer;

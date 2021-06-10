@@ -215,27 +215,35 @@ void Gui::showCreateBox(NodeFactory& nodes) {
 	ImGui::InputText("", &filename);  //Ingresamos el archivo donde cargamos un nodo
 	nSpacing(2);
 	if (ImGui::Button("SPV")) {		//Si se presiono SPV creamos un SPV con los datos ingresados...
-		if (filename.size() > 0) {
-			fileFound = nodes.createSPVNode(nodePort, filename);	
+
+		if (!nodes.alreadyExist(nodePort))
+		{
+			if (filename.size() > 0) {
+				fileFound = nodes.createSPVNode(nodePort, filename);
+			}
+			else {
+				nodes.createSPVNode(nodePort);
+			}
+			blockPage = 0;
+			comboBoxNodesIndex = 0;
+			comboBoxActionNodesIndex = 0;
+
 		}
-		else {
-			nodes.createSPVNode(nodePort);
-		}
-		blockPage = 0;
-		comboBoxNodesIndex = 0;
-		comboBoxActionNodesIndex = 0;
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("Full")) {		//Sino creamos un Full
-		if (filename.size() > 0) {
-			fileFound = nodes.createFullNode(nodePort, filename);
+		if (!nodes.alreadyExist(nodePort))
+		{
+			if (filename.size() > 0) {
+				fileFound = nodes.createFullNode(nodePort, filename);
+			}
+			else {
+				nodes.createFullNode(nodePort);
+			}
+			blockPage = 0;
+			comboBoxNodesIndex = 0;
+			comboBoxActionNodesIndex = 0;
 		}
-		else {
-			nodes.createFullNode(nodePort);
-		}
-		blockPage = 0;
-		comboBoxNodesIndex = 0;
-		comboBoxActionNodesIndex = 0;
 	}
 
 	if (fileFound == false) {		//Si no encontro el archivo mostramos el mensaje de error

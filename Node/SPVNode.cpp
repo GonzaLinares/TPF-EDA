@@ -98,7 +98,6 @@ bool SPVNode::transactionPost(std::string publicKey, int amount, std::string hos
 
     return false;
 
-    return false;
 }
 
 bool SPVNode::filterPost(std::string host)
@@ -163,6 +162,15 @@ std::string SPVNode::receivedMsgCB(std::string client, std::string msg)
         }
 
         answer = merkleBlockPostReceived(false, 0);
+    }
+    else
+    {
+#ifdef DEBUGCALLBACK
+        std::cout << "Recieved at:" << getIP() + ":" + std::to_string(std::stoi(getPort()) + 1) << std::endl;
+        std::cout << "*************************" << std::endl;
+        std::cout << msg << std::endl;
+        std::cout << "*************************" << std::endl << std::endl;
+#endif // DEBUGCALLBACK
     }
 
     return answer;

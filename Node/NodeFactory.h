@@ -20,6 +20,8 @@ public:
 
 	bool deleteNode(unsigned int nodeIndex);
 
+	bool alreadyExist(std::string portNum);
+
 	bool pollAllNodes();
 
 private:
