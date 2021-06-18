@@ -5,7 +5,7 @@
 
 using json = nlohmann::json;
 
-std::vector<std::string> SPVNode::actionsVector{"TransactionPost" , "FilterPost" , "GetBlockHeadersPost"};
+std::vector<std::string> SPVNode::actionsVector{"TransactionPost" , "FilterPost" , "GetBlockHeaders"};
 
 SPVNode::SPVNode(boost::asio::io_context& ioContext, std::string port, std::string path2blockchain)
     : BaseNode(ioContext, boost::bind(&SPVNode::receivedMsgCB, this, boost::placeholders::_1, boost::placeholders::_2), stoi(port))
@@ -70,40 +70,41 @@ bool SPVNode::transactionPost(std::string publicKey, int amount, std::string hos
     char buf[50];
     std::string answer;
 
-    answer += std::string(" ""tx"": [ \n ");
+    answer += std::string("{ \"tx\": \n ");
     answer += std::string(" {\n");
 
     //VIN
-    answer += std::string(" ""vin"": [ \n ");
+    answer += std::string(" \"vin\": [ \n ");
     //Aca guardaria las vin
     answer += std::string(" ],\n");
 
     //VOUT
-    answer += std::string(" ""vout"": [ \n ");
+    answer += std::string(" \"vout\": [ \n ");
     answer += std::string(" {\n");
-    answer += std::string(" ""amount"": ");
+    answer += std::string(" \"amount\": ");
 
     sprintf_s(buf, "%d", amount);
     answer += std::string(buf);
 
     answer += std::string(",\n");
-    answer += std::string(" ""publicid"": ");
-    answer += std::string("""") + publicKey + std::string(""",\n");
-    answer += std::string(" },\n");
-    answer += std::string("],\n");
+    answer += std::string(" \"publicid\": ");
+    answer += std::string("\"") + publicKey + std::string("\",\n");
+    answer += std::string("}\n");
+    answer += std::string("]\n");
+    answer += std::string("}\n");
+    answer += std::string("}\n");
 
     commSend(host, std::string("eda_coin/send_tx/"), answer);
 
     return false;
 
-    return false;
 }
 
 bool SPVNode::filterPost(std::string host)
 {
     std::string answer;
 
-    answer = std::string("{\n ""Key"": ""DamiValue""\n }");
+    answer = std::string("{\n \"Key\": \"DamiValue\"\n }");
 
     commSend(host, "eda_coin/send_filter/", answer);
 
@@ -114,7 +115,7 @@ bool SPVNode::getBlockHeader(std::string blockId, std::string blockCount, std::s
 {
     char buf[100];
 
-    sprintf_s(buf, "eda_coin/get_block_header?block_id=%s&count=%s", blockId.c_str(), blockCount.c_str());
+    sprintf_s(buf, "eda_coin/get_block_header/?block_id=%s&count=%s", blockId.c_str(), blockCount.c_str());
     commSend(host, std::string(buf));
 
     return false;
@@ -128,16 +129,16 @@ std::string SPVNode::merkleBlockPostReceived(bool error, int result)
 
         if (result == 1) {
 
-            answer = std::string("{ ""status"": true,\n ""result"": 1 }");
+            answer = std::string("{ \"status\": true,\n \"result\": 1 }");
         }
         else {
 
-            answer = std::string("{ ""status"": true,\n ""result"": 2 }");
+            answer = std::string("{ \"status\": true,\n \"result\": 2 }");
         }
     }
     else {
 
-        answer = std::string("{ ""status"": true,\n ""result"": null }");
+        answer = std::string("{ \"status\": true,\n \"result\": null }");
     }
 
     return answer;
@@ -153,7 +154,7 @@ std::string SPVNode::receivedMsgCB(std::string client, std::string msg)
 
     client.erase(0, client.find_first_of('/', 0));
 
-    if (client == std::string("/eda_coin/send_merkle_block")) {
+    if (client == std::string("/eda_coin/send_merkle_block/")) {
 
         if (msg != std::string("")) {
 
@@ -161,6 +162,15 @@ std::string SPVNode::receivedMsgCB(std::string client, std::string msg)
         }
 
         answer = merkleBlockPostReceived(false, 0);
+    }
+    else
+    {
+#ifdef DEBUGCALLBACK
+        std::cout << "Recieved at:" << getIP() + ":" + std::to_string(std::stoi(getPort()) + 1) << std::endl;
+        std::cout << "*************************" << std::endl;
+        std::cout << msg << std::endl;
+        std::cout << "*************************" << std::endl << std::endl;
+#endif // DEBUGCALLBACK
     }
 
     return answer;

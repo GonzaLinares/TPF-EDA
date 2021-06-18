@@ -215,27 +215,35 @@ void Gui::showCreateBox(NodeFactory& nodes) {
 	ImGui::InputText("", &filename);  //Ingresamos el archivo donde cargamos un nodo
 	nSpacing(2);
 	if (ImGui::Button("SPV")) {		//Si se presiono SPV creamos un SPV con los datos ingresados...
-		if (filename.size() > 0) {
-			fileFound = nodes.createSPVNode(nodePort, filename);	
+
+		if (!nodes.alreadyExist(nodePort))
+		{
+			if (filename.size() > 0) {
+				fileFound = nodes.createSPVNode(nodePort, filename);
+			}
+			else {
+				nodes.createSPVNode(nodePort);
+			}
+			blockPage = 0;
+			comboBoxNodesIndex = 0;
+			comboBoxActionNodesIndex = 0;
+
 		}
-		else {
-			nodes.createSPVNode(nodePort);
-		}
-		blockPage = 0;
-		comboBoxNodesIndex = 0;
-		comboBoxActionNodesIndex = 0;
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("Full")) {		//Sino creamos un Full
-		if (filename.size() > 0) {
-			fileFound = nodes.createFullNode(nodePort, filename);
+		if (!nodes.alreadyExist(nodePort))
+		{
+			if (filename.size() > 0) {
+				fileFound = nodes.createFullNode(nodePort, filename);
+			}
+			else {
+				nodes.createFullNode(nodePort);
+			}
+			blockPage = 0;
+			comboBoxNodesIndex = 0;
+			comboBoxActionNodesIndex = 0;
 		}
-		else {
-			nodes.createFullNode(nodePort);
-		}
-		blockPage = 0;
-		comboBoxNodesIndex = 0;
-		comboBoxActionNodesIndex = 0;
 	}
 
 	if (fileFound == false) {		//Si no encontro el archivo mostramos el mensaje de error
@@ -323,7 +331,9 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 		ImGui::EndCombo();
 	}
 
-	if (actionList[comboBoxActionNodesIndex] == std::string("TransactionPost")) { //Message send crypto == true
+
+	if (actionList[comboBoxActionNodesIndex] == std::string("TransactionPost") && neigh[comboBoxNodesIndex].second != "SPV") { //Message send crypto == true
+
 
 		ImGui::Text("Public key: ");
 		ImGui::SameLine();
@@ -335,21 +345,21 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 		nSpacing(5);
 		if (ImGui::Button("Send Message")) {
 
-			if (currentNode->getNodeType() == std::string("Full")) {
+			if (currentNode->getNodeType() == std::string("Full") ) {
 				((FullNode*)currentNode)->transactionPost(actionGetBlockPublicKeyWritten, amountWritten, neigh[comboBoxNodesIndex].first);
 			}
-			else {
+			else if (currentNode->getNodeType() == std::string("SPV")) {
 				((SPVNode*)currentNode)->transactionPost(actionGetBlockPublicKeyWritten, amountWritten, neigh[comboBoxNodesIndex].first);
 			}
 		}
 	}
-	else if (actionList[comboBoxActionNodesIndex] == std::string("BlockPost")) {
+	else if (actionList[comboBoxActionNodesIndex] == std::string("BlockPost") && neigh[comboBoxNodesIndex].second != "SPV") {
 
 		if (ImGui::Button("Send Message")) {
 			((FullNode*)currentNode)->blockPost(neigh[comboBoxNodesIndex].first);
 		}
 	}
-	else if (actionList[comboBoxActionNodesIndex] == std::string("MerkleBlockPost")) {
+	else if (actionList[comboBoxActionNodesIndex] == std::string("MerkleBlockPost") && neigh[comboBoxNodesIndex].second != "Full") {
 
 		ImGui::Text("BlockID: ");
 		ImGui::SameLine();
@@ -364,7 +374,7 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 			((FullNode*)currentNode)->merkleBlockPost(actionGetBlockIDWritten, positionWritten, neigh[comboBoxNodesIndex].first);
 		}
 	}
-	else if (actionList[comboBoxActionNodesIndex] == std::string("GetBlocksPost")) {
+	else if (actionList[comboBoxActionNodesIndex] == std::string("GetBlocksPost") && neigh[comboBoxNodesIndex].second != "SPV") {
 
 		ImGui::Text("BlockID: ");
 		ImGui::SameLine();
@@ -379,13 +389,13 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 			((FullNode*)currentNode)->getBlocks(actionGetBlockIDWritten, std::to_string(blockQuantityWritten), neigh[comboBoxNodesIndex].first);
 		}
 	}
-	else if (actionList[comboBoxActionNodesIndex] == std::string("FilterPost")) {
+	else if (actionList[comboBoxActionNodesIndex] == std::string("FilterPost") && neigh[comboBoxNodesIndex].second != "SPV") {
 
 		if (ImGui::Button("Send Message")) {
 			((SPVNode*)currentNode)->filterPost(neigh[comboBoxNodesIndex].first);
 		}
 	}
-	else if (actionList[comboBoxActionNodesIndex] == std::string("GetBlockHeadersPost")) {
+	else if (actionList[comboBoxActionNodesIndex] == std::string("GetBlockHeaders") && neigh[comboBoxNodesIndex].second != "SPV") {
 
 		ImGui::Text("BlockID: ");
 		ImGui::SameLine();
@@ -401,6 +411,7 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 		}
 	}
 	ImGui::EndChild();
+
 }
 
 void Gui::showNodesTable(NodeFactory& nodes) {

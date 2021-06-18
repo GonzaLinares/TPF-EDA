@@ -68,7 +68,7 @@ void HTTP::elaborateMessage(std::string client) {
         toSendMsg.replace(auxPositionINICIAL, auxPositionFINAL, auxString);    //Escribo todo el contenido
 
         auxPositionINICIAL = toSendMsg.find("filenameLength", 0);
-        auxString = to_string(auxString.size());
+        auxString = to_string(auxString.size() + 4);
         toSendMsg.erase(auxPositionINICIAL, 13);
         toSendMsg.replace(auxPositionINICIAL, 1, auxString);   //Escribo el length
 
@@ -161,6 +161,7 @@ void HTTP::write_response_message() {
         i++;
     }
 
+    message += string("\r\nConnection: close");
     message += string("\r\nContent-Length: filenameLength \r\nContent-Type: text/html\r\n\nfilenameContent\r\n\r\n");
     message.erase(message.length(), message.length()); //Borro el '\0\ del final del string     ; charset = iso - 8859 - 1
 

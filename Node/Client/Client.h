@@ -22,9 +22,11 @@ public:
 private:
 	int status;
 	long port;
+	std::string toSendMsg;
 	std::string receivedData;
 	std::string lastHost;
 	boost::function<std::string(std::string, std::string)> msgReceivedCb;
+	curl_slist* list;
 	CURL* curl;
 	CURLM* multiCurl;
 	CURLMcode err;

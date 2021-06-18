@@ -63,15 +63,30 @@ bool NodeFactory::deleteNode(unsigned int nodeIndex)
 	return false;
 }
 
+bool NodeFactory::alreadyExist(std::string portNum)
+{
+	for (auto it : nodes)
+	{
+		if (it->getPort() == portNum)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
 
 
 bool NodeFactory::pollAllNodes()
 {
 
+	ioContext.poll();
 	for (auto it : nodes)
 	{
 		it->poll();
 	}
+
 
 	return true;		//TODO: chequear devolucion
 }
