@@ -147,21 +147,21 @@ std::string SPVNode::merkleBlockPostReceived(bool error, int result)
 std::string SPVNode::receivedMsgCB(std::string client, std::string msg)
 {
     std::string answer;
-
     std::string host = client.substr(0, client.find_first_of('/', 0));
 
     lastReClient = host;
-
     client.erase(0, client.find_first_of('/', 0));
+
+    bool error = false; //Parametros que serán enviados a las funciones de validación
+    int result = 0;
 
     if (client == std::string("/eda_coin/send_merkle_block/")) {
 
         if (msg != std::string("")) {
 
-            //Aca podria por ejemplo hacer algo con el mensaje que nos enviaron
+            validateMerkleBlockPost(error, result, msg);
+            answer = merkleBlockPostReceived(error, result);
         }
-
-        answer = merkleBlockPostReceived(false, 0);
     }
     else
     {
@@ -174,6 +174,9 @@ std::string SPVNode::receivedMsgCB(std::string client, std::string msg)
     }
 
     return answer;
-
     //El unico caso en el que llegan mensajes es para la recepción del MerkleBlock
+}
+
+void SPVNode::validateMerkleBlockPost(bool& error, int& result, std::string msg)
+{
 }

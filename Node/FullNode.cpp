@@ -575,58 +575,69 @@ std::string FullNode::getBlocksReceived(std::string blockID, int count)
     return answer;
 }
 
+void FullNode::validateTransactionPost(bool& error, int& result, std::string msg)
+{
+
+}
+
+void FullNode::validateBlockPost(bool& error, int& result, std::string msg)
+{
+}
+
+void FullNode::validateFilterPost(bool& error, int& result, std::string msg)
+{
+}
+
 std::string FullNode::receivedMsgCB(std::string client, std::string msg)
 {
     std::string answer = std::string("damy value"); //Acá copiaré las respuestas que me den las funciones
-
     std::string host = client.substr(0, client.find_first_of('/', 0));
     lastReClient = host;
 
-
-    
-
     client.erase(0, client.find_first_of('/', 0));
 
+    bool error = false; //Parametros que serán enviados a las funciones de validación
+    int result = 0;
 
         if (client == std::string("/eda_coin/send_block/")) {
 
             state = RECEIVING;
             if (msg != std::string("")) {
 
-                //Aca podria por ejemplo hacer algo con el mensaje que nos enviaron
+                validateBlockPost(error, result, msg);
+                answer = blockPostReceived(error, result);
             }
-            answer = blockPostReceived(false, 0);
         }
         else if (client == std::string("/eda_coin/send_tx/")) {
 
             state = RECEIVING;
             if (msg != std::string("")) {
 
-                //Aca podria por ejemplo hacer algo con el mensaje que nos enviaron
+                validateTransactionPost(error, result, msg);
+                answer = transactionPostReceived(error, result);
             }
-            answer = transactionPostReceived(false, 0);
         }
         else if (client == std::string("/eda_coin/send_filter/")) {
 
             state = RECEIVING;
             if (msg != std::string("")) {
 
-                //Aca podria por ejemplo hacer algo con el mensaje que nos enviaron
+                validateFilterPost(error, result, msg);
+                answer = filterPostReceived(error, result);
             }
-            answer = filterPostReceived(false, 0);
         }
         else if (client == std::string("/eda_coin/get_blocks/")) {
 
             state = RECEIVING;
             std::string blockID = msg.substr(msg.find_first_of("blockid=", 0) + 9, 8);
-            std::string temp = msg.substr(msg.find("count=", 0) + 6, msg.find_first_of('"', 5)); //TODO: Sirve mientras no haya nada despues de count
+            std::string temp = msg.substr(msg.find("count=", 0) + 6, msg.find_first_of('"', 5)); //TODO: Sirve mientras no haya ningun parametro despues de count
             answer = getBlocksReceived(blockID, stoi(temp));
         }
         else if (client == std::string("/eda_coin/get_block_header/")) {
 
             state = RECEIVING;
             std::string blockID = msg.substr(msg.find("blockid=", 0) + 10, 8);
-            std::string temp = msg.substr(msg.find("count=", 0) + 6, msg.find_first_of('"', 5)); //TODO: Sirve mientras no haya nada despues de count
+            std::string temp = msg.substr(msg.find("count=", 0) + 6, msg.find_first_of('"', 5)); //TODO: Sirve mientras no haya ningun parametro despues de count
             answer = getBlockHeaderReceived(blockID, stoi(temp));
         }
         else
