@@ -14,10 +14,10 @@
 #include "Hashing.h"
 #include "Node/NodeFactory.h"
 
-#include <dll.h>
-#include <sha.h>
-#include <filters.h>
-#include <base64.h>
+#include <cryptopp/dll.h>
+#include <cryptopp/sha.h>
+#include <cryptopp/filters.h>
+#include <cryptopp/base64.h>
 
 using namespace std;
 
