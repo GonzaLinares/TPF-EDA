@@ -179,6 +179,13 @@ std::string SPVNode::receivedMsgCB(std::string client, std::string msg)
 
 void SPVNode::validateMerkleBlockPost(bool& error, int& result, std::string msg)
 {
+    std::string blockid;            // : "13878957",
+    std::string height;             // : 0,
+    std::string merkleroot;         // : "80EEF9F8",
+    std::string nTx;                // : 4,
+    std::string nonce;              // : 4733,
+    std::string previousblockid;    // : "00000000",
+
     //Verificar que cumple con el challenge.
 
 

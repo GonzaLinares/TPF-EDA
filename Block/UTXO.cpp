@@ -14,3 +14,8 @@ int UTXO::getOutputIndex(void)
 {
 	return outputIndex;
 }
+
+int UTXO::getAmount()
+{
+	return amount;
+}

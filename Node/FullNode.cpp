@@ -184,13 +184,59 @@ bool FullNode::blockPost(std::string host, std::string blockId)
 bool FullNode::transactionPost(std::string publicKey, int amount, std::string host)
 {
     std::string answer;
+    int VinCount = 0;
+
+    int totalAmountInOutput = 0;
+
+    for (std::vector<UTXO>::iterator at = MyUTXO.begin(); at != MyUTXO.end() && totalAmountInOutput < amount; at++) {
+
+        totalAmountInOutput += at->getAmount();
+        VinCount++;
+    }
+    if (totalAmountInOutput < amount) {
+
+        //no te alcanza la plata
+        return "";
+    }
+    else {
+
+        totalAmountInOutput = 0; //La reinicio y empiezo de vuelta
+    }
 
     answer += std::string(" \"tx\": [ \n ");
     answer += std::string(" {\n");
-
+    answer += std::string(" \"nTxin\": ");
+    answer += std::to_string(VinCount);
+    answer += std::string(",\n");
+    answer += std::string(" \"nTxout\": |,\n"); //La cantidad de salidas va a ser siempre 2 o 1
+    answer += std::string(" \"txid\": 00000000000000000000000000000000,\n");    //TODO: Despues lo reemplazo
     //VIN
     answer += std::string(" \"vin\": [ \n ");
-    //Aca guardaria las vin
+    for (std::vector<UTXO>::iterator at = MyUTXO.begin(); at != MyUTXO.end() && totalAmountInOutput < amount; at++) {
+
+        answer += std::string(" {\n");
+
+        totalAmountInOutput += at->getAmount();
+
+        answer += "\"blockid\": \"";
+        answer += at->getBlockId();
+        answer += "\",\n";
+
+        answer += "\"outputIndex\": ";
+        answer += at->getOutputIndex();
+        answer += ",\n";
+
+        answer += "\"signature\": \"";  
+        //TODO: Agregar bien la firma
+        answer += "\",\n";
+
+        answer += "\"txid\": \"";
+        answer += at->getTXId();
+        answer += "\",\n";
+
+        answer += std::string(" },\n");
+    }
+
     answer += std::string(" ],\n");
 
     //VOUT
@@ -200,8 +246,27 @@ bool FullNode::transactionPost(std::string publicKey, int amount, std::string ho
     answer += std::to_string(amount) + std::string(",\n");
     answer += std::string(" \"publicid\": ");
     answer += std::string("\"") + publicKey + std::string("\",\n");
-    answer += std::string(" },\n");
+    answer += std::string(" }\n");
     answer += std::string("],\n");
+
+    if (totalAmountInOutput > amount) {
+        answer += std::string(" {\n");
+        answer += std::string(" \"amount\": ");
+        answer += std::to_string(totalAmountInOutput-amount) + std::string(",\n");
+        answer += std::string(" \"publicid\": ");
+        answer += std::string("\"") + myID + std::string("\",\n");
+        answer += std::string(" }\n");
+        answer += std::string("]\n");
+        answer.replace(answer.find_first_of('|'), 1, 1, '2');
+    }
+    else {
+
+        answer.replace(answer.find_first_of('|'),1,1,'1');
+    }
+
+    
+
+    answer += std::string("]\n");
 
     commSend(host, std::string("eda_coin/send_tx/"), answer);
 
@@ -586,23 +651,23 @@ std::string FullNode::getBlocksReceived(std::string blockID, int count)
 
 void FullNode::validateTransactionPost(bool& error, int& result, std::string msg)
 {   
-    /*REALIZO TODO EL PARSEO Y GUARDO LAS COSAS ACA*/
+    /*TODO: REALIZO TODO EL PARSEO Y GUARDO LAS COSAS ACA*/
     Tx tempTx("00000000");
     bool loEncontre = false;
+    int totalAmountInUTXO = 0;
+    int totalAmountInOutput = 0;
 
-    //El HashID debe verificar
-
+    //TODO: El HashID debe verificar  
 
     /*La UTXO referenciada en el Input Transaction de la Tx debe pertenecer al arreglo de UTXOs o 
     a las transacciones pendientes*/
-
     for (std::vector<InTx>::iterator it = (tempTx.getVin()).begin(); it != (tempTx.getVin()).end(); it++) {
 
         std::string blockid = it->getBlockId();
         std::string txID = it->getTxid();
         int outputIndex = it->getOutputIndex();
 
-        //Le bailo rico a todas las inputs a ver si estan en el arreglo de UTXO, sino, a casona cheater
+        //Le bailo rico a todas las inputs a ver si estan en el arreglo de UTXO, sino, a casona por cheater
         
         for (std::vector<UTXO>::iterator at = UTXOVector.begin(); at != UTXOVector.end() && loEncontre == false; at++) {
 
@@ -613,6 +678,7 @@ void FullNode::validateTransactionPost(bool& error, int& result, std::string msg
                     if (at->getOutputIndex() == outputIndex) {
 
                         loEncontre = true;
+                        totalAmountInUTXO += at->getAmount();
                     }
                 }
             }
@@ -624,13 +690,22 @@ void FullNode::validateTransactionPost(bool& error, int& result, std::string msg
             return;
         }
     }
-    
-
 
     /*La suma de los montos de EDACoin de los UTXOs referenciados en los
     Input Transactions tiene que coincidir con la suma de los montos de
     EDACoin referenciados en los Output Transactions.*/
 
+    for (std::vector<OutTx>::iterator it = (tempTx.getVout()).begin(); it != (tempTx.getVout()).end(); it++) {
+
+        totalAmountInOutput += it->getAmount();
+    }
+
+    if (totalAmountInOutput != totalAmountInUTXO) {
+
+        error = true;
+        //result = ?
+        return;
+    }
 
     /*Los unlocking scripts referidos en cada Input Transaction deben
     efectivamente desbloquear los UTXO referidos en cada una de ellas*/
@@ -639,6 +714,7 @@ void FullNode::validateTransactionPost(bool& error, int& result, std::string msg
 void FullNode::validateBlockPost(bool& error, int& result, std::string msg)
 {
     //Verificar que cumple con el challenge.
+
     std::string blockid;            // : "13878957",
     std::string height;             // : 0,
     std::string merkleroot;         // : "80EEF9F8",
@@ -657,7 +733,7 @@ void FullNode::validateBlockPost(bool& error, int& result, std::string msg)
 
 void FullNode::validateFilterPost(bool& error, int& result, std::string msg)
 {
-    //Aca de momento creo que no hariamos nada
+    //TODO: Aca de momento no hariamos nada
 }
 
 std::string FullNode::receivedMsgCB(std::string client, std::string msg)
