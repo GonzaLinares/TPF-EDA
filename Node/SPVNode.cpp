@@ -179,4 +179,9 @@ std::string SPVNode::receivedMsgCB(std::string client, std::string msg)
 
 void SPVNode::validateMerkleBlockPost(bool& error, int& result, std::string msg)
 {
+    //Verificar que cumple con el challenge.
+
+
+    //El previous block hash coincide con el block hash del bloque anterior
+
 }

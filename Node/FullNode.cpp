@@ -77,7 +77,7 @@ std::string FullNode::getNodeType()
     return std::string("Full");
 }
 
-bool FullNode::blockPost(std::string host)
+bool FullNode::blockPost(std::string host, std::string blockId)
 {
     std::string answer = std::string("{");
     std::vector<Tx> tempTx;
@@ -88,80 +88,89 @@ bool FullNode::blockPost(std::string host)
 
     for (std::vector<Block>::iterator it = blockchain.begin(); it != blockchain.end(); it++) {
 
-        answer += std::string(" { \"blockid\": ");
-        answer += std::string("\"") + it->getId() + std::string("\",\n");
-        answer += std::string(" \"height\": ");
-        answer += std::to_string(it->getHeight()) + std::string(",\n");
-        answer += std::string(" \"merkleroot\": ");
-        answer += std::string("\"") + it->getMerkleRoot() + std::string("\",\n");
-        answer += std::string(" \"nTx\": ");
-        answer += std::to_string(it->getnTx()) + std::string(",\n");
-        answer += std::string(" \"nonce\": ");
-        answer += std::to_string(it->getNonce()) + std::string(",\n");
-        answer += std::string(" \"previousblockid\": ");
-        answer += std::string("\"") + it->getPrevBlockId() + std::string("\",\n");
-        answer += std::string(" \"tx\": [ \n ");
-        tempTx = it->getTxVector();
+        if (blockId == it->getId()) {
 
-        for (std::vector<Tx>::iterator ut = tempTx.begin(); ut != tempTx.end(); ut++) {
+            answer += std::string(" { \"blockid\": ");
+            answer += std::string("\"") + it->getId() + std::string("\",\n");
+            answer += std::string(" \"height\": ");
+            answer += std::to_string(it->getHeight()) + std::string(",\n");
+            answer += std::string(" \"merkleroot\": ");
+            answer += std::string("\"") + it->getMerkleRoot() + std::string("\",\n");
+            answer += std::string(" \"nTx\": ");
+            answer += std::to_string(it->getnTx()) + std::string(",\n");
+            answer += std::string(" \"nonce\": ");
+            answer += std::to_string(it->getNonce()) + std::string(",\n");
+            answer += std::string(" \"previousblockid\": ");
+            answer += std::string("\"") + it->getPrevBlockId() + std::string("\",\n");
+            answer += std::string(" \"tx\": [ \n ");
+            tempTx = it->getTxVector();
 
-            answer += std::string(" {\n");
-            answer += std::string(" \"nTxin\": ");
-            answer += std::to_string(ut->getVin().size()) + std::string(",\n");
-            answer += std::string(" \"nTxout\": ");
-            answer += std::to_string(ut->getVout().size()) + std::string(",\n");
-            answer += std::string("  \"txid\": ");
-            answer += std::string("\"") + ut->getId() + std::string("\",\n");
-
-
-            //Imprimo las VIN
-            answer += std::string(" ""vin"": [ \n ");
-            tempInTx = ut->getVin();
-            tempOutTx = ut->getVout();
-
-            for (std::vector<InTx>::iterator at = tempInTx.begin(); at != tempInTx.end(); at++) {
+            for (std::vector<Tx>::iterator ut = tempTx.begin(); ut != tempTx.end(); ut++) {
 
                 answer += std::string(" {\n");
-                answer += std::string(" \"blockid\": ");
-                answer += std::string("\"") + at->getBlockId() + std::string("\",\n");
-                answer += std::string(" \"outputIndex\": ");
-                answer += std::to_string(at->getOutputIndex()) + std::string(",\n");
-                answer += std::string(" \"signature\": ");
-                answer += std::string("\"") + at->getSignature() + std::string("\",\n");
-                answer += std::string(" ""txid"": ");
-                answer += std::string("\"") + at->getTxid() + std::string("\",\n");
+                answer += std::string(" \"nTxin\": ");
+                answer += std::to_string(ut->getVin().size()) + std::string(",\n");
+                answer += std::string(" \"nTxout\": ");
+                answer += std::to_string(ut->getVout().size()) + std::string(",\n");
+                answer += std::string("  \"txid\": ");
+                answer += std::string("\"") + ut->getId() + std::string("\",\n");
 
-                if (at + 1 == tempInTx.end()) {
-                    answer += std::string(" }\n");
+
+                //Imprimo las VIN
+                answer += std::string(" ""vin"": [ \n ");
+                tempInTx = ut->getVin();
+                tempOutTx = ut->getVout();
+
+                for (std::vector<InTx>::iterator at = tempInTx.begin(); at != tempInTx.end(); at++) {
+
+                    answer += std::string(" {\n");
+                    answer += std::string(" \"blockid\": ");
+                    answer += std::string("\"") + at->getBlockId() + std::string("\",\n");
+                    answer += std::string(" \"outputIndex\": ");
+                    answer += std::to_string(at->getOutputIndex()) + std::string(",\n");
+                    answer += std::string(" \"signature\": ");
+                    answer += std::string("\"") + at->getSignature() + std::string("\",\n");
+                    answer += std::string(" ""txid"": ");
+                    answer += std::string("\"") + at->getTxid() + std::string("\",\n");
+
+                    if (at + 1 == tempInTx.end()) {
+                        answer += std::string(" }\n");
+                    }
+                    else {
+                        answer += std::string(" },\n");
+                    }
+
                 }
-                else {
-                    answer += std::string(" },\n");
+                answer += std::string(" ],\n");
+
+                //Imprimo las VOUT
+                answer += std::string(" \"vout\": [ \n ");
+
+                for (std::vector<OutTx>::iterator at = tempOutTx.begin(); at != tempOutTx.end(); at++) {
+
+                    answer += std::string(" {\n");
+                    answer += std::string(" \"amount\": ");
+                    answer += std::to_string(at->getAmount()) + std::string(",\n");
+                    answer += std::string(" \"publicid\": ");
+                    answer += std::string("\"") + at->getPublicId() + std::string("\",\n");
+
+                    if (at + 1 == tempOutTx.end()) {
+
+                        answer += std::string(" }\n");
+                    }
+                    else {
+
+                        answer += std::string(" },\n");
+                    }
                 }
 
+                if (ut + 1 == tempTx.end()) {
+                    answer += std::string("]\n");
+                }
+                else{
+                    answer += std::string("],\n");
+                }
             }
-            answer += std::string(" ],\n");
-
-            //Imprimo las VOUT
-            answer += std::string(" \"vout\": [ \n ");
-
-            for (std::vector<OutTx>::iterator at = tempOutTx.begin(); at != tempOutTx.end(); at++) {
-
-                answer += std::string(" {\n");
-                answer += std::string(" \"amount\": ");
-                answer += std::to_string(at->getAmount()) + std::string(",\n");
-                answer += std::string(" \"publicid\": ");
-                answer += std::string("\"") + at->getPublicId() + std::string("\",\n");
-
-                if (at + 1 == tempOutTx.end()) {
-
-                    answer += std::string(" }\n");
-                }
-                else {
-
-                    answer += std::string(" },\n");
-                }
-            }
-            answer += std::string("],\n");
         }
     }
 
@@ -577,15 +586,45 @@ std::string FullNode::getBlocksReceived(std::string blockID, int count)
 
 void FullNode::validateTransactionPost(bool& error, int& result, std::string msg)
 {
+    //El HashID debe verificar
 
+
+    /*La UTXO referenciada en el Input Transaction de la Tx debe pertenecer al arreglo de UTXOs o 
+    a las transacciones pendientes*/
+
+
+
+    /*La suma de los montos de EDACoin de los UTXOs referenciados en los
+    Input Transactions tiene que coincidir con la suma de los montos de
+    EDACoin referenciados en los Output Transactions.*/
+
+
+    /*Los unlocking scripts referidos en cada Input Transaction deben
+    efectivamente desbloquear los UTXO referidos en cada una de ellas*/
 }
 
 void FullNode::validateBlockPost(bool& error, int& result, std::string msg)
 {
+    //Verificar que cumple con el challenge.
+    std::string blockid;            // : "13878957",
+    std::string height;             // : 0,
+    std::string merkleroot;         // : "80EEF9F8",
+    std::string nTx;                // : 4,
+    std::string nonce;              // : 4733,
+    std::string previousblockid;    // : "00000000",
+
+    //El previous block hash coincide con el block hash del bloque anterior
+
+    std::cout << msg << std::endl;
+
+    int a;
+
+    //Todas las transacciones son válidas
 }
 
 void FullNode::validateFilterPost(bool& error, int& result, std::string msg)
 {
+    //Aca de momento creo que no hariamos nada
 }
 
 std::string FullNode::receivedMsgCB(std::string client, std::string msg)
