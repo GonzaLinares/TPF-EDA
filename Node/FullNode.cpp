@@ -585,13 +585,46 @@ std::string FullNode::getBlocksReceived(std::string blockID, int count)
 }
 
 void FullNode::validateTransactionPost(bool& error, int& result, std::string msg)
-{
+{   
+    /*REALIZO TODO EL PARSEO Y GUARDO LAS COSAS ACA*/
+    Tx tempTx("00000000");
+    bool loEncontre = false;
+
     //El HashID debe verificar
 
 
     /*La UTXO referenciada en el Input Transaction de la Tx debe pertenecer al arreglo de UTXOs o 
     a las transacciones pendientes*/
 
+    for (std::vector<InTx>::iterator it = (tempTx.getVin()).begin(); it != (tempTx.getVin()).end(); it++) {
+
+        std::string blockid = it->getBlockId();
+        std::string txID = it->getTxid();
+        int outputIndex = it->getOutputIndex();
+
+        //Le bailo rico a todas las inputs a ver si estan en el arreglo de UTXO, sino, a casona cheater
+        
+        for (std::vector<UTXO>::iterator at = UTXOVector.begin(); at != UTXOVector.end() && loEncontre == false; at++) {
+
+            if (at->getBlockId() == blockid) {
+
+                if (at->getTXId() == txID) {
+
+                    if (at->getOutputIndex() == outputIndex) {
+
+                        loEncontre = true;
+                    }
+                }
+            }
+        }
+        if (loEncontre == false) {
+
+            error = true;
+            //result = ?
+            return;
+        }
+    }
+    
 
 
     /*La suma de los montos de EDACoin de los UTXOs referenciados en los

@@ -12,6 +12,7 @@
 #include "../Block/Block.h"
 #include "BaseNode.h"
 #include <vector>
+#include "../Block/UTXO.h"
 
 
 /******************************************************************************
@@ -80,5 +81,7 @@ private:
 
 	static std::vector<std::string> actionsVector;
 	virtual std::vector<std::string> getActionList() override;
+	std::vector<UTXO> UTXOVector;
+
 	//Vector con los nombres de las acciones posibles
 };

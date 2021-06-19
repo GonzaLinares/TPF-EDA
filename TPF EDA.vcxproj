@@ -147,6 +147,7 @@
     <ClCompile Include="Block\InTx.cpp" />
     <ClCompile Include="Block\OutTx.cpp" />
     <ClCompile Include="Block\Tx.cpp" />
+    <ClCompile Include="Block\UTXO.cpp" />
     <ClCompile Include="Hashing.cpp" />
     <ClCompile Include="ImGui\Gui.cpp" />
     <ClCompile Include="ImGui\imgui.cpp" />
@@ -177,6 +178,7 @@
     <ClInclude Include="Block\InTx.h" />
     <ClInclude Include="Block\OutTx.h" />
     <ClInclude Include="Block\Tx.h" />
+    <ClInclude Include="Block\UTXO.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="Hashing.h" />
     <ClInclude Include="ImGui\Gui.h" />
