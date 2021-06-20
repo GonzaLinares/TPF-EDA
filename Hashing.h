@@ -15,3 +15,7 @@
 * Resulta: Devulve el string hasheado en formato HexCodedAscii
 *=====================================================*/
 std::string hash32(std::string& str);
+
+std::string hexCodedAscii(unsigned int asd);
+
+#define NUMBEROFZEROSCHALLENGE 10

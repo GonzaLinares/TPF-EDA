@@ -118,4 +118,6 @@ protected:
 	node_state_t state;	//Estado del nodo (recibió mensaje, manda mensaje, escucha, etc.)
 	std::string lastReClient;
 	std::vector <std::string> IPsSentList;
+
+	int currentBlock;
 };

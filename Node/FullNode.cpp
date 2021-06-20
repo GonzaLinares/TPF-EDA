@@ -653,11 +653,13 @@ void FullNode::validateTransactionPost(bool& error, int& result, std::string msg
 {   
     /*TODO: REALIZO TODO EL PARSEO Y GUARDO LAS COSAS ACA*/
     Tx tempTx("00000000");
+
     bool loEncontre = false;
     int totalAmountInUTXO = 0;
     int totalAmountInOutput = 0;
 
-    //TODO: El HashID debe verificar  
+    //El HashID debe verificar  
+    std::string hashTest = hexCodedAscii((tempTx.getVin()).size()) + hexCodedAscii((tempTx.getVout()).size());   //Armo un string para verificar la txID
 
     /*La UTXO referenciada en el Input Transaction de la Tx debe pertenecer al arreglo de UTXOs o 
     a las transacciones pendientes*/
@@ -666,6 +668,8 @@ void FullNode::validateTransactionPost(bool& error, int& result, std::string msg
         std::string blockid = it->getBlockId();
         std::string txID = it->getTxid();
         int outputIndex = it->getOutputIndex();
+
+        hashTest += it->getBlockId() + hexCodedAscii(it->getOutputIndex()) + it->getSignature() + it->getTxid();
 
         //Le bailo rico a todas las inputs a ver si estan en el arreglo de UTXO, sino, a casona por cheater
         
@@ -686,7 +690,7 @@ void FullNode::validateTransactionPost(bool& error, int& result, std::string msg
         if (loEncontre == false) {
 
             error = true;
-            //result = ?
+            result = 2;
             return;
         }
     }
@@ -698,42 +702,87 @@ void FullNode::validateTransactionPost(bool& error, int& result, std::string msg
     for (std::vector<OutTx>::iterator it = (tempTx.getVout()).begin(); it != (tempTx.getVout()).end(); it++) {
 
         totalAmountInOutput += it->getAmount();
+        hashTest += hexCodedAscii(it->getAmount()) + it->getPublicId();
     }
 
     if (totalAmountInOutput != totalAmountInUTXO) {
 
         error = true;
-        //result = ?
+        result = 2;
+        return;
+    }
+
+    std::string hashTest1 = hash32(hashTest);
+
+    if (hash32(hashTest1) != tempTx.getId()) {
+
+        error = true;
+        result = 2;
         return;
     }
 
     /*Los unlocking scripts referidos en cada Input Transaction deben
     efectivamente desbloquear los UTXO referidos en cada una de ellas*/
+
+
 }
 
 void FullNode::validateBlockPost(bool& error, int& result, std::string msg)
 {
-    //Verificar que cumple con el challenge.
 
-    std::string blockid;            // : "13878957",
-    std::string height;             // : 0,
-    std::string merkleroot;         // : "80EEF9F8",
-    std::string nTx;                // : 4,
-    std::string nonce;              // : 4733,
-    std::string previousblockid;    // : "00000000",
+    std::string blockid = "!";              
+    unsigned int height = 0;              
+    std::string merkleroot = "!";             
+    unsigned int nTx = 0;                    
+    int nonce = 0;                            
+    std::string previousblockid = "!";        
+
+    Block blockSent(blockid, height, merkleroot, nTx, nonce, previousblockid);  //TODO: Hacer el parsing del bloque
+
+    //Verificar que cumple con el challenge.
+    std::string tempString;
+    tempString = merkleroot + hexCodedAscii(nonce) + previousblockid;
+    std::string tempString1 = hash32(tempString);
+    tempString = hash32(tempString1);
+
+    if (tempString != blockid) {
+
+        error = true;
+        result = 2;
+        return;
+    }
+
+    tempString = blockid.substr(0, NUMBEROFZEROSCHALLENGE-1);
+    for (int i = 0; i < 10; i++) {
+
+        if (tempString[i] != '0') {
+            error = true;
+            result = 2;
+            return;
+        }
+    }
 
     //El previous block hash coincide con el block hash del bloque anterior
+    if (previousblockid == "0000000000000000000000000000000000000000000000000000000000000000" && currentBlock!= 0) {
 
-    std::cout << msg << std::endl;
+        error = true;
+        result = 2;
+        return;
+    }
+    else if (previousblockid != (blockchain[currentBlock]).getId() ) {
 
-    int a;
+        error = true;
+        result = 2;
+        return;
+    }
 
-    //Todas las transacciones son válidas
+
+    //TODO: todas las transacciones son válidas
 }
 
 void FullNode::validateFilterPost(bool& error, int& result, std::string msg)
 {
-    //TODO: Aca de momento no hariamos nada
+    //Aca de momento no hariamos nada
 }
 
 std::string FullNode::receivedMsgCB(std::string client, std::string msg)
