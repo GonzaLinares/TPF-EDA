@@ -13,7 +13,7 @@ MinerNode::MinerNode(boost::asio::io_context& ioContext, std::string port)
     : FullNode(ioContext, port) 
 {
 }
-
+ 
 std::string MinerNode::getNodeType() {
     return std::string("Miner");
 }

@@ -83,6 +83,7 @@ private:
 
 	bool fileFound;		//Estado del texto que muestra cuando no encuentra un archivo
 	bool linkedSuccess;
+	bool falseActionActive;
 
 	/*=====================================================
 	* Name: deleteMerkleDic

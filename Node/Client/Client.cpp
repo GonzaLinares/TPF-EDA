@@ -52,7 +52,7 @@ bool Client::POST(std::string host, std::string path, std::string& msg)
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, recieveCallback);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &receivedData);
 		curl_easy_setopt(curl, CURLOPT_HTTPHEADER, list);
-		curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+		curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L); 
 		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, toSendMsg.c_str());
 		curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, toSendMsg.size());
 		curl_easy_setopt(curl, CURLOPT_FRESH_CONNECT);
