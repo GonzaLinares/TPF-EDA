@@ -203,7 +203,7 @@ bool FullNode::transactionPost(std::string publicKey, int amount, std::string ho
         totalAmountInOutput = 0; //La reinicio y empiezo de vuelta
     }
 
-    answer += std::string(" \"tx\": [ \n ");
+    //answer += std::string(" \"tx\": [ \n ");  //TODO esto no va aca.
     answer += std::string(" {\n");
     answer += std::string(" \"nTxin\": ");
     answer += std::to_string(VinCount);
@@ -314,7 +314,7 @@ bool FullNode::merkleBlockPost(std::string blockId, int position, std::string ho
                     answer += std::string("  \"txid\": ");
                     answer += std::string("\"") + ut->getId() + std::string("\",\n");
 
-
+                    
                     //Imprimo las VIN
                     answer += std::string(" \"vin\": [ \n ");
                     tempInTx = ut->getVin();

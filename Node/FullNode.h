@@ -71,7 +71,7 @@ public:
 
 	//*********************************************************//
 
-private:
+protected:
 	
 	void validateTransactionPost(bool& error, int& result, std::string msg);
 	void validateBlockPost(bool& error, int& result, std::string msg);
@@ -82,8 +82,6 @@ private:
 	static std::vector<std::string> actionsVector;
 	virtual std::vector<std::string> getActionList() override;	//Vector con los nombres de las acciones posibles
 	std::vector<UTXO> UTXOVector;	//Las UTXO de la blockchain
-
-	std::vector<UTXO> MyUTXO;		//Las UTXO que le pertenecen al nodo
 
 	std::string myID;
 };

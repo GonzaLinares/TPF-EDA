@@ -94,6 +94,8 @@ public:
 	*=====================================================*/
 	std::vector<Tx> getTxVector(void);
 
+	std::string dump2JSON();
+
 private:
 
 	std::string blockId;		//Id del bloque

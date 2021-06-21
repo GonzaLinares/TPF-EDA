@@ -1,12 +1,20 @@
 #pragma once
 
-#include "BaseNode.h"
+#include "FullNode.h"
 
 class MinerNode :
-    public BaseNode
+    public FullNode
 {
+public:
 
+    virtual std::string getNodeType() override;
 
+    virtual bool poll() override;
+
+private:
+    
+    std::vector<Tx> tx2add;
+    Block block2mine;
 
 };
 

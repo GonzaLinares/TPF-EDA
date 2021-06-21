@@ -65,6 +65,8 @@ public:
 	*=====================================================*/
 	std::vector <OutTx> getVout(void);
 
+	std::string dump2JSON();
+
 private:
 
 	std::string txid;		// Id de la transacicon

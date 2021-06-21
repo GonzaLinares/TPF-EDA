@@ -30,3 +30,10 @@ std::vector<OutTx> Tx::getVout(void)
 {
 	return vout;
 }
+
+std::string Tx::dump2JSON()
+{
+
+
+	return std::string();
+}
