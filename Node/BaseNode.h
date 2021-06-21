@@ -14,6 +14,7 @@
 #include "Client/Client.h"
 #include <vector>
 #include <iostream>
+#include "../Block/UTXO.h"
 
 typedef enum {IDLE = 0, RECEIVING, SENDING} node_state_t;
 
@@ -120,5 +121,6 @@ protected:
 	std::string lastReClient;
 	std::vector <std::string> IPsSentList;
 	std::vector<UTXO> MyUTXO;		//Las UTXO que le pertenecen al nodo
+	UTXO lastSpentUTXO;
 	int currentBlock;
 };
