@@ -27,6 +27,7 @@ public:
 private:
 
     std::string receivedMsgCB(std::string client, std::string msg);
+    void validateMerkleBlockPost(bool& error, int& result, std::string msg);
 
     static std::vector<std::string> actionsVector;    //Vector con los nombres de las acciones posibles
 };

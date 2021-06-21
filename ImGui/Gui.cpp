@@ -355,8 +355,12 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 	}
 	else if (actionList[comboBoxActionNodesIndex] == std::string("BlockPost") && neigh[comboBoxNodesIndex].second != "SPV") {
 
+		ImGui::Text("BlockID: ");
+		ImGui::SameLine();
+		ImGui::InputText("###BlockID :", &actionGetBlockIDWritten);
+
 		if (ImGui::Button("Send Message")) {
-			((FullNode*)currentNode)->blockPost(neigh[comboBoxNodesIndex].first);
+			((FullNode*)currentNode)->blockPost(neigh[comboBoxNodesIndex].first, actionGetBlockIDWritten);
 		}
 	}
 	else if (actionList[comboBoxActionNodesIndex] == std::string("MerkleBlockPost") && neigh[comboBoxNodesIndex].second != "Full") {

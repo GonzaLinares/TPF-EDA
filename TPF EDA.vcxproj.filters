@@ -126,6 +126,12 @@
     <ClCompile Include="Node\NodeFactory.cpp">
       <Filter>Source Files\Node</Filter>
     </ClCompile>
+    <ClCompile Include="Node\MinerNode.cpp">
+      <Filter>Source Files\Node</Filter>
+    </ClCompile>
+    <ClCompile Include="Block\UTXO.cpp">
+      <Filter>Source Files\Block</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ImGui\imconfig.h">
@@ -208,6 +214,12 @@
     </ClInclude>
     <ClInclude Include="Node\NodeFactory.h">
       <Filter>Header Files\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="Node\MinerNode.h">
+      <Filter>Header Files\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="Block\UTXO.h">
+      <Filter>Header Files\Block</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

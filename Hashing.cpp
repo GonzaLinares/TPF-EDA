@@ -1,5 +1,8 @@
 #include <iostream>
 
+#include <cryptopp/hex.h>
+#include <cryptopp/sha.h>
+
 using namespace std;
 
 const char* codeMap[16] =
@@ -46,7 +49,21 @@ string hexCodedAscii(unsigned int asd)
 
 string hash32(string& str) {
 
-    return hexCodedAscii(generateID((char*)str.c_str()));
+    //return hexCodedAscii(generateID((char*)str.c_str())); HASH VIEJO
+
+    CryptoPP::SHA256 hash;	//c'est le hash
+    CryptoPP::byte digest[CryptoPP::SHA256::DIGESTSIZE];
+    std::string message = str;
+
+    hash.CalculateDigest(digest, (CryptoPP::byte*)message.c_str(), message.length());
+
+    CryptoPP::HexEncoder encoder;
+    std::string output;
+    encoder.Attach(new CryptoPP::StringSink(output));
+    encoder.Put(digest, sizeof(digest));
+    encoder.MessageEnd();
+
+    return output;
 }
 
 /*

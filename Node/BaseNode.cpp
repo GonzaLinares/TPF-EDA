@@ -6,7 +6,7 @@ BaseNode::BaseNode(boost::asio::io_context& ioContext, boost::function<std::stri
     state(IDLE),
     client(msgReceivedCb, portNum + 1)
 {
-
+    currentBlock = 0;
 }
 
 void BaseNode::deleteBlockchain()

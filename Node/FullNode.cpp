@@ -77,7 +77,7 @@ std::string FullNode::getNodeType()
     return std::string("Full");
 }
 
-bool FullNode::blockPost(std::string host)
+bool FullNode::blockPost(std::string host, std::string blockId)
 {
     std::string answer = std::string("{");
     std::vector<Tx> tempTx;
@@ -88,80 +88,89 @@ bool FullNode::blockPost(std::string host)
 
     for (std::vector<Block>::iterator it = blockchain.begin(); it != blockchain.end(); it++) {
 
-        answer += std::string(" { \"blockid\": ");
-        answer += std::string("\"") + it->getId() + std::string("\",\n");
-        answer += std::string(" \"height\": ");
-        answer += std::to_string(it->getHeight()) + std::string(",\n");
-        answer += std::string(" \"merkleroot\": ");
-        answer += std::string("\"") + it->getMerkleRoot() + std::string("\",\n");
-        answer += std::string(" \"nTx\": ");
-        answer += std::to_string(it->getnTx()) + std::string(",\n");
-        answer += std::string(" \"nonce\": ");
-        answer += std::to_string(it->getNonce()) + std::string(",\n");
-        answer += std::string(" \"previousblockid\": ");
-        answer += std::string("\"") + it->getPrevBlockId() + std::string("\",\n");
-        answer += std::string(" \"tx\": [ \n ");
-        tempTx = it->getTxVector();
+        if (blockId == it->getId()) {
 
-        for (std::vector<Tx>::iterator ut = tempTx.begin(); ut != tempTx.end(); ut++) {
+            answer += std::string(" { \"blockid\": ");
+            answer += std::string("\"") + it->getId() + std::string("\",\n");
+            answer += std::string(" \"height\": ");
+            answer += std::to_string(it->getHeight()) + std::string(",\n");
+            answer += std::string(" \"merkleroot\": ");
+            answer += std::string("\"") + it->getMerkleRoot() + std::string("\",\n");
+            answer += std::string(" \"nTx\": ");
+            answer += std::to_string(it->getnTx()) + std::string(",\n");
+            answer += std::string(" \"nonce\": ");
+            answer += std::to_string(it->getNonce()) + std::string(",\n");
+            answer += std::string(" \"previousblockid\": ");
+            answer += std::string("\"") + it->getPrevBlockId() + std::string("\",\n");
+            answer += std::string(" \"tx\": [ \n ");
+            tempTx = it->getTxVector();
 
-            answer += std::string(" {\n");
-            answer += std::string(" \"nTxin\": ");
-            answer += std::to_string(ut->getVin().size()) + std::string(",\n");
-            answer += std::string(" \"nTxout\": ");
-            answer += std::to_string(ut->getVout().size()) + std::string(",\n");
-            answer += std::string("  \"txid\": ");
-            answer += std::string("\"") + ut->getId() + std::string("\",\n");
-
-
-            //Imprimo las VIN
-            answer += std::string(" ""vin"": [ \n ");
-            tempInTx = ut->getVin();
-            tempOutTx = ut->getVout();
-
-            for (std::vector<InTx>::iterator at = tempInTx.begin(); at != tempInTx.end(); at++) {
+            for (std::vector<Tx>::iterator ut = tempTx.begin(); ut != tempTx.end(); ut++) {
 
                 answer += std::string(" {\n");
-                answer += std::string(" \"blockid\": ");
-                answer += std::string("\"") + at->getBlockId() + std::string("\",\n");
-                answer += std::string(" \"outputIndex\": ");
-                answer += std::to_string(at->getOutputIndex()) + std::string(",\n");
-                answer += std::string(" \"signature\": ");
-                answer += std::string("\"") + at->getSignature() + std::string("\",\n");
-                answer += std::string(" ""txid"": ");
-                answer += std::string("\"") + at->getTxid() + std::string("\",\n");
+                answer += std::string(" \"nTxin\": ");
+                answer += std::to_string(ut->getVin().size()) + std::string(",\n");
+                answer += std::string(" \"nTxout\": ");
+                answer += std::to_string(ut->getVout().size()) + std::string(",\n");
+                answer += std::string("  \"txid\": ");
+                answer += std::string("\"") + ut->getId() + std::string("\",\n");
 
-                if (at + 1 == tempInTx.end()) {
-                    answer += std::string(" }\n");
+
+                //Imprimo las VIN
+                answer += std::string(" ""vin"": [ \n ");
+                tempInTx = ut->getVin();
+                tempOutTx = ut->getVout();
+
+                for (std::vector<InTx>::iterator at = tempInTx.begin(); at != tempInTx.end(); at++) {
+
+                    answer += std::string(" {\n");
+                    answer += std::string(" \"blockid\": ");
+                    answer += std::string("\"") + at->getBlockId() + std::string("\",\n");
+                    answer += std::string(" \"outputIndex\": ");
+                    answer += std::to_string(at->getOutputIndex()) + std::string(",\n");
+                    answer += std::string(" \"signature\": ");
+                    answer += std::string("\"") + at->getSignature() + std::string("\",\n");
+                    answer += std::string(" ""txid"": ");
+                    answer += std::string("\"") + at->getTxid() + std::string("\",\n");
+
+                    if (at + 1 == tempInTx.end()) {
+                        answer += std::string(" }\n");
+                    }
+                    else {
+                        answer += std::string(" },\n");
+                    }
+
                 }
-                else {
-                    answer += std::string(" },\n");
+                answer += std::string(" ],\n");
+
+                //Imprimo las VOUT
+                answer += std::string(" \"vout\": [ \n ");
+
+                for (std::vector<OutTx>::iterator at = tempOutTx.begin(); at != tempOutTx.end(); at++) {
+
+                    answer += std::string(" {\n");
+                    answer += std::string(" \"amount\": ");
+                    answer += std::to_string(at->getAmount()) + std::string(",\n");
+                    answer += std::string(" \"publicid\": ");
+                    answer += std::string("\"") + at->getPublicId() + std::string("\",\n");
+
+                    if (at + 1 == tempOutTx.end()) {
+
+                        answer += std::string(" }\n");
+                    }
+                    else {
+
+                        answer += std::string(" },\n");
+                    }
                 }
 
+                if (ut + 1 == tempTx.end()) {
+                    answer += std::string("]\n");
+                }
+                else{
+                    answer += std::string("],\n");
+                }
             }
-            answer += std::string(" ],\n");
-
-            //Imprimo las VOUT
-            answer += std::string(" \"vout\": [ \n ");
-
-            for (std::vector<OutTx>::iterator at = tempOutTx.begin(); at != tempOutTx.end(); at++) {
-
-                answer += std::string(" {\n");
-                answer += std::string(" \"amount\": ");
-                answer += std::to_string(at->getAmount()) + std::string(",\n");
-                answer += std::string(" \"publicid\": ");
-                answer += std::string("\"") + at->getPublicId() + std::string("\",\n");
-
-                if (at + 1 == tempOutTx.end()) {
-
-                    answer += std::string(" }\n");
-                }
-                else {
-
-                    answer += std::string(" },\n");
-                }
-            }
-            answer += std::string("],\n");
         }
     }
 
@@ -175,13 +184,59 @@ bool FullNode::blockPost(std::string host)
 bool FullNode::transactionPost(std::string publicKey, int amount, std::string host)
 {
     std::string answer;
+    int VinCount = 0;
+
+    int totalAmountInOutput = 0;
+
+    for (std::vector<UTXO>::iterator at = MyUTXO.begin(); at != MyUTXO.end() && totalAmountInOutput < amount; at++) {
+
+        totalAmountInOutput += at->getAmount();
+        VinCount++;
+    }
+    if (totalAmountInOutput < amount) {
+
+        //no te alcanza la plata
+        return "";
+    }
+    else {
+
+        totalAmountInOutput = 0; //La reinicio y empiezo de vuelta
+    }
 
     answer += std::string(" \"tx\": [ \n ");
     answer += std::string(" {\n");
-
+    answer += std::string(" \"nTxin\": ");
+    answer += std::to_string(VinCount);
+    answer += std::string(",\n");
+    answer += std::string(" \"nTxout\": |,\n"); //La cantidad de salidas va a ser siempre 2 o 1
+    answer += std::string(" \"txid\": 00000000000000000000000000000000,\n");    //TODO: Despues lo reemplazo
     //VIN
     answer += std::string(" \"vin\": [ \n ");
-    //Aca guardaria las vin
+    for (std::vector<UTXO>::iterator at = MyUTXO.begin(); at != MyUTXO.end() && totalAmountInOutput < amount; at++) {
+
+        answer += std::string(" {\n");
+
+        totalAmountInOutput += at->getAmount();
+
+        answer += "\"blockid\": \"";
+        answer += at->getBlockId();
+        answer += "\",\n";
+
+        answer += "\"outputIndex\": ";
+        answer += at->getOutputIndex();
+        answer += ",\n";
+
+        answer += "\"signature\": \"";  
+        //TODO: Agregar bien la firma
+        answer += "\",\n";
+
+        answer += "\"txid\": \"";
+        answer += at->getTXId();
+        answer += "\",\n";
+
+        answer += std::string(" },\n");
+    }
+
     answer += std::string(" ],\n");
 
     //VOUT
@@ -191,8 +246,27 @@ bool FullNode::transactionPost(std::string publicKey, int amount, std::string ho
     answer += std::to_string(amount) + std::string(",\n");
     answer += std::string(" \"publicid\": ");
     answer += std::string("\"") + publicKey + std::string("\",\n");
-    answer += std::string(" },\n");
+    answer += std::string(" }\n");
     answer += std::string("],\n");
+
+    if (totalAmountInOutput > amount) {
+        answer += std::string(" {\n");
+        answer += std::string(" \"amount\": ");
+        answer += std::to_string(totalAmountInOutput-amount) + std::string(",\n");
+        answer += std::string(" \"publicid\": ");
+        answer += std::string("\"") + myID + std::string("\",\n");
+        answer += std::string(" }\n");
+        answer += std::string("]\n");
+        answer.replace(answer.find_first_of('|'), 1, 1, '2');
+    }
+    else {
+
+        answer.replace(answer.find_first_of('|'),1,1,'1');
+    }
+
+    
+
+    answer += std::string("]\n");
 
     commSend(host, std::string("eda_coin/send_tx/"), answer);
 
@@ -575,58 +649,192 @@ std::string FullNode::getBlocksReceived(std::string blockID, int count)
     return answer;
 }
 
+void FullNode::validateTransactionPost(bool& error, int& result, std::string msg)
+{   
+    /*TODO: REALIZO TODO EL PARSEO Y GUARDO LAS COSAS ACA*/
+    Tx tempTx("00000000");
+
+    bool loEncontre = false;
+    int totalAmountInUTXO = 0;
+    int totalAmountInOutput = 0;
+
+    //El HashID debe verificar  
+    std::string hashTest = hexCodedAscii((tempTx.getVin()).size()) + hexCodedAscii((tempTx.getVout()).size());   //Armo un string para verificar la txID
+
+    /*La UTXO referenciada en el Input Transaction de la Tx debe pertenecer al arreglo de UTXOs o 
+    a las transacciones pendientes*/
+    for (std::vector<InTx>::iterator it = (tempTx.getVin()).begin(); it != (tempTx.getVin()).end(); it++) {
+
+        std::string blockid = it->getBlockId();
+        std::string txID = it->getTxid();
+        int outputIndex = it->getOutputIndex();
+
+        hashTest += it->getBlockId() + hexCodedAscii(it->getOutputIndex()) + it->getSignature() + it->getTxid();
+
+        //Le bailo rico a todas las inputs a ver si estan en el arreglo de UTXO, sino, a casona por cheater
+        
+        for (std::vector<UTXO>::iterator at = UTXOVector.begin(); at != UTXOVector.end() && loEncontre == false; at++) {
+
+            if (at->getBlockId() == blockid) {
+
+                if (at->getTXId() == txID) {
+
+                    if (at->getOutputIndex() == outputIndex) {
+
+                        loEncontre = true;
+                        totalAmountInUTXO += at->getAmount();
+                    }
+                }
+            }
+        }
+        if (loEncontre == false) {
+
+            error = true;
+            result = 2;
+            return;
+        }
+    }
+
+    /*La suma de los montos de EDACoin de los UTXOs referenciados en los
+    Input Transactions tiene que coincidir con la suma de los montos de
+    EDACoin referenciados en los Output Transactions.*/
+
+    for (std::vector<OutTx>::iterator it = (tempTx.getVout()).begin(); it != (tempTx.getVout()).end(); it++) {
+
+        totalAmountInOutput += it->getAmount();
+        hashTest += hexCodedAscii(it->getAmount()) + it->getPublicId();
+    }
+
+    if (totalAmountInOutput != totalAmountInUTXO) {
+
+        error = true;
+        result = 2;
+        return;
+    }
+
+    std::string hashTest1 = hash32(hashTest);
+
+    if (hash32(hashTest1) != tempTx.getId()) {
+
+        error = true;
+        result = 2;
+        return;
+    }
+
+    /*Los unlocking scripts referidos en cada Input Transaction deben
+    efectivamente desbloquear los UTXO referidos en cada una de ellas*/
+
+
+}
+
+void FullNode::validateBlockPost(bool& error, int& result, std::string msg)
+{
+
+    std::string blockid = "!";              
+    unsigned int height = 0;              
+    std::string merkleroot = "!";             
+    unsigned int nTx = 0;                    
+    int nonce = 0;                            
+    std::string previousblockid = "!";        
+
+    Block blockSent(blockid, height, merkleroot, nTx, nonce, previousblockid);  //TODO: Hacer el parsing del bloque
+
+    //Verificar que cumple con el challenge.
+    std::string tempString;
+    tempString = merkleroot + hexCodedAscii(nonce) + previousblockid;
+    std::string tempString1 = hash32(tempString);
+    tempString = hash32(tempString1);
+
+    if (tempString != blockid) {
+
+        error = true;
+        result = 2;
+        return;
+    }
+
+    tempString = blockid.substr(0, NUMBEROFZEROSCHALLENGE-1);
+    for (int i = 0; i < 10; i++) {
+
+        if (tempString[i] != '0') {
+            error = true;
+            result = 2;
+            return;
+        }
+    }
+
+    //El previous block hash coincide con el block hash del bloque anterior
+    if (previousblockid == "0000000000000000000000000000000000000000000000000000000000000000" && currentBlock!= 0) {
+
+        error = true;
+        result = 2;
+        return;
+    }
+    else if (previousblockid != (blockchain[currentBlock]).getId() ) {
+
+        error = true;
+        result = 2;
+        return;
+    }
+
+
+    //TODO: todas las transacciones son válidas
+}
+
+void FullNode::validateFilterPost(bool& error, int& result, std::string msg)
+{
+    //Aca de momento no hariamos nada
+}
+
 std::string FullNode::receivedMsgCB(std::string client, std::string msg)
 {
     std::string answer = std::string("damy value"); //Acá copiaré las respuestas que me den las funciones
-
     std::string host = client.substr(0, client.find_first_of('/', 0));
     lastReClient = host;
 
-
-    
-
     client.erase(0, client.find_first_of('/', 0));
 
+    bool error = false; //Parametros que serán enviados a las funciones de validación
+    int result = 0;
 
         if (client == std::string("/eda_coin/send_block/")) {
 
             state = RECEIVING;
             if (msg != std::string("")) {
 
-                //Aca podria por ejemplo hacer algo con el mensaje que nos enviaron
+                validateBlockPost(error, result, msg);
+                answer = blockPostReceived(error, result);
             }
-            answer = blockPostReceived(false, 0);
         }
         else if (client == std::string("/eda_coin/send_tx/")) {
 
             state = RECEIVING;
             if (msg != std::string("")) {
 
-                //Aca podria por ejemplo hacer algo con el mensaje que nos enviaron
+                validateTransactionPost(error, result, msg);
+                answer = transactionPostReceived(error, result);
             }
-            answer = transactionPostReceived(false, 0);
         }
         else if (client == std::string("/eda_coin/send_filter/")) {
 
             state = RECEIVING;
             if (msg != std::string("")) {
 
-                //Aca podria por ejemplo hacer algo con el mensaje que nos enviaron
+                validateFilterPost(error, result, msg);
+                answer = filterPostReceived(error, result);
             }
-            answer = filterPostReceived(false, 0);
         }
         else if (client == std::string("/eda_coin/get_blocks/")) {
 
             state = RECEIVING;
             std::string blockID = msg.substr(msg.find_first_of("blockid=", 0) + 9, 8);
-            std::string temp = msg.substr(msg.find("count=", 0) + 6, msg.find_first_of('"', 5)); //TODO: Sirve mientras no haya nada despues de count
+            std::string temp = msg.substr(msg.find("count=", 0) + 6, msg.find_first_of('"', 5)); //TODO: Sirve mientras no haya ningun parametro despues de count
             answer = getBlocksReceived(blockID, stoi(temp));
         }
         else if (client == std::string("/eda_coin/get_block_header/")) {
 
             state = RECEIVING;
             std::string blockID = msg.substr(msg.find("blockid=", 0) + 10, 8);
-            std::string temp = msg.substr(msg.find("count=", 0) + 6, msg.find_first_of('"', 5)); //TODO: Sirve mientras no haya nada despues de count
+            std::string temp = msg.substr(msg.find("count=", 0) + 6, msg.find_first_of('"', 5)); //TODO: Sirve mientras no haya ningun parametro despues de count
             answer = getBlockHeaderReceived(blockID, stoi(temp));
         }
         else

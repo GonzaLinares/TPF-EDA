@@ -12,6 +12,7 @@
 #include "../Block/Block.h"
 #include "BaseNode.h"
 #include <vector>
+#include "../Block/UTXO.h"
 
 
 /******************************************************************************
@@ -32,7 +33,7 @@ public:
 	virtual std::string getNodeType() override;
 		
 	//POST HTTP	*********************************************************
-	bool blockPost(std::string host);
+	bool blockPost(std::string host, std::string blockId);
 	bool transactionPost(std::string publicKey, int amount, std::string host);
 	bool merkleBlockPost(std::string blockId, int position, std::string host);
 
@@ -72,9 +73,17 @@ public:
 
 private:
 	
+	void validateTransactionPost(bool& error, int& result, std::string msg);
+	void validateBlockPost(bool& error, int& result, std::string msg);
+	void validateFilterPost(bool& error, int& result, std::string msg);
+
 	std::string receivedMsgCB(std::string client, std::string msg);
 
 	static std::vector<std::string> actionsVector;
-	virtual std::vector<std::string> getActionList() override;
-	//Vector con los nombres de las acciones posibles
+	virtual std::vector<std::string> getActionList() override;	//Vector con los nombres de las acciones posibles
+	std::vector<UTXO> UTXOVector;	//Las UTXO de la blockchain
+
+	std::vector<UTXO> MyUTXO;		//Las UTXO que le pertenecen al nodo
+
+	std::string myID;
 };
