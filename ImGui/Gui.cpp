@@ -151,14 +151,14 @@ void Gui::update(NodeFactory& nodes) {
 			showBlocksTab(*nodes.getNodes()[currentNodeActive]);
 			ImGui::EndTabItem();
 		}
-		/*
+		
 		if (ImGui::BeginTabItem("DemoWindows"))	//Tab de los bloques
 		{
 			bool show_demo_window = true;
 			ImGui::ShowDemoWindow(&show_demo_window);
 			ImGui::EndTabItem();
 		}
-		*/
+		
 		ImGui::EndTabBar();
 	}
     ImGui::End();
@@ -353,6 +353,8 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 		ImGui::Text("Public key: ");
 		ImGui::SameLine();
 		ImGui::InputText("###Public key :", &actionGetBlockPublicKeyWritten);
+		ImGui::SameLine();
+		//ImGui::Checkbox();
 		ImGui::SameLine();
 		ImGui::Text("Amount: ");
 		ImGui::SameLine();

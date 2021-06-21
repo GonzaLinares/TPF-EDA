@@ -10,6 +10,8 @@ public:
 	MinerNode(boost::asio::io_context& ioContext, std::string port, std::string path2blockchain);
 	MinerNode(boost::asio::io_context& ioContext, std::string port);
 
+	virtual std::string getNodeType() override;
+
 	virtual bool poll() override;
 
 private:
