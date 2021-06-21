@@ -9,6 +9,7 @@
 * INCLUDE HEADER FILES
 ******************************************************************************/
 #include "../Block/Block.h"
+#include "../Block/UTXO.h"
 #include "Server/Server.h"
 #include "Client/Client.h"
 #include <vector>

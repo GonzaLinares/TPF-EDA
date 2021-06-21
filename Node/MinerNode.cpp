@@ -16,4 +16,8 @@ MinerNode::MinerNode(boost::asio::io_context& ioContext, std::string port)
 
 std::string MinerNode::getNodeType() {
     return std::string("Miner");
-} 
+}
+bool MinerNode::poll()
+{
+    return false;
+}
