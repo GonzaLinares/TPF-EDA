@@ -83,8 +83,6 @@ protected:
 	virtual std::vector<std::string> getActionList() override;	//Vector con los nombres de las acciones posibles
 	std::vector<UTXO> UTXOVector;	//Las UTXO de la blockchain
 
-	std::vector<UTXO> MyUTXO;		//Las UTXO que le pertenecen al nodo
-
 	std::string myID;
 
 	std::vector<Tx> validatedTransactions;
