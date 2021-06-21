@@ -151,14 +151,14 @@ void Gui::update(NodeFactory& nodes) {
 			showBlocksTab(*nodes.getNodes()[currentNodeActive]);
 			ImGui::EndTabItem();
 		}
-		/*
+		
 		if (ImGui::BeginTabItem("DemoWindows"))	//Tab de los bloques
 		{
 			bool show_demo_window = true;
 			ImGui::ShowDemoWindow(&show_demo_window);
 			ImGui::EndTabItem();
 		}
-		*/
+		
 		ImGui::EndTabBar();
 	}
     ImGui::End();
@@ -349,7 +349,10 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 
 	if (actionList[comboBoxActionNodesIndex] == std::string("TransactionPost") && neigh[comboBoxNodesIndex].second != "SPV") { //Message send crypto == true
 
-
+		ImGui::SameLine();
+		ImGui::Text("falseTrx");
+		ImGui::SameLine();
+		ImGui::Checkbox("###falseActionActive", &falseActionActive);
 		ImGui::Text("Public key: ");
 		ImGui::SameLine();
 		ImGui::InputText("###Public key :", &actionGetBlockPublicKeyWritten);

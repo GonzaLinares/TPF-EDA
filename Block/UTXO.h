@@ -12,7 +12,7 @@ public:
 	int getAmount();
 
 private:
-	 
+	
 	int amount;
 	std::string blockId;
 	std::string txId;
