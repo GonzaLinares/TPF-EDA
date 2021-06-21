@@ -13,8 +13,6 @@
 #include "MerkleTree.h"
 #include "Hashing.h"
 #include "Node/NodeFactory.h"
-#include "cryptopp850/dll.h"
-#include "cryptopp850/sha.h"
 
 using namespace std;
 
@@ -26,8 +24,6 @@ int main(int argc, char** argv) {
 	Gui menu;
 	boost::asio::io_context contexto;
 	NodeFactory nodes(contexto);
-
-	CryptoPP::SHA256;	//c'est le hash
 
 	////NODOS PARA DEBUGGING, TODO: Sacar
 	//nodes.createFullNode(std::to_string(25576));
