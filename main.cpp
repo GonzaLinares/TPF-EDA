@@ -14,7 +14,6 @@
 #include "Hashing.h"
 #include "Node/NodeFactory.h"
 
-
 #include <cryptopp/hex.h>
 #include <cryptopp/sha.h>
 

@@ -1,6 +1,7 @@
 #include "NodeFactory.h"
 #include "FullNode.h"
 #include "SPVNode.h"
+#include "MinerNode.h"
 
 NodeFactory::NodeFactory(boost::asio::io_context& ioContext_)
 	: ioContext(ioContext_)
@@ -31,6 +32,20 @@ bool NodeFactory::createFullNode(std::string port, std::string path2blockchain)
 bool NodeFactory::createFullNode(std::string port)
 {
 	nodes.push_back(new FullNode(ioContext, port));
+
+	return true;
+}
+
+bool NodeFactory::createMinerNode(std::string port, std::string path2blockchain)
+{
+	nodes.push_back(new MinerNode(ioContext, port, path2blockchain));
+
+	return true;
+}
+
+bool NodeFactory::createMinerNode(std::string port)
+{
+	nodes.push_back(new MinerNode(ioContext, port));
 
 	return true;
 }

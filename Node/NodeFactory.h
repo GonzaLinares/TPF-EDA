@@ -18,6 +18,9 @@ public:
 	bool createSPVNode(std::string port, std::string path2blockchain);
 	bool createSPVNode(std::string port);
 
+	bool createMinerNode(std::string port, std::string path2blockchain);
+	bool createMinerNode(std::string port);
+
 	bool deleteNode(unsigned int nodeIndex);
 
 	bool alreadyExist(std::string portNum);

@@ -71,7 +71,7 @@ public:
 
 	//*********************************************************//
 
-private:
+protected:
 	
 	void validateTransactionPost(bool& error, int& result, std::string msg);
 	void validateBlockPost(bool& error, int& result, std::string msg);
@@ -86,4 +86,6 @@ private:
 	std::vector<UTXO> MyUTXO;		//Las UTXO que le pertenecen al nodo
 
 	std::string myID;
+
+	std::vector<Tx> validatedTransactions;
 };
