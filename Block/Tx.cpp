@@ -31,9 +31,9 @@ std::vector<OutTx> Tx::getVout(void)
 	return vout;
 }
 
-std::string Tx::dump2JSON()
+std::string Tx::dump2JSON()		//TODO: Implementar
 {
 
 
-	return std::string();
+	return "Implementar";	
 }

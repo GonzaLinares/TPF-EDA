@@ -28,6 +28,7 @@ public:
 	* Resulta: -
 	*=====================================================*/
 	Block(std::string blockid_, unsigned int height_, std::string merkleRoot_, unsigned int nTx_, int nonce_, std::string prevblockid_);
+	Block();
 
 	/*=====================================================
 	* Name: push_transaction

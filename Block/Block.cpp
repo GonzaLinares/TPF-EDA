@@ -10,6 +10,10 @@ Block::Block(std::string blockid_, unsigned int height_, std::string merkleRoot_
 {
 }
 
+Block::Block()
+{
+}
+
 bool Block::push_transaction(Tx newTx)
 {
 	txs.push_back(newTx);
