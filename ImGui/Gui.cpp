@@ -227,7 +227,7 @@ void Gui::showCreateBox(NodeFactory& nodes) {
 			blockPage = 0;
 			comboBoxNodesIndex = 0;
 			comboBoxActionNodesIndex = 0;
-
+			 
 		}
 	}
 	ImGui::SameLine();
@@ -239,6 +239,21 @@ void Gui::showCreateBox(NodeFactory& nodes) {
 			}
 			else {
 				nodes.createFullNode(nodePort);
+			}
+			blockPage = 0;
+			comboBoxNodesIndex = 0;
+			comboBoxActionNodesIndex = 0;
+		}
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Miner")) {		//Sino creamos un Miner
+		if (!nodes.alreadyExist(nodePort))
+		{
+			if (filename.size() > 0) {
+				fileFound = nodes.createMinerNode(nodePort, filename);
+			} 
+			else {
+				nodes.createMinerNode(nodePort);
 			}
 			blockPage = 0;
 			comboBoxNodesIndex = 0;

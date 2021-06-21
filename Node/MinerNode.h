@@ -1,15 +1,16 @@
 #pragma once
 
+#include "BaseNode.h"
 #include "FullNode.h"
 
-class MinerNode :
-    public FullNode
-{
+class MinerNode : public FullNode {
+
 public:
 
-    virtual std::string getNodeType() override;
+	MinerNode(boost::asio::io_context& ioContext, std::string port, std::string path2blockchain);
+	MinerNode(boost::asio::io_context& ioContext, std::string port);
 
-    virtual bool poll() override;
+	virtual bool poll() override;
 
 private:
     

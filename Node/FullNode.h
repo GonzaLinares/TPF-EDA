@@ -84,4 +84,6 @@ protected:
 	std::vector<UTXO> UTXOVector;	//Las UTXO de la blockchain
 
 	std::string myID;
+
+	std::vector<Tx> validatedTransactions;
 };
