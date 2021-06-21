@@ -95,15 +95,39 @@ public:
 	*=====================================================*/
 	std::vector<Tx> getTxVector(void);
 
+	uint32_t getTimestamp();
+
+	uint32_t getTarget();
+
+	void setHeight(unsigned int newHeight);
+
+	void setNonce(unsigned int newNonce);
+
+	void setTimestamp(uint32_t unixTime);
+
+	void setTarget(uint32_t newTarget);
+
+	void clear();
+
+	void calculateMerkleRoot();
+
+	void calculateHash();
+
+
+
 	std::string dump2JSON();
 
 private:
+
+
 
 	std::string blockId;		//Id del bloque
 	unsigned int height;		//Altura del bloque
 	unsigned int nonce;			//Nonce del bloque
 	std::string previousBlockId;	//Id del bloque previo
 	std::string merkleRoot;		//Merkleroot del bloque
+	unsigned int target;
+	unsigned int timestamp;
 	std::vector<Tx> txs;		//Vector con las transacciones.
 
 };

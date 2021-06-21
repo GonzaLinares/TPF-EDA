@@ -1,4 +1,6 @@
 #include "Block.h"
+#include "../MerkleTree.h"
+#include "../Hashing.h"
 #include <string>
 
 Block::Block(std::string blockid_, unsigned int height_, std::string merkleRoot_, unsigned int nTx_, int nonce_, std::string prevblockid_) :
@@ -92,6 +94,71 @@ std::vector<Tx> Block::getTxVector(void)
 {
 
     return txs;
+}
+
+uint32_t Block::getTimestamp()
+{
+    return timestamp;
+}
+
+uint32_t Block::getTarget()
+{
+    return target;
+}
+
+void Block::setHeight(unsigned int newHeight)
+{
+    height = newHeight;
+}
+
+void Block::setNonce(unsigned int newNonce)
+{
+    nonce = newNonce;
+}
+
+void Block::setTimestamp(uint32_t unixTime)
+{
+    timestamp = unixTime;
+}
+
+void Block::setTarget(uint32_t newTarget)
+{
+    if (newTarget < 33)
+    {
+        target = newTarget;
+    }
+}
+
+void Block::clear()
+{
+    txs.clear();
+    blockId = "";
+    height = 0;
+    nonce = 0;
+    previousBlockId = "";
+
+}
+
+void Block::calculateMerkleRoot()
+{
+    if (txs.size() == 1)
+    {
+        this->merkleRoot = txs[0].getId();
+    }
+    else if (txs.size() >= 1)
+    {
+        std::vector<std::string> aux;
+        getTxsID(aux);
+        MerkleTree<hash32> auxTree(aux);
+        this->merkleRoot = auxTree.getMerkleRoot();
+    }
+}
+
+void Block::calculateHash()
+{
+    std::string aux2hash = previousBlockId + merkleRoot + hexCodedAscii(nonce);
+    aux2hash = hash32(aux2hash);
+    blockId = hash32(aux2hash);
 }
 
 std::string Block::dump2JSON()

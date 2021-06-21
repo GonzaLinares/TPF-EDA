@@ -16,6 +16,9 @@ public:
 
 private:
     
+	void prepareBlock2mine();
+	bool mine();
+	bool mining;
     std::vector<Tx> tx2add;
     Block block2mine;
 
