@@ -59,10 +59,9 @@ void HTTP::elaborateMessage(std::string client) {
         
         if (this->command == "POST")
         {
-
             auxString = generateReplyData(client + path, receivedMsg.substr(receivedMsg.find(string("\r\n\r\n"))));
         }
-        else
+        else if (this->command == "GET")
         {
             auxString = generateReplyData(client + path, parameters);
         }
@@ -126,7 +125,6 @@ void HTTP::elaborateMessage(std::string client) {
 
     auxString = receivedMsg.substr(auxPositionINICIAL, auxPositionFINAL - auxPositionINICIAL); //ACA ESTA EL RESTO DEL STRING, si sirve de algo
 
-    // TODO: agregar aca que analice el POST con generateReplyData
 
 }
 
