@@ -71,7 +71,7 @@ public:
 
 	//*********************************************************//
 
-	std::string signMessage(std::string msg);
+	std::string signMsg(std::string msg);
 
 protected:
 	

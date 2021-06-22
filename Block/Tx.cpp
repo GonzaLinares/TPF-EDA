@@ -37,7 +37,7 @@ std::vector<OutTx> Tx::getVout(void)
 	return vout;
 }
 
-void Tx::calculateTXID()
+std::string Tx::calculateTXID()
 {
     std::string hashTest = hexCodedAscii((getVin()).size()) + hexCodedAscii((getVout()).size());   //Armo un string para verificar la txID
 
@@ -51,7 +51,6 @@ void Tx::calculateTXID()
 
         hashTest += it->getBlockId() + hexCodedAscii(it->getOutputIndex()) + it->getSignature() + it->getTxid();
 
-    
     }
 
     for (std::vector<OutTx>::iterator it = (getVout()).begin(); it != (getVout()).end(); it++) {
@@ -62,6 +61,8 @@ void Tx::calculateTXID()
 
     hashTest = hash32(hashTest);
     txid = hash32(hashTest);
+
+    return txid
 }
 
 std::string Tx::dump2JSON()		//TODO: Implementar
