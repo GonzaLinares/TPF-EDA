@@ -6,7 +6,8 @@ Connection::~Connection()			//Destructor solo para uso de debug
 }
 
 Connection::Connection(boost::asio::io_context& ioContext, boost::function<std::string(std::string, std::string)> postReplyCB)	//Preparo el socket de la conexion con el constructor
-	: conSocket(ioContext)
+	: conSocket(ioContext),
+	buffer(boost::asio::dynamic_buffer(this->receivedMsg))
 {
 	generateReplyData = postReplyCB;
 }
@@ -27,9 +28,11 @@ tcp::socket& Connection::getSocket()		//getter para el socket
 void Connection::startHTTP(Connection::pointer thisCon)
 {
 	//Escucho hasta que el cliente mande el terminador CRLFCRLF
-	boost::asio::async_read_until(this->conSocket, boost::asio::dynamic_buffer(this->receivedMsg), "\r\n\r\n",
+
+	boost::asio::async_read_until(this->conSocket, buffer, "\r\n\r\n",
 		boost::bind(&Connection::readDataHandler, this,
 			boost::asio::placeholders::bytes_transferred, thisCon, boost::asio::placeholders::error ));
+
 }
 
 //Cuendo recibo un mensaje se llama a este callback para procesarlo
@@ -80,3 +83,5 @@ void Connection::sendDataHandler(int sentBytes, Connection::pointer thisCon, con
 
 	this->conSocket.shutdown(boost::asio::ip::tcp::socket::shutdown_send);	//Como ya se respondio se cierra el socket
 }
+
+
