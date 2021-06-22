@@ -2,7 +2,7 @@
 #include <chrono>
 
 #define BLOCKS_TILL_UPDATE 6
-#define DEFAULT_TARGET 3
+#define DEFAULT_TARGET 5
 #define SECOND_PER_BLOCK 60
 
 MinerNode::MinerNode(boost::asio::io_context& ioContext, std::string port, std::string path2blockchain)
@@ -53,11 +53,11 @@ void MinerNode::prepareBlock2mine()
 
     block2mine.setHeight(blockchain.size() + 1);
 
-    if (blockchain.size() && block2mine.getHeight() % BLOCKS_TILL_UPDATE == 0)
+    if (blockchain.size() && ((block2mine.getHeight()-1) % BLOCKS_TILL_UPDATE) == 0)
     {
         float avgTimeperBlock = 0;
 
-        for (int i = 0; i < BLOCKS_TILL_UPDATE; i++)
+        for (int i = 0; i < BLOCKS_TILL_UPDATE-2; i++)
         {
             avgTimeperBlock += blockchain[blockchain.size() - 1 - i].getTimestamp() - blockchain[blockchain.size() - 2 - i].getTimestamp();
         }
@@ -79,7 +79,7 @@ void MinerNode::prepareBlock2mine()
     {
         newTarget = DEFAULT_TARGET;
     }
-    
+    block2mine.setTarget(newTarget);
     for (auto it : tx2add)
     {
         block2mine.push_transaction(it);
@@ -110,7 +110,7 @@ bool MinerNode::mine()
 
     for (unsigned int i = 0; i < block2mine.getTarget(); i++)
     {
-        if (block2mine.getId()[i] != 0)
+        if (block2mine.getId()[i] != '0')
         {
             block2mine.setNonce(block2mine.getNonce() + 1);
             return false;

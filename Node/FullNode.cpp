@@ -83,7 +83,7 @@ std::string FullNode::getNodeType()
 
 bool FullNode::blockPost(std::string host, std::string blockId)
 {
-    std::string answer = std::string("{");
+    std::string answer = "";
     std::vector<Tx> tempTx;
     std::vector<InTx> tempInTx;
     std::vector<OutTx> tempOutTx;
