@@ -466,11 +466,11 @@ std::string FullNode::blockPostReceived(bool error, int result)
         
         if (result == 1) {
 
-            answer = std::string("{ \"status\": true,\n \"result\": 1 }");
+            answer = std::string("{ \"status\": false,\n \"result\": 1 }");
         }
         else {
 
-            answer = std::string("{ \"status\": true,\n \"result\": 2 }");
+            answer = std::string("{ \"status\": false,\n \"result\": 2 }");
         }
     }
     else {
@@ -489,11 +489,11 @@ std::string FullNode::transactionPostReceived(bool error, int result)
 
         if (result == 1) {
 
-            answer = std::string("{ \"status\": true,\n \"result\": 1 }");
+            answer = std::string("{ \"status\": false,\n \"result\": 1 }");
         }
         else {
 
-            answer = std::string("{ \"status\": true,\n \"result\": 2 }");
+            answer = std::string("{ \"status\": false,\n \"result\": 2 }");
         }
     }
     else {
@@ -512,11 +512,11 @@ std::string FullNode::filterPostReceived(bool error, int result)
 
         if (result == 1) {
 
-            answer = std::string("{ \"status\": true,\n \"result\": 1 }");
+            answer = std::string("{ \"status\": false,\n \"result\": 1 }");
         }
         else {
 
-            answer = std::string("{ \"status\": true,\n \"result\": 2 }");
+            answer = std::string("{ \"status\": false,\n \"result\": 2 }");
         }
     }
     else {
@@ -825,7 +825,7 @@ void FullNode::validateTransactionPost(bool& error, int& result, std::string msg
 void FullNode::validateBlockPost(bool& error, int& result, std::string msg)
 {
     json jsonFile;
-    jsonFile = json::parse(msg.c_str());
+
     try
     {
         jsonFile = json::parse(msg.c_str());
