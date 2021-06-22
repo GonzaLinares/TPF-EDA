@@ -68,6 +68,10 @@ std::string BaseNode::getLastReceivedClient() {
     return lastReClient;
 }
 
+UTXO BaseNode::getLastUTXOSpent() {
+    return lastSpentUTXO;
+}
+
 int BaseNode::getBlockQuant(void)
 {
     return blockchain.size();

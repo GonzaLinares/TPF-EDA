@@ -91,6 +91,7 @@ public:
 	virtual std::vector <std::pair<std::string, std::string>>& getNeighbours();
 	virtual bool hasNeighbours();
 	virtual std::string getLastReceivedClient();
+	virtual UTXO getLastUTXOSpent();
 
 	virtual bool poll();
 

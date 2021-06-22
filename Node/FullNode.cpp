@@ -774,9 +774,9 @@ void FullNode::validateBlockPost(bool& error, int& result, std::string msg)
 
         for (int k = jsonFile["tx"][j]["nTxout"] - 1; k >= 0; k--)
         {
-            OutTx auxOutTx(jsonFile["tx"][j]["vout"][k]["publicid"], jsonFile[i]["tx"][j]["vout"][k]["amount"]);
-            auxTx.push_vout(auxOutTx);
-        }
+            //OutTx auxOutTx(jsonFile["tx"][j]["vout"][k]["publicid"], jsonFile[i]["tx"][j]["vout"][k]["amount"]);
+            //auxTx.push_vout(auxOutTx);
+        }   
         blockSent.push_transaction(auxTx);
     }
 
