@@ -213,7 +213,7 @@ bool FullNode::transactionPost(std::string publicKey, int amount, std::string ho
     messageVOUT += hexCodedAscii(amount) + publicKey;
     if (totalAmountInOutput > amount) {
 
-        answer += std::to_string(totalAmountInOutput - amount) += myID
+        answer += std::to_string(totalAmountInOutput - amount) += myID;
     }
 
     //answer += std::string(" \"tx\": [ \n ");  //esto no va aca.
@@ -783,7 +783,8 @@ void FullNode::validateTransactionPost(bool& error, int& result, std::string msg
         message.clear();
     }
 
-    //TODO:Si todo esto salió bien tengo que añadir esta transacción a la siguiente minación
+    //TODO:Si todo esto salió bien tengo que añadir esta transacción a la siguiente minación. Creo que asi quedaria. Habria que ver de mandarla a minero
+    verifiedTxs.push_back(tempTx);
 }
 
 void FullNode::validateBlockPost(bool& error, int& result, std::string msg)

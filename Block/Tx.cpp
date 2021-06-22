@@ -43,20 +43,14 @@ void Tx::calculateTXID()
 
     /*La UTXO referenciada en el Input Transaction de la Tx debe pertenecer al arreglo de UTXOs o
     a las transacciones pendientes*/
-    for (std::vector<InTx>::iterator it = (getVin()).begin(); it != (getVin()).end(); it++) {
+    for (auto it : vin) {
 
-        std::string blockid = it->getBlockId();
-        std::string txID = it->getTxid();
-        int outputIndex = it->getOutputIndex();
-
-        hashTest += it->getBlockId() + hexCodedAscii(it->getOutputIndex()) + it->getSignature() + it->getTxid();
-
-    
+        hashTest += it.getBlockId() + hexCodedAscii(it.getOutputIndex()) + it.getSignature() + it.getTxid();
     }
 
-    for (std::vector<OutTx>::iterator it = (getVout()).begin(); it != (getVout()).end(); it++) {
+    for (auto it : vout) {
 
-        hashTest += hexCodedAscii(it->getAmount()) + it->getPublicId();
+        hashTest += hexCodedAscii(it.getAmount()) + it.getPublicId();
     }
 
 
