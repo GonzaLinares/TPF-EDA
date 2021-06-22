@@ -71,6 +71,8 @@ public:
 
 	//*********************************************************//
 
+	std::string signMessage(std::string msg);
+
 protected:
 	
 	void validateTransactionPost(bool& error, int& result, std::string msg);
@@ -86,4 +88,6 @@ protected:
 	std::string myID;
 
 	std::vector<Tx> validatedTransactions;
+
+	CryptoPP::RandomNumberGenerator randomnumbers;
 };

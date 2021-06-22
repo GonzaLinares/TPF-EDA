@@ -9,6 +9,8 @@
 using json = nlohmann::json;
 
 std::vector<std::string> FullNode::actionsVector{ "BlockPost", "TransactionPost", "MerkleBlockPost", "GetBlocksPost" };
+bool verifyMessage(std::string message, std::string signature, std::string pubKey);
+
 
 FullNode::FullNode(boost::asio::io_context& ioContext, std::string port, std::string path2blockchain)
     : BaseNode(ioContext, boost::bind(&FullNode::receivedMsgCB, this, boost::placeholders::_1, boost::placeholders::_2), stoi(port))
@@ -186,8 +188,9 @@ bool FullNode::blockPost(std::string host, std::string blockId)
 bool FullNode::transactionPost(std::string publicKey, int amount, std::string host)
 {
     std::string answer;
+    std::string messageVOUT;
+    std::string message;
     int VinCount = 0;
-
     int totalAmountInOutput = 0;
 
     for (std::vector<UTXO>::iterator at = MyUTXO.begin(); at != MyUTXO.end() && totalAmountInOutput < amount; at++) {
@@ -203,6 +206,14 @@ bool FullNode::transactionPost(std::string publicKey, int amount, std::string ho
     else {
 
         totalAmountInOutput = 0; //La reinicio y empiezo de vuelta
+    }
+
+    //Inicializo el messageVOUT para despues firmar
+
+    messageVOUT += hexCodedAscii(amount) + publicKey;
+    if (totalAmountInOutput > amount) {
+
+        answer += std::to_string(totalAmountInOutput - amount) += myID
     }
 
     //answer += std::string(" \"tx\": [ \n ");  //esto no va aca.
@@ -229,7 +240,7 @@ bool FullNode::transactionPost(std::string publicKey, int amount, std::string ho
         answer += ",\n";
 
         answer += "\"signature\": \"";  
-        //TODO: Agregar bien la firma     CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::Signer(privateKey1);
+        /**/
         answer += "\",\n";
 
         answer += "\"txid\": \"";
@@ -265,8 +276,6 @@ bool FullNode::transactionPost(std::string publicKey, int amount, std::string ho
 
         answer.replace(answer.find_first_of('|'),1,1,'1');
     }
-
-    
 
     answer += std::string("}\n");
 
@@ -761,24 +770,7 @@ void FullNode::validateTransactionPost(bool& error, int& result, std::string msg
 
                     if (at->getOutputIndex() == outputIndex) {
 
-                        CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PrivateKey privateKeyTemp;
-                        CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PublicKey publicKeyTemp;
-                        //publicKeyTemp.Load;
-
-                        std::string key;
-                        CryptoPP::publicKey.Save(CryptoPP::HexEncoder(new CryptoPP::StringSink(key)).Ref());  // Para almacenarlo en ASCII
-
-                        //Este es para el mensaje
-                        std::string destination;
-                        CryptoPP::StringSource ss(message, true, new CryptoPP::HexDecoder(new CryptoPP::StringSink(destination)));
-                        const CryptoPP::byte* result1 = (const CryptoPP::byte*)destination.data();
-
-                        //Este es para la firma
-                        std::string destination1;
-                        CryptoPP::StringSource ss1(it->getSignature(), true, new CryptoPP::HexDecoder(new CryptoPP::StringSink(destination1)));
-                        const CryptoPP::byte* result2 = (const CryptoPP::byte*)destination1.data();
-
-                        if (verifierTemp.VerifyMessage(result1, message.length(), result2, (it->getSignature()).length() ) == false) {
+                        if (! (verifyMessage( message, it->getSignature(), at->getPublicId() ))){
 
                             error = true;
                             result = 2;
@@ -790,7 +782,6 @@ void FullNode::validateTransactionPost(bool& error, int& result, std::string msg
         }
         message.clear();
     }
-
 
     //TODO:Si todo esto salió bien tengo que añadir esta transacción a la siguiente minación
 }
@@ -868,6 +859,11 @@ void FullNode::validateBlockPost(bool& error, int& result, std::string msg)
 
     //TODO: todas las transacciones son válidas
 
+
+
+
+
+    blockchain.push_back(blockSent);
 }
 
 void FullNode::validateFilterPost(bool& error, int& result, std::string msg)
@@ -943,4 +939,64 @@ std::string FullNode::receivedMsgCB(std::string client, std::string msg)
 std::vector<std::string> FullNode::getActionList()
 {
     return actionsVector;
+}
+
+bool verifyMessage(std::string message, std::string signature, std::string pubKey) {
+    /*
+    * 
+    * Codigo que no funciona
+    * 
+    CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PrivateKey privateKeyTemp;
+    CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PublicKey publicKeyTemp;
+
+    std::string key;
+    CryptoPP::publicKey.Save(CryptoPP::HexEncoder(new CryptoPP::StringSink(key)).Ref());  // Para almacenarlo en ASCII
+
+    //Este es para el mensaje
+    std::string destination;
+    CryptoPP::StringSource ss(message, true, new CryptoPP::HexDecoder(new CryptoPP::StringSink(destination)));
+    const CryptoPP::byte* result1 = (const CryptoPP::byte*)destination.data();
+
+    //Este es para la firma
+    std::string destination1;
+    CryptoPP::StringSource ss1(it->getSignature(), true, new CryptoPP::HexDecoder(new CryptoPP::StringSink(destination1)));
+    const CryptoPP::byte* result2 = (const CryptoPP::byte*)destination1.data();
+
+    if (verifierTemp.VerifyMessage(result1, message.length(), result2, (it->getSignature()).length()) == false) {
+
+        error = true;
+        result = 2;
+        return;
+    }
+    */
+
+    CryptoPP::StringSource pubKeyHex(pubKey, true, new CryptoPP::HexDecoder);
+
+    CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PublicKey pub;
+    pub.AccessGroupParameters().SetPointCompression(true);
+
+    pub.Load(pubKeyHex);
+
+    CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::Verifier verifier(pub);
+
+    std::string signHex;
+    CryptoPP::StringSource ss(signature, true, new CryptoPP::HexDecoder(new CryptoPP::StringSink(signHex)));
+
+    return verifier.VerifyMessage((CryptoPP::byte*)message.data(), message.size(), (CryptoPP::byte*)signHex.data(), signHex.size());
+}
+
+std::string FullNode::signMessage(std::string msg) {
+
+    CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::Signer signer(privateKey1);
+
+    size_t siglen = signer.MaxSignatureLength();
+    std::string signature(siglen, 0x00);
+
+    signer.SignMessage(randomnumbers, (CryptoPP::byte*)msg.data(), msg.size(), (CryptoPP::byte*)signature.data());
+    signature.resize(siglen);
+
+    std::string signStr;
+    CryptoPP::StringSource ss(signature, true, new CryptoPP::HexEncoder(new CryptoPP::StringSink(signStr)));  // de Hex a ASCII
+
+    return signStr;
 }
