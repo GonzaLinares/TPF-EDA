@@ -1,5 +1,7 @@
 #include "Tx.h"
 #include "../Hashing.h"
+#include "UTXO.h"
+
 
 Tx::Tx(std::string txid_) :
 	txid(txid_)
@@ -82,9 +84,7 @@ std::string Tx::verifyTXID()
     return txid111;
 }
 
-std::string Tx::dump2JSON()		//TODO: Implementar
+std::string Tx::dump2JSON()		
 {
-
-
-	return "Implementar";	
+    return "se implementará en la version 2.0"
 }
