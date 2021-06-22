@@ -4,7 +4,10 @@
 
 class UTXO
 {
+
 public:
+
+	UTXO();
 
 	std::string getBlockId(void);
 	std::string getTXId(void);

@@ -2,7 +2,7 @@
 #include <chrono>
 
 #define BLOCKS_TILL_UPDATE 6
-#define DEFAULT_TARGET 5
+#define DEFAULT_TARGET 2
 #define SECOND_PER_BLOCK 60
 
 MinerNode::MinerNode(boost::asio::io_context& ioContext, std::string port, std::string path2blockchain)

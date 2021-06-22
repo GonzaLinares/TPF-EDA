@@ -346,7 +346,7 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 	}
 
 	ImGui::Text("Message:");
-	ImGui::SameLine();
+	ImGui::SameLine(); 
 	ImGui::SetNextItemWidth(200.0f);
 	if (ImGui::BeginCombo("###Message:", actionList[comboBoxActionNodesIndex].c_str()))
 	{
@@ -381,7 +381,7 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 		 
 		if (verifiedTrxSendActive) {
 
-			ImGui::Text("Verified Trx:");
+			ImGui::Text("Verified Trx: ");
 			ImGui::SameLine();
 			if (ImGui::BeginCombo("###Verified Trx", verifiedTxsList[comboBoxVerifiedTxsIndex].getId().c_str()))
 			{
@@ -398,24 +398,41 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 			} 
 		}
 
-		if (!verifiedTrxSendActive) {
+		if (!verifiedTrxSendActive && !falseActionActive) {
 			ImGui::Text("Public key: ");
 			ImGui::SameLine();
-			ImGui::InputText("###Public key :", &actionGetBlockPublicKeyWritten);
+			ImGui::InputText("###Public key: ", &actionGetBlockPublicKeyWritten);
 			ImGui::SameLine();
 			ImGui::Text("Amount: ");
 			ImGui::SameLine();
 			ImGui::InputInt("###Amount:", &amountWritten);
 		}
+
+		if (falseActionActive && currentNode->getNodeType() == "Full") {
+			UTXO lastUTXO = ((FullNode*)currentNode)->getLastSpentUTXO();
+			string aux = "";
+			if (lastUTXO.getBlockId() != "Empty") {
+				aux = "ID: " + lastUTXO.getBlockId() + "- Amount: " + to_string(lastUTXO.getAmount());
+				ImGui::Text("Last UTXO Spent: ");
+				ImGui::SameLine();
+				ImGui::Text(aux.c_str());
+			}
+		}
 		
 		nSpacing(5);
-		if (ImGui::Button("Send Message")) {
+		if (ImGui::Button("Send Message") && neigh[0].first != "Empty") {
+
+			int lastNumOfTxs = currentNode->getVerifiedTxs().size();
 
 			if (currentNode->getNodeType() == std::string("Full") ) {
 				((FullNode*)currentNode)->transactionPost(actionGetBlockPublicKeyWritten, amountWritten, neigh[comboBoxNodesIndex].first);
 			}
 			else if (currentNode->getNodeType() == std::string("SPV")) {
 				((SPVNode*)currentNode)->transactionPost(actionGetBlockPublicKeyWritten, amountWritten, neigh[comboBoxNodesIndex].first);
+			}
+
+			if (lastNumOfTxs == currentNode->getVerifiedTxs().size()) {
+				cout << "Se envio una trx falsa" << endl;
 			}
 		}
 	}
@@ -426,7 +443,7 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 		ImGui::InputText("###BlockID :", &actionGetBlockIDWritten);
 
 		nSpacing(5);
-		if (ImGui::Button("Send Message")) {
+		if (ImGui::Button("Send Message") && neigh[0].first != "Empty") {
 			((FullNode*)currentNode)->blockPost(neigh[comboBoxNodesIndex].first, actionGetBlockIDWritten);
 		}
 	}
@@ -440,7 +457,7 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 		ImGui::SameLine();
 		ImGui::InputInt("###Position:", &positionWritten);
 		nSpacing(5);
-		if (ImGui::Button("Send Message")) {
+		if (ImGui::Button("Send Message") && neigh[0].first != "Empty") {
 
 			((FullNode*)currentNode)->merkleBlockPost(actionGetBlockIDWritten, positionWritten, neigh[comboBoxNodesIndex].first);
 		}
@@ -455,7 +472,7 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 		ImGui::SameLine();
 		ImGui::InputInt("###Blocks Quantity:", &blockQuantityWritten);
 		nSpacing(5);
-		if (ImGui::Button("Send Message")) {
+		if (ImGui::Button("Send Message") && neigh[0].first != "Empty") {
 
 			((FullNode*)currentNode)->getBlocks(actionGetBlockIDWritten, std::to_string(blockQuantityWritten), neigh[comboBoxNodesIndex].first);
 		}
@@ -463,7 +480,7 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 	else if (actionList[comboBoxActionNodesIndex] == std::string("FilterPost") && neigh[comboBoxNodesIndex].second != "SPV") {
 
 		nSpacing(5);
-		if (ImGui::Button("Send Message")) {
+		if (ImGui::Button("Send Message") && neigh[0].first != "Empty") {
 			((SPVNode*)currentNode)->filterPost(neigh[comboBoxNodesIndex].first);
 		}
 	}
@@ -474,10 +491,10 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 		ImGui::InputText("###BlockID :", &actionGetBlockIDWritten);
 		ImGui::SameLine();
 		ImGui::Text("Blocks Quantity: ");
-		ImGui::SameLine();
+		ImGui::SameLine(); 
 		ImGui::InputInt("###Blocks Quantity:", &blockQuantityWritten);
 		nSpacing(5);
-		if (ImGui::Button("Send Message")) {
+		if (ImGui::Button("Send Message") && neigh[0].first != "Empty") {
 
 			((SPVNode*)currentNode)->getBlockHeader(actionGetBlockIDWritten, std::to_string(blockQuantityWritten), neigh[comboBoxNodesIndex].first);
 		}

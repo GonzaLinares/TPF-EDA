@@ -1,5 +1,13 @@
 #include "UTXO.h"
 
+UTXO::UTXO() {
+	amount = -1;
+	blockId = "Empty";
+	txId = "Empty";
+	publicId = "Empty";
+	outputIndex = -1;
+}
+
 std::string UTXO::getBlockId(void)
 {
 	return blockId;
