@@ -15,6 +15,7 @@
 #include <vector>
 #include <iostream>
 #include "../Block/UTXO.h"
+#include <cryptopp/eccrypto.h>
 
 typedef enum {IDLE = 0, RECEIVING, SENDING} node_state_t;
 
@@ -123,4 +124,8 @@ protected:
 	std::vector<UTXO> MyUTXO;		//Las UTXO que le pertenecen al nodo
 	UTXO lastSpentUTXO;
 	int currentBlock;
+
+	//Public y Private Key
+	CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PrivateKey privateKey1;
+	CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PublicKey publicKey1;
 };

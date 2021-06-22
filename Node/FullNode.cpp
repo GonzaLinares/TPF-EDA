@@ -3,6 +3,8 @@
 #include <nlohmann/json.hpp>
 #include "..\MerkleTree.h"
 #include "..\Hashing.h"
+#include <cryptopp/eccrypto.h>
+#include <cryptopp/hex.h>
 
 using json = nlohmann::json;
 
@@ -196,19 +198,19 @@ bool FullNode::transactionPost(std::string publicKey, int amount, std::string ho
     if (totalAmountInOutput < amount) {
 
         //no te alcanza la plata
-        return "";
+        return false;
     }
     else {
 
         totalAmountInOutput = 0; //La reinicio y empiezo de vuelta
     }
 
-    //answer += std::string(" \"tx\": [ \n ");  //TODO esto no va aca.
+    //answer += std::string(" \"tx\": [ \n ");  //esto no va aca.
     answer += std::string(" {\n");
     answer += std::string(" \"nTxin\": ");
     answer += std::to_string(VinCount);
     answer += std::string(",\n");
-    answer += std::string(" \"nTxout\": |,\n"); //La cantidad de salidas va a ser siempre 2 o 1
+    answer += std::string(" \"nTxout\": |,\n"); //La cantidad de salidas va a ser siempre 2 o 1 por como hacemos las cosas
     answer += std::string(" \"txid\": 00000000000000000000000000000000,\n");    //TODO: Despues lo reemplazo
     //VIN
     answer += std::string(" \"vin\": [ \n ");
@@ -227,7 +229,7 @@ bool FullNode::transactionPost(std::string publicKey, int amount, std::string ho
         answer += ",\n";
 
         answer += "\"signature\": \"";  
-        //TODO: Agregar bien la firma
+        //TODO: Agregar bien la firma     CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::Signer(privateKey1);
         answer += "\",\n";
 
         answer += "\"txid\": \"";
@@ -266,7 +268,7 @@ bool FullNode::transactionPost(std::string publicKey, int amount, std::string ho
 
     
 
-    answer += std::string("]\n");
+    answer += std::string("}\n");
 
     commSend(host, std::string("eda_coin/send_tx/"), answer);
 
@@ -651,28 +653,19 @@ std::string FullNode::getBlocksReceived(std::string blockID, int count)
 
 void FullNode::validateTransactionPost(bool& error, int& result, std::string msg)
 {   
+    json jsonFile(msg);
+    Tx tempTx(jsonFile["txid"]);
 
-    json jsonFile = msg;
-    Tx tempTx(jsonFile["tx"]["txid"]);
-
-    for (int i = jsonFile.size() - 1; i >= 0; i--)
+    for (int k = jsonFile["nTxin"] - 1; k >= 0; k--)
     {
-        for (int j = jsonFile[i]["nTx"] - 1; j >= 0; j--)
-        {
-            for (int k = jsonFile[i]["tx"][j]["nTxin"] - 1; k >= 0; k--)
-            {
-                InTx auxInTx(jsonFile[i]["tx"][j]["vin"][k]["blockid"], jsonFile[i]["tx"][j]["vin"][k]["txid"], jsonFile[i]["tx"][j]["vin"][k]["signature"], jsonFile[i]["tx"][j]["vin"][k]["outputIndex"]);
-                tempTx.push_vin(auxInTx);
+        InTx auxInTx(jsonFile["vin"][k]["blockid"], jsonFile["vin"][k]["txid"], jsonFile["vin"][k]["signature"], jsonFile["vin"][k]["outputIndex"]);
+        tempTx.push_vin(auxInTx);
+    }
 
-            }
-
-            for (int k = jsonFile[i]["tx"][j]["nTxout"] - 1; k >= 0; k--)
-            {
-                OutTx auxOutTx(jsonFile[i]["tx"][j]["vout"][k]["publicid"], jsonFile[i]["tx"][j]["vout"][k]["amount"]);
-                tempTx.push_vout(auxOutTx);
-            }
-            blockchain[jsonFile.size() - 1 - i].push_transaction(tempTx);
-        }
+    for (int k = jsonFile["nTxout"] - 1; k >= 0; k--)
+    {
+        OutTx auxOutTx(jsonFile["vout"][k]["publicid"], jsonFile["vout"][k]["amount"]);
+        tempTx.push_vout(auxOutTx);
     }
 
     bool loEncontre = false;
@@ -693,7 +686,6 @@ void FullNode::validateTransactionPost(bool& error, int& result, std::string msg
         hashTest += it->getBlockId() + hexCodedAscii(it->getOutputIndex()) + it->getSignature() + it->getTxid();
 
         //Le bailo rico a todas las inputs a ver si estan en el arreglo de UTXO, sino, a casona por cheater
-        
         for (std::vector<UTXO>::iterator at = UTXOVector.begin(); at != UTXOVector.end() && loEncontre == false; at++) {
 
             if (at->getBlockId() == blockid) {
@@ -745,7 +737,62 @@ void FullNode::validateTransactionPost(bool& error, int& result, std::string msg
     /*Los unlocking scripts referidos en cada Input Transaction deben
     efectivamente desbloquear los UTXO referidos en cada una de ellas*/
 
+    std::string message;
+    std::string messageVOUT;
 
+    for (std::vector<OutTx>::iterator it = (tempTx.getVout()).begin(); it != (tempTx.getVout()).end(); it++) {
+
+        messageVOUT += hexCodedAscii(it->getAmount()) + it->getPublicId();
+    }
+
+    for (std::vector<InTx>::iterator it = (tempTx.getVin()).begin(); it != (tempTx.getVin()).end(); it++) {
+
+        std::string blockid = it->getBlockId();
+        std::string txID = it->getTxid();
+        int outputIndex = it->getOutputIndex();
+
+        message += it->getBlockId() + hexCodedAscii(it->getOutputIndex()) + it->getTxid();
+        message += messageVOUT;
+        for (std::vector<UTXO>::iterator at = UTXOVector.begin(); at != UTXOVector.end() && loEncontre == false; at++) {
+
+            if (at->getBlockId() == blockid) {
+
+                if (at->getTXId() == txID) {
+
+                    if (at->getOutputIndex() == outputIndex) {
+
+                        CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PrivateKey privateKeyTemp;
+                        CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PublicKey publicKeyTemp;
+                        //publicKeyTemp.Load;
+
+                        std::string key;
+                        CryptoPP::publicKey.Save(CryptoPP::HexEncoder(new CryptoPP::StringSink(key)).Ref());  // Para almacenarlo en ASCII
+
+                        //Este es para el mensaje
+                        std::string destination;
+                        CryptoPP::StringSource ss(message, true, new CryptoPP::HexDecoder(new CryptoPP::StringSink(destination)));
+                        const CryptoPP::byte* result1 = (const CryptoPP::byte*)destination.data();
+
+                        //Este es para la firma
+                        std::string destination1;
+                        CryptoPP::StringSource ss1(it->getSignature(), true, new CryptoPP::HexDecoder(new CryptoPP::StringSink(destination1)));
+                        const CryptoPP::byte* result2 = (const CryptoPP::byte*)destination1.data();
+
+                        if (verifierTemp.VerifyMessage(result1, message.length(), result2, (it->getSignature()).length() ) == false) {
+
+                            error = true;
+                            result = 2;
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+        message.clear();
+    }
+
+
+    //TODO:Si todo esto salió bien tengo que añadir esta transacción a la siguiente minación
 }
 
 void FullNode::validateBlockPost(bool& error, int& result, std::string msg)
@@ -774,15 +821,16 @@ void FullNode::validateBlockPost(bool& error, int& result, std::string msg)
 
         for (int k = jsonFile["tx"][j]["nTxout"] - 1; k >= 0; k--)
         {
-            OutTx auxOutTx(jsonFile["tx"][j]["vout"][k]["publicid"], jsonFile[i]["tx"][j]["vout"][k]["amount"]);
+            OutTx auxOutTx(jsonFile["tx"][j]["vout"][k]["publicid"], jsonFile["tx"][j]["vout"][k]["amount"]);
             auxTx.push_vout(auxOutTx);
         }
+
         blockSent.push_transaction(auxTx);
     }
 
     //Verificar que cumple con el challenge.
     std::string tempString;
-    tempString = merkleroot + hexCodedAscii(nonce) + previousblockid;
+    tempString = previousblockid + merkleroot + hexCodedAscii(nonce);
     std::string tempString1 = hash32(tempString);
     tempString = hash32(tempString1);
 
@@ -819,6 +867,7 @@ void FullNode::validateBlockPost(bool& error, int& result, std::string msg)
 
 
     //TODO: todas las transacciones son válidas
+
 }
 
 void FullNode::validateFilterPost(bool& error, int& result, std::string msg)
