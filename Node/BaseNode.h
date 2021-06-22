@@ -16,6 +16,9 @@
 #include <iostream>
 #include "../Block/UTXO.h"
 #include <cryptopp/eccrypto.h>
+#include <cryptopp/osrng.h>
+#include <cryptopp/asn.h>
+#include <cryptopp/oids.h>
 
 typedef enum {IDLE = 0, RECEIVING, SENDING} node_state_t;
 
@@ -92,6 +95,7 @@ public:
 	virtual std::vector <std::pair<std::string, std::string>>& getNeighbours();
 	virtual bool hasNeighbours();
 	virtual std::string getLastReceivedClient();
+	virtual UTXO getLastUTXOSpent();
 
 	virtual bool poll();
 
@@ -130,4 +134,6 @@ protected:
 	//Public y Private Key
 	CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PrivateKey privateKey1;
 	CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PublicKey publicKey1;
+	CryptoPP::AutoSeededRandomPool rndNumGen;
+
 };

@@ -4,9 +4,11 @@
 BaseNode::BaseNode(boost::asio::io_context& ioContext, boost::function<std::string(std::string, std::string)> msgReceivedCb, int portNum)
     : server(ioContext, msgReceivedCb, portNum),
     state(IDLE),
-    client(msgReceivedCb, portNum + 1)
+    client(msgReceivedCb, portNum + 1),
+    rndNumGen(portNum)
 {
     currentBlock = 0;
+    privateKey1.Initialize(rndNumGen, CryptoPP::ASN1::secp256k1());
     privateKey1.MakePublicKey(publicKey1);
 }
 
@@ -67,6 +69,10 @@ bool BaseNode::getBlocksID(std::vector<std::string>& buffer, int numOfBlocks, in
 
 std::string BaseNode::getLastReceivedClient() {
     return lastReClient;
+}
+
+UTXO BaseNode::getLastUTXOSpent() {
+    return lastSpentUTXO;
 }
 
 int BaseNode::getBlockQuant(void)

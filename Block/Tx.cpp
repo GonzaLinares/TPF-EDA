@@ -4,12 +4,11 @@
 Tx::Tx(std::string txid_) :
 	txid(txid_)
 {
-
 }
 
 Tx::Tx()
 {
-    txid = "";
+    txid = "EMPTY";
 }
 
 void Tx::push_vin(InTx& newInTx)
@@ -47,7 +46,7 @@ std::string Tx::calculateTXID()
 
         hashTest += it.getBlockId() + hexCodedAscii(it.getOutputIndex()) + it.getSignature() + it.getTxid();
     }
-
+    
     for (auto it : vout) {
 
         hashTest += hexCodedAscii(it.getAmount()) + it.getPublicId();

@@ -350,7 +350,7 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 	if (actionList[comboBoxActionNodesIndex] == std::string("TransactionPost") && neigh[comboBoxNodesIndex].second != "SPV") { //Message send crypto == true
 
 		ImGui::SameLine();
-		ImGui::Text("falseTrx");
+		ImGui::Text("false Trx");
 		ImGui::SameLine();
 		ImGui::Checkbox("###falseActionActive", &falseActionActive);
 		ImGui::Text("Public key: ");
