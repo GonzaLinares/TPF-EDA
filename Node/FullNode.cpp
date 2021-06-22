@@ -696,7 +696,7 @@ std::string FullNode::getBlocksReceived(std::string blockID, int count)
 }
 
 void FullNode::validateTransactionPost(bool& error, int& result, std::string msg)
-{   
+{      
     json jsonFile(msg);
     Tx tempTx(jsonFile["txid"]);
 

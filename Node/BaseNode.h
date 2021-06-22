@@ -97,8 +97,9 @@ public:
 	virtual std::string getLastReceivedClient();
 	virtual UTXO getLastUTXOSpent();
 	virtual std::vector<Tx> getVerifiedTxs();
-
 	virtual bool poll();
+
+	std::string getPublicKey(void);
 
 protected:
 

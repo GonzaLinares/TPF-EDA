@@ -414,6 +414,9 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 			if (currentNode->getNodeType() == std::string("Full") ) {
 				((FullNode*)currentNode)->transactionPost(actionGetBlockPublicKeyWritten, amountWritten, neigh[comboBoxNodesIndex].first);
 			}
+			else if (currentNode->getNodeType() == std::string("Miner")) {
+				((FullNode*)currentNode)->transactionPost(actionGetBlockPublicKeyWritten, amountWritten, neigh[comboBoxNodesIndex].first);
+			}
 			else if (currentNode->getNodeType() == std::string("SPV")) {
 				((SPVNode*)currentNode)->transactionPost(actionGetBlockPublicKeyWritten, amountWritten, neigh[comboBoxNodesIndex].first);
 			}
