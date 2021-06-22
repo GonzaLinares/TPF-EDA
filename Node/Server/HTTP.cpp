@@ -76,8 +76,6 @@ void HTTP::elaborateMessage(std::string client) {
         toSendMsg.erase(auxPositionINICIAL, 13);
         toSendMsg.replace(auxPositionINICIAL, 1, this->path);   //Escribo el path
 
-
-        
     }
 
     auxPositionINICIAL = auxPositionFINALHOLDER + 1;
