@@ -62,7 +62,7 @@ std::string Tx::calculateTXID()
     hashTest = hash32(hashTest);
     txid = hash32(hashTest);
 
-    return txid
+    return txid;
 }
 
 std::string Tx::dump2JSON()		//TODO: Implementar
