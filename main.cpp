@@ -35,8 +35,8 @@ int main(int argc, char** argv) {
 	
 	nodes.getNodes()[2]->addNeighbour("127.0.0.1:25576", std::string("Full"));
 	nodes.getNodes()[1]->addNeighbour("127.0.0.1:25582", std::string("Full"));
-	////******************************************************
-	
+	////*****************************************************
+
 	while (menu.getState() == RUNNING) {
 
 		nodes.pollAllNodes();

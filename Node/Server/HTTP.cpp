@@ -57,7 +57,16 @@ void HTTP::elaborateMessage(std::string client) {
 
     if (!error) {   //Armado del response
         
-        auxString = generateReplyData(client + path, parameters);
+        if (this->command == "POST")
+        {
+
+            auxString = generateReplyData(client + path, receivedMsg.substr(receivedMsg.find(string("\r\n\r\n"))));
+        }
+        else
+        {
+            auxString = generateReplyData(client + path, parameters);
+        }
+        
 
         auxPositionINICIAL = toSendMsg.find(string("text/html"), 0);
         toSendMsg.replace(auxPositionINICIAL, string("text/html").length(), "text/json");
@@ -76,8 +85,6 @@ void HTTP::elaborateMessage(std::string client) {
         toSendMsg.erase(auxPositionINICIAL, 13);
         toSendMsg.replace(auxPositionINICIAL, 1, this->path);   //Escribo el path
 
-
-        
     }
 
     auxPositionINICIAL = auxPositionFINALHOLDER + 1;

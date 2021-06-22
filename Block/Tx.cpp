@@ -59,6 +59,29 @@ std::string Tx::calculateTXID()
     return txid;
 }
 
+std::string Tx::verifyTXID()
+{
+    std::string hashTest = hexCodedAscii((getVin()).size()) + hexCodedAscii((getVout()).size());   //Armo un string para verificar la txID
+
+    /*La UTXO referenciada en el Input Transaction de la Tx debe pertenecer al arreglo de UTXOs o
+    a las transacciones pendientes*/
+    for (auto it : vin) {
+
+        hashTest += it.getBlockId() + hexCodedAscii(it.getOutputIndex()) + it.getSignature() + it.getTxid();
+    }
+
+    for (auto it : vout) {
+
+        hashTest += hexCodedAscii(it.getAmount()) + it.getPublicId();
+    }
+
+
+    hashTest = hash32(hashTest);
+    std::string txid111 = hash32(hashTest);
+
+    return txid111;
+}
+
 std::string Tx::dump2JSON()		//TODO: Implementar
 {
 
