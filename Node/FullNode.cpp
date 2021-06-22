@@ -137,7 +137,7 @@ bool FullNode::blockPost(std::string host, std::string blockId)
                     answer += std::string(" \"txid\": ");
                     answer += std::string("\"") + at->getTxid() + std::string("\"\n");
 
-                    if (at + 1 == tempInTx.end()) {
+                    if (at + 1 == tempInTx.end()) { 
                         answer += std::string(" }\n");
                     }
                     else {
