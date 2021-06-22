@@ -52,7 +52,8 @@ void MinerNode::prepareBlock2mine()
     unsigned int newTarget;
 
     block2mine.setHeight(blockchain.size() + 1);
-    if (block2mine.getHeight() % BLOCKS_TILL_UPDATE == 0)
+
+    if (blockchain.size() && block2mine.getHeight() % BLOCKS_TILL_UPDATE == 0)
     {
         float avgTimeperBlock = 0;
 
@@ -98,6 +99,7 @@ void MinerNode::prepareBlock2mine()
         block2mine.setPrevBlockId(blockchain[blockchain.size() - 1].getId());
     }
     
+    mining = true;
 
 }
 

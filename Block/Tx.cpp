@@ -44,16 +44,10 @@ std::string Tx::calculateTXID()
     a las transacciones pendientes*/
     for (auto it : vin) {
 
-        std::string blockid = it->getBlockId();
-        std::string txID = it->getTxid();
-        int outputIndex = it->getOutputIndex();
-
-        hashTest += it->getBlockId() + hexCodedAscii(it->getOutputIndex()) + it->getSignature() + it->getTxid();
-
+        hashTest += it.getBlockId() + hexCodedAscii(it.getOutputIndex()) + it.getSignature() + it.getTxid();
+    }
     
     for (auto it : vout) {
-
-    for (std::vector<OutTx>::iterator it = (getVout()).begin(); it != (getVout()).end(); it++) {
 
         hashTest += hexCodedAscii(it.getAmount()) + it.getPublicId();
     }
