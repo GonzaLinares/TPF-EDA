@@ -106,6 +106,11 @@ uint32_t Block::getTarget()
     return target;
 }
 
+void Block::setPrevBlockId(std::string prevID)
+{
+    previousBlockId = prevID;
+}
+
 void Block::setHeight(unsigned int newHeight)
 {
     height = newHeight;

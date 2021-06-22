@@ -99,6 +99,8 @@ public:
 
 	uint32_t getTarget();
 
+	void setPrevBlockId(std::string prevID);
+
 	void setHeight(unsigned int newHeight);
 
 	void setNonce(unsigned int newNonce);
