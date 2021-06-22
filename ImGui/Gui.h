@@ -63,12 +63,13 @@ public:
 
 private:
 
-	int state;				//Estado de la GUI
-	int currentNodeActive;	//Indice del nodo actual
-	int blockPage;			//Indice de pagina cuando se muestran los bloques
+	int state;					//Estado de la GUI
+	int currentNodeActive;		//Indice del nodo actual
+	int blockPage;				//Indice de pagina cuando se muestran los bloques
 	int comboBoxNodesIndex;
 	int comboBoxActionNodesIndex;
-	int amountWritten;	//Entero donde se guarda la cantidad ingresada
+	int comboBoxVerifiedTxsIndex;
+	int amountWritten;			//Entero donde se guarda la cantidad ingresada
 	int blockQuantityWritten;	//Entero donde se guarda la cantidad de bloques ingresada
 	int positionWritten;		//Entero donde se guarda la posicion ingresada
 	std::string nodePort;		//Puerto ingresado por la GUI
@@ -84,6 +85,7 @@ private:
 	bool fileFound;		//Estado del texto que muestra cuando no encuentra un archivo
 	bool linkedSuccess;
 	bool falseActionActive;
+	bool verifiedTrxSendActive;
 
 	/*=====================================================
 	* Name: deleteMerkleDic

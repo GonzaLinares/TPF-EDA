@@ -42,7 +42,7 @@ std::string Tx::calculateTXID()
 
     /*La UTXO referenciada en el Input Transaction de la Tx debe pertenecer al arreglo de UTXOs o
     a las transacciones pendientes*/
-    for (auto it : vin) {
+    for (auto it : vin) { 
 
         hashTest += it.getBlockId() + hexCodedAscii(it.getOutputIndex()) + it.getSignature() + it.getTxid();
     }

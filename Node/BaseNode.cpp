@@ -80,6 +80,9 @@ int BaseNode::getBlockQuant(void)
     return blockchain.size();
 }
 
+std::vector<Tx> BaseNode::getVerifiedTxs() {
+    return verifiedTxs;
+}
 
 void BaseNode::commSend(std::string host, std::string path, std::string& msg)
 {

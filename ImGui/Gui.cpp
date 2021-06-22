@@ -16,6 +16,7 @@ Gui::Gui() {
 	blockPage = 0;
 	currentNodeActive = 0;
 	comboBoxNodesIndex = 0;
+	comboBoxVerifiedTxsIndex = 0;
 	comboBoxActionNodesIndex = 0;
 	filename = "";
 	nodeIp = "";
@@ -23,6 +24,8 @@ Gui::Gui() {
 	connPort1 = "";
 	fileFound = true;
 	linkedSuccess = true;
+	verifiedTrxSendActive = false;
+	falseActionActive = false;
 	merkleTrees.clear();
 
 	//Inicializamos allegro y sus principales addons
@@ -151,14 +154,14 @@ void Gui::update(NodeFactory& nodes) {
 			showBlocksTab(*nodes.getNodes()[currentNodeActive]);
 			ImGui::EndTabItem();
 		}
-		
+		/*
 		if (ImGui::BeginTabItem("DemoWindows"))	//Tab de los bloques
 		{
 			bool show_demo_window = true;
 			ImGui::ShowDemoWindow(&show_demo_window);
 			ImGui::EndTabItem();
 		}
-		
+		*/
 		ImGui::EndTabBar();
 	}
     ImGui::End();
@@ -201,7 +204,7 @@ void Gui::showNodesTab(NodeFactory& nodes) {
 
 void Gui::showCreateBox(NodeFactory& nodes) {
 
-	ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f); //TODO: Ver porque no aparecen los bordes redondeados
+	ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 10.0f);
 
 	nSpacing(3);
 	ImGui::BeginChild("CreateNode", ImVec2(300, 150), true);
@@ -272,6 +275,8 @@ void Gui::showCreateBox(NodeFactory& nodes) {
 
 void Gui::showConnectBox(NodeFactory& nodes) {
 
+	ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 10.0f);
+
 	ImGui::BeginChild("Connect", ImVec2(300, 150), true);
 	ImGui::Text("2) Connect");
 	nSpacing(3);
@@ -292,14 +297,25 @@ void Gui::showConnectBox(NodeFactory& nodes) {
 		ImGui::Text("two SPV nodes can't be linked");
 	}
 	ImGui::EndChild();
+	ImGui::PopStyleVar();
 }
 
 void Gui::showActionsBox(NodeFactory& nodes) {
+
+	ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 10.0f);
 
 	BaseNode* currentNode = nodes.getNodes()[currentNodeActive];
 	vector <pair<string, string>> neigh = currentNode->getNeighbours();
 	vector<string> actionList = currentNode->getActionList();
 	pair<string, string> aux;
+	vector<Tx> verifiedTxsList;
+
+	if (currentNode->getVerifiedTxs().size() == 0) {
+		verifiedTxsList.push_back(Tx(string("Empty")));
+	}
+	else {
+		verifiedTxsList = currentNode->getVerifiedTxs();
+	}
 
 	if (neigh.empty()) {
 		aux.first = "Empty";
@@ -307,7 +323,7 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 		neigh.push_back(aux);
 	}
 
-	ImGui::SetCursorPos(ImVec2(0, 400));
+	ImGui::SetCursorPos(ImVec2(9, 400));
 	ImGui::BeginChild("MessageTab", ImVec2(0, 180), true);
 
 	ImGui::Text("3) Actions");
@@ -331,6 +347,7 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 
 	ImGui::Text("Message:");
 	ImGui::SameLine();
+	ImGui::SetNextItemWidth(200.0f);
 	if (ImGui::BeginCombo("###Message:", actionList[comboBoxActionNodesIndex].c_str()))
 	{
 		for (unsigned int i = 0; i < actionList.size(); i++)
@@ -350,16 +367,47 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 	if (actionList[comboBoxActionNodesIndex] == std::string("TransactionPost") && neigh[comboBoxNodesIndex].second != "SPV") { //Message send crypto == true
 
 		ImGui::SameLine();
-		ImGui::Text("false Trx");
+		ImGui::Text("False Trx");
 		ImGui::SameLine();
-		ImGui::Checkbox("###falseActionActive", &falseActionActive);
-		ImGui::Text("Public key: ");
+		if (ImGui::Checkbox("###falseActionActive", &falseActionActive)) {
+			verifiedTrxSendActive = false;
+		}
 		ImGui::SameLine();
-		ImGui::InputText("###Public key :", &actionGetBlockPublicKeyWritten);
+		ImGui::Text("Verified Trx");
 		ImGui::SameLine();
-		ImGui::Text("Amount: ");
-		ImGui::SameLine();
-		ImGui::InputInt("###Amount:", &amountWritten);
+		if (ImGui::Checkbox("###verifiedTrxSendActive", &verifiedTrxSendActive)) {
+			falseActionActive = false;
+		}
+		 
+		if (verifiedTrxSendActive) {
+
+			ImGui::Text("Verified Trx:");
+			ImGui::SameLine();
+			if (ImGui::BeginCombo("###Verified Trx", verifiedTxsList[comboBoxVerifiedTxsIndex].getId().c_str()))
+			{
+				for (unsigned int i = 0; i < verifiedTxsList.size(); i++)
+				{ 
+					if (ImGui::Selectable(verifiedTxsList[i].getId().c_str(), comboBoxVerifiedTxsIndex == i)) {
+						comboBoxVerifiedTxsIndex = i;
+					} 
+					if (comboBoxVerifiedTxsIndex == i) {
+						ImGui::SetItemDefaultFocus();
+					}
+				}
+				ImGui::EndCombo();
+			} 
+		}
+
+		if (!verifiedTrxSendActive) {
+			ImGui::Text("Public key: ");
+			ImGui::SameLine();
+			ImGui::InputText("###Public key :", &actionGetBlockPublicKeyWritten);
+			ImGui::SameLine();
+			ImGui::Text("Amount: ");
+			ImGui::SameLine();
+			ImGui::InputInt("###Amount:", &amountWritten);
+		}
+		
 		nSpacing(5);
 		if (ImGui::Button("Send Message")) {
 
@@ -377,6 +425,7 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 		ImGui::SameLine();
 		ImGui::InputText("###BlockID :", &actionGetBlockIDWritten);
 
+		nSpacing(5);
 		if (ImGui::Button("Send Message")) {
 			((FullNode*)currentNode)->blockPost(neigh[comboBoxNodesIndex].first, actionGetBlockIDWritten);
 		}
@@ -413,6 +462,7 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 	}
 	else if (actionList[comboBoxActionNodesIndex] == std::string("FilterPost") && neigh[comboBoxNodesIndex].second != "SPV") {
 
+		nSpacing(5);
 		if (ImGui::Button("Send Message")) {
 			((SPVNode*)currentNode)->filterPost(neigh[comboBoxNodesIndex].first);
 		}
@@ -433,10 +483,12 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 		}
 	}
 	ImGui::EndChild();
-
+	ImGui::PopStyleVar();
 }
 
 void Gui::showNodesTable(NodeFactory& nodes) {
+
+	ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 10.0f);
 
 	vector<BaseNode*> node = nodes.getNodes();
 	const ImVec2 center = ImGui::GetMainViewport()->GetCenter();
@@ -448,7 +500,7 @@ void Gui::showNodesTable(NodeFactory& nodes) {
 		| ImGuiTableFlags_RowBg | ImGuiTableFlags_BordersOuter | ImGuiTableFlags_NoBordersInBody
 		| ImGuiTableFlags_ScrollY;
 
-	ImGui::SetCursorPos(ImVec2(320, 80));
+	ImGui::SetCursorPos(ImVec2(312, 92));
 	ImGui::BeginChild("NodeList", ImVec2(480, 300), true);
 	if (ImGui::BeginTable("table_sorting", 6, flags))
 	{
@@ -532,9 +584,10 @@ void Gui::showNodesTable(NodeFactory& nodes) {
 
 				blockPage = 0;
 			}
-		ImGui::EndTable();
+		ImGui::EndTable(); 
 	}
 	ImGui::EndChild();
+	ImGui::PopStyleVar();
 }
 
 static void PushStyleCompact() //TODO: modificar static

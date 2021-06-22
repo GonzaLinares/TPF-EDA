@@ -96,6 +96,7 @@ public:
 	virtual bool hasNeighbours();
 	virtual std::string getLastReceivedClient();
 	virtual UTXO getLastUTXOSpent();
+	virtual std::vector<Tx> getVerifiedTxs();
 
 	virtual bool poll();
 
@@ -128,7 +129,7 @@ protected:
 	std::vector<Tx> verifiedTxs;
 	std::vector <std::string> IPsSentList;
 	std::vector<UTXO> MyUTXO;		//Las UTXO que le pertenecen al nodo
-	UTXO lastSpentUTXO;
+	UTXO lastSpentUTXO; 
 	int currentBlock;
 
 	//Public y Private Key
