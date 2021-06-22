@@ -66,7 +66,7 @@ public:
 	*=====================================================*/
 	std::vector <OutTx> getVout(void);
 
-	void calculateTXID();
+	std::string calculateTXID();
 
 	std::string dump2JSON();
 

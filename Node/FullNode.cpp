@@ -9,7 +9,7 @@
 using json = nlohmann::json;
 
 std::vector<std::string> FullNode::actionsVector{ "BlockPost", "TransactionPost", "MerkleBlockPost", "GetBlocksPost" };
-bool verifyMessage(std::string message, std::string signature, std::string pubKey);
+bool verifyMsg(std::string message, std::string signature, std::string pubKey);
 
 
 FullNode::FullNode(boost::asio::io_context& ioContext, std::string port, std::string path2blockchain)
@@ -190,6 +190,8 @@ bool FullNode::transactionPost(std::string publicKey, int amount, std::string ho
     std::string answer;
     std::string messageVOUT;
     std::string message;
+    std::string signa;
+    std::string txIDPREHASH;
     int VinCount = 0;
     int totalAmountInOutput = 0;
 
@@ -203,8 +205,16 @@ bool FullNode::transactionPost(std::string publicKey, int amount, std::string ho
         //no te alcanza la plata
         return false;
     }
+    else if(totalAmountInOutput == amount){
+
+        txIDPREHASH += std::to_string(VinCount);
+        txIDPREHASH += "1";
+        totalAmountInOutput = 0; //La reinicio y empiezo de vuelta
+    }
     else {
 
+        txIDPREHASH += std::to_string(VinCount);
+        txIDPREHASH += "2";
         totalAmountInOutput = 0; //La reinicio y empiezo de vuelta
     }
 
@@ -222,7 +232,7 @@ bool FullNode::transactionPost(std::string publicKey, int amount, std::string ho
     answer += std::to_string(VinCount);
     answer += std::string(",\n");
     answer += std::string(" \"nTxout\": |,\n"); //La cantidad de salidas va a ser siempre 2 o 1 por como hacemos las cosas
-    answer += std::string(" \"txid\": 00000000000000000000000000000000,\n");    //TODO: Despues lo reemplazo
+    answer += std::string(" \"txid\": &000000000000000000000000000000%,\n");    //TODO: Despues lo reemplazo
     //VIN
     answer += std::string(" \"vin\": [ \n ");
     for (std::vector<UTXO>::iterator at = MyUTXO.begin(); at != MyUTXO.end() && totalAmountInOutput < amount; at++) {
@@ -233,19 +243,30 @@ bool FullNode::transactionPost(std::string publicKey, int amount, std::string ho
 
         answer += "\"blockid\": \"";
         answer += at->getBlockId();
+        txIDPREHASH += at->getBlockId();
         answer += "\",\n";
 
         answer += "\"outputIndex\": ";
-        answer += at->getOutputIndex();
+        answer += std::to_string(at->getOutputIndex());
+        txIDPREHASH += std::to_string(at->getOutputIndex());
         answer += ",\n";
 
         answer += "\"signature\": \"";  
-        /**/
+        answer += "@234567signatureplaceholder567812345678123456782525252525263515¿";
         answer += "\",\n";
 
         answer += "\"txid\": \"";
         answer += at->getTXId();
         answer += "\",\n";
+
+        message.clear();
+        message += at->getBlockId() + hexCodedAscii(at->getOutputIndex()) + at->getTXId();
+        message += messageVOUT;
+        signa = signMsg(message);
+        answer.replace(answer.find_first_of('@'), answer.find_first_of('¿'), signa);
+
+        txIDPREHASH += signa;
+        txIDPREHASH += at->getTXId();
 
         answer += std::string(" },\n");
     }
@@ -257,8 +278,10 @@ bool FullNode::transactionPost(std::string publicKey, int amount, std::string ho
     answer += std::string(" {\n");
     answer += std::string(" \"amount\": ");
     answer += std::to_string(amount) + std::string(",\n");
+    txIDPREHASH += std::to_string(amount);
     answer += std::string(" \"publicid\": ");
     answer += std::string("\"") + publicKey + std::string("\",\n");
+    txIDPREHASH += publicKey;
     answer += std::string(" }\n");
     answer += std::string("],\n");
 
@@ -266,18 +289,28 @@ bool FullNode::transactionPost(std::string publicKey, int amount, std::string ho
         answer += std::string(" {\n");
         answer += std::string(" \"amount\": ");
         answer += std::to_string(totalAmountInOutput-amount) + std::string(",\n");
+        txIDPREHASH += std::to_string(totalAmountInOutput - amount);
         answer += std::string(" \"publicid\": ");
         answer += std::string("\"") + myID + std::string("\",\n");
+        txIDPREHASH += myID;
         answer += std::string(" }\n");
         answer += std::string("]\n");
         answer.replace(answer.find_first_of('|'), 1, 1, '2');
+        txIDPREHASH += std::to_string(2);
     }
     else {
 
         answer.replace(answer.find_first_of('|'),1,1,'1');
+        txIDPREHASH += std::to_string(1);
     }
 
     answer += std::string("}\n");
+
+    //Ahora calculo la txid del comienzo
+    txIDPREHASH = hash32(txIDPREHASH);
+    txIDPREHASH = hash32(txIDPREHASH);
+
+    answer.replace(answer.find_first_of('&'), answer.find_first_of('%'), txIDPREHASH);
 
     commSend(host, std::string("eda_coin/send_tx/"), answer);
 
@@ -770,7 +803,7 @@ void FullNode::validateTransactionPost(bool& error, int& result, std::string msg
 
                     if (at->getOutputIndex() == outputIndex) {
 
-                        if (! (verifyMessage( message, it->getSignature(), at->getPublicId() ))){
+                        if (! (verifyMsg( message, it->getSignature(), at->getPublicId() ))){
 
                             error = true;
                             result = 2;
@@ -858,11 +891,55 @@ void FullNode::validateBlockPost(bool& error, int& result, std::string msg)
     }
 
 
-    //TODO: todas las transacciones son válidas
+    //Tiene que verificar toda esta cosita
+    for (std::vector<Tx>::iterator it = (blockSent.getTxVector()).begin(); it != (blockSent.getTxVector()).end(); it++) {
 
+        
+        if (it->getId() != it->calculateTXID()) {
 
+            error = true;
+            result = 2;
+            return;
+        }
+        
 
+        std::string message;
+        std::string messageVOUT;
 
+        for (std::vector<OutTx>::iterator at = (it->getVout()).begin(); at != (it->getVout()).end(); at++) {
+
+            messageVOUT += hexCodedAscii(at->getAmount()) + at->getPublicId();
+        }
+
+        for (std::vector<InTx>::iterator ut = (it->getVin()).begin(); ut != (it->getVin()).end(); ut++) {
+
+            std::string blockid = ut->getBlockId();
+            std::string txID = ut->getTxid();
+            int outputIndex = ut->getOutputIndex();
+
+            message += ut->getBlockId() + hexCodedAscii(ut->getOutputIndex()) + ut->getTxid();
+            message += messageVOUT;
+            for (std::vector<UTXO>::iterator at = UTXOVector.begin(); at != UTXOVector.end(); at++) {
+
+                if (at->getBlockId() == blockid) {
+
+                    if (at->getTXId() == txID) {
+
+                        if (at->getOutputIndex() == outputIndex) {
+
+                            if (!(verifyMsg(message, ut->getSignature(), at->getPublicId()))) {
+
+                                error = true;
+                                result = 2;
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+            message.clear();
+        }
+    }
 
     blockchain.push_back(blockSent);
 }
@@ -942,7 +1019,7 @@ std::vector<std::string> FullNode::getActionList()
     return actionsVector;
 }
 
-bool verifyMessage(std::string message, std::string signature, std::string pubKey) {
+bool verifyMsg(std::string message, std::string signature, std::string pubKey) {
     /*
     * 
     * Codigo que no funciona
@@ -986,7 +1063,7 @@ bool verifyMessage(std::string message, std::string signature, std::string pubKe
     return verifier.VerifyMessage((CryptoPP::byte*)message.data(), message.size(), (CryptoPP::byte*)signHex.data(), signHex.size());
 }
 
-std::string FullNode::signMessage(std::string msg) {
+std::string FullNode::signMsg(std::string msg) {
 
     CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::Signer signer(privateKey1);
 
