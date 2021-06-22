@@ -823,7 +823,7 @@ void FullNode::validateTransactionPost(bool& error, int& result, std::string msg
 void FullNode::validateBlockPost(bool& error, int& result, std::string msg)
 {
 
-    json jsonFile(msg);
+    json jsonFile = json::parse(msg);
     std::string blockid = jsonFile["blockid"];
     unsigned int height = jsonFile["height"];
     std::string merkleroot = jsonFile["merkleroot"];
