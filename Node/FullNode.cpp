@@ -822,7 +822,6 @@ void FullNode::validateTransactionPost(bool& error, int& result, std::string msg
 
 void FullNode::validateBlockPost(bool& error, int& result, std::string msg)
 {
-
     json jsonFile;
 
     std::string blockid = jsonFile["blockid"];
