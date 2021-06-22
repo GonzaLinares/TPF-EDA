@@ -121,6 +121,7 @@ protected:
 	std::vector <Block> blockchain;		//blockchain con los datos
 	node_state_t state;	//Estado del nodo (recibió mensaje, manda mensaje, escucha, etc.)
 	std::string lastReClient;
+	std::vector<Tx> verifiedTxs;
 	std::vector <std::string> IPsSentList;
 	std::vector<UTXO> MyUTXO;		//Las UTXO que le pertenecen al nodo
 	UTXO lastSpentUTXO;

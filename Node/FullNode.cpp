@@ -816,7 +816,8 @@ void FullNode::validateTransactionPost(bool& error, int& result, std::string msg
         message.clear();
     }
 
-    //TODO:Si todo esto salió bien tengo que añadir esta transacción a la siguiente minación
+    //TODO:Si todo esto salió bien tengo que añadir esta transacción a la siguiente minación. Creo que asi quedaria. Habria que ver de mandarla a minero
+    verifiedTxs.push_back(tempTx);
 }
 
 void FullNode::validateBlockPost(bool& error, int& result, std::string msg)
