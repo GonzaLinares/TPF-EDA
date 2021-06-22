@@ -651,8 +651,29 @@ std::string FullNode::getBlocksReceived(std::string blockID, int count)
 
 void FullNode::validateTransactionPost(bool& error, int& result, std::string msg)
 {   
-    /*TODO: REALIZO TODO EL PARSEO Y GUARDO LAS COSAS ACA*/
-    Tx tempTx("00000000");
+
+    json jsonFile = msg;
+    Tx tempTx(jsonFile["tx"]["txid"]);
+
+    for (int i = jsonFile.size() - 1; i >= 0; i--)
+    {
+        for (int j = jsonFile[i]["nTx"] - 1; j >= 0; j--)
+        {
+            for (int k = jsonFile[i]["tx"][j]["nTxin"] - 1; k >= 0; k--)
+            {
+                InTx auxInTx(jsonFile[i]["tx"][j]["vin"][k]["blockid"], jsonFile[i]["tx"][j]["vin"][k]["txid"], jsonFile[i]["tx"][j]["vin"][k]["signature"], jsonFile[i]["tx"][j]["vin"][k]["outputIndex"]);
+                tempTx.push_vin(auxInTx);
+
+            }
+
+            for (int k = jsonFile[i]["tx"][j]["nTxout"] - 1; k >= 0; k--)
+            {
+                OutTx auxOutTx(jsonFile[i]["tx"][j]["vout"][k]["publicid"], jsonFile[i]["tx"][j]["vout"][k]["amount"]);
+                tempTx.push_vout(auxOutTx);
+            }
+            blockchain[jsonFile.size() - 1 - i].push_transaction(tempTx);
+        }
+    }
 
     bool loEncontre = false;
     int totalAmountInUTXO = 0;
@@ -730,14 +751,34 @@ void FullNode::validateTransactionPost(bool& error, int& result, std::string msg
 void FullNode::validateBlockPost(bool& error, int& result, std::string msg)
 {
 
-    std::string blockid = "!";              
-    unsigned int height = 0;              
-    std::string merkleroot = "!";             
-    unsigned int nTx = 0;                    
-    int nonce = 0;                            
-    std::string previousblockid = "!";        
+    json jsonFile;
 
-    Block blockSent(blockid, height, merkleroot, nTx, nonce, previousblockid);  //TODO: Hacer el parsing del bloque
+    std::string blockid = jsonFile["blockid"];
+    unsigned int height = jsonFile["height"];
+    std::string merkleroot = jsonFile["merkleroot"];
+    unsigned int nTx = jsonFile["nTx"];
+    int nonce = jsonFile["nonce"];
+    std::string previousblockid = jsonFile["previousblockid"];
+
+    Block blockSent(blockid, height, merkleroot, nTx, nonce, previousblockid);
+
+    for (int j = jsonFile["nTx"] - 1; j >= 0; j--)
+    {
+        Tx auxTx(jsonFile["tx"][j]["txid"]);
+        for (int k = jsonFile["tx"][j]["nTxin"] - 1; k >= 0; k--)
+        {
+            InTx auxInTx(jsonFile["tx"][j]["vin"][k]["blockid"], jsonFile["tx"][j]["vin"][k]["txid"], jsonFile["tx"][j]["vin"][k]["signature"], jsonFile["tx"][j]["vin"][k]["outputIndex"]);
+            auxTx.push_vin(auxInTx);
+
+        }
+
+        for (int k = jsonFile["tx"][j]["nTxout"] - 1; k >= 0; k--)
+        {
+            OutTx auxOutTx(jsonFile["tx"][j]["vout"][k]["publicid"], jsonFile[i]["tx"][j]["vout"][k]["amount"]);
+            auxTx.push_vout(auxOutTx);
+        }
+        blockSent.push_transaction(auxTx);
+    }
 
     //Verificar que cumple con el challenge.
     std::string tempString;
