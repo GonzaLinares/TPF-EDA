@@ -895,7 +895,7 @@ void FullNode::validateBlockPost(bool& error, int& result, std::string msg)
     for (std::vector<Tx>::iterator it = (blockSent.getTxVector()).begin(); it != (blockSent.getTxVector()).end(); it++) {
 
         
-        if (it->getId() != it->calculateTXID()) {
+        if (it->getId() != it->verifyTXID()) {
 
             error = true;
             result = 2;
