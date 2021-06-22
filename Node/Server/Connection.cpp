@@ -1,6 +1,9 @@
 #include "Connection.h"
 
 
+std::size_t completion_condition(const boost::system::error_code& error, std::size_t bytes_transferred, std::string* msg);
+
+
 Connection::~Connection()			//Destructor solo para uso de debug
 {
 }
@@ -29,7 +32,7 @@ void Connection::startHTTP(Connection::pointer thisCon)
 {
 	//Escucho hasta que el cliente mande el terminador CRLFCRLF
 
-	boost::asio::async_read_until(this->conSocket, buffer, "\r\n\r\n",
+	boost::asio::async_read(this->conSocket, buffer, boost::bind(&completion_condition, boost::asio::placeholders::error,boost::asio::placeholders::bytes_transferred, &receivedMsg),
 		boost::bind(&Connection::readDataHandler, this,
 			boost::asio::placeholders::bytes_transferred, thisCon, boost::asio::placeholders::error ));
 
@@ -40,7 +43,7 @@ void Connection::readDataHandler( int recievedBytes, Connection::pointer thisCon
 {
 	if (!error)
 	{
-
+		std::string* p2str = &receivedMsg;
 		elaborateMessage(conSocket.remote_endpoint().address().to_string() + ":" + std::to_string(conSocket.remote_endpoint().port()));	//Parseo la entrada de datos y creo una respuesta en toSendMesage
 
 		//Se envia el mensaje de respuesta
@@ -85,3 +88,29 @@ void Connection::sendDataHandler(int sentBytes, Connection::pointer thisCon, con
 }
 
 
+std::size_t completion_condition(const boost::system::error_code& error, std::size_t bytes_transferred, std::string* msg)
+{
+	std::string aux;
+	static int byte2recieve = 0;
+
+	if (byte2recieve && bytes_transferred < byte2recieve)
+	{
+		return byte2recieve;
+	}
+
+	switch (bytes_transferred)
+	{
+	case 0:
+		byte2recieve = 0;
+		return 512;
+		break;
+	case 512:
+		aux = msg->substr(msg->find(std::string("Content-Length:")), msg->find("\r\n", msg->find(std::string("Content-Length:"))) - msg->find(std::string("Content-Length:")));
+		byte2recieve = std::stoi(aux.substr(aux.find(std::string(":")) + 1, aux.find("\r\n", aux.find(std::string(":"))) - aux.find(std::string(":"))));
+		return byte2recieve;
+		break; 
+	default:
+		return 0;
+		break;
+	}
+}
