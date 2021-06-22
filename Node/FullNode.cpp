@@ -895,7 +895,7 @@ void FullNode::validateBlockPost(bool& error, int& result, std::string msg)
     for (std::vector<Tx>::iterator it = (blockSent.getTxVector()).begin(); it != (blockSent.getTxVector()).end(); it++) {
 
         
-        if (it->getId() != it->calculateTXID()) {
+        if (it->getId() != it->verifyTXID()) {
 
             error = true;
             result = 2;
@@ -951,6 +951,8 @@ void FullNode::validateFilterPost(bool& error, int& result, std::string msg)
 
 std::string FullNode::receivedMsgCB(std::string client, std::string msg)
 {
+    /****************AAAAAAACHU****************/
+
     std::string answer = std::string("damy value"); //Acá copiaré las respuestas que me den las funciones
     std::string host = client.substr(0, client.find_first_of('/', 0));
     lastReClient = host;

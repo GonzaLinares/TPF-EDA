@@ -2,6 +2,7 @@
 #include <fstream>
 #include <nlohmann/json.hpp>
 #include <iostream>
+#include "../Hashing.h"
 
 using json = nlohmann::json;
 
@@ -179,16 +180,53 @@ std::string SPVNode::receivedMsgCB(std::string client, std::string msg)
 
 void SPVNode::validateMerkleBlockPost(bool& error, int& result, std::string msg)
 {
-    std::string blockid;            // : "13878957",
-    std::string height;             // : 0,
-    std::string merkleroot;         // : "80EEF9F8",
-    std::string nTx;                // : 4,
-    std::string nonce;              // : 4733,
-    std::string previousblockid;    // : "00000000",
+    json jsonFile;
+
+    std::string blockid = jsonFile["blockid"];
+    unsigned int height = jsonFile["height"];
+    std::string merkleroot = jsonFile["merkleroot"];
+    unsigned int nTx = jsonFile["nTx"];
+    int nonce = jsonFile["nonce"];
+    std::string previousblockid = jsonFile["previousblockid"];
+
+    Block blockSent(blockid, height, merkleroot, nTx, nonce, previousblockid);
 
     //Verificar que cumple con el challenge.
+    std::string tempString;
+    tempString = previousblockid + merkleroot + hexCodedAscii(nonce);
+    std::string tempString1 = hash32(tempString);
+    tempString = hash32(tempString1);
 
+    if (tempString != blockid) {
+
+        error = true;
+        result = 2;
+        return;
+    }
+
+    tempString = blockid.substr(0, NUMBEROFZEROSCHALLENGE - 1);
+    for (int i = 0; i < 10; i++) {
+
+        if (tempString[i] != '0') {
+            error = true;
+            result = 2;
+            return;
+        }
+    }
 
     //El previous block hash coincide con el block hash del bloque anterior
+    if (previousblockid == "0000000000000000000000000000000000000000000000000000000000000000" && currentBlock != 0) {
 
+        error = true;
+        result = 2;
+        return;
+    }
+    else if (previousblockid != (blockchain[currentBlock]).getId()) {
+
+        error = true;
+        result = 2;
+        return;
+    }
+
+    blockchain.push_back(blockSent);
 }
