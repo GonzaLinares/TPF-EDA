@@ -130,7 +130,7 @@ bool FullNode::blockPost(std::string host, std::string blockId)
 
 
                 //Imprimo las VIN
-                answer += std::string(" ""vin"": [ \n ");
+                answer += std::string("\"vin\": [ \n ");
                 tempInTx = ut->getVin();
                 tempOutTx = ut->getVout();
 
@@ -143,8 +143,8 @@ bool FullNode::blockPost(std::string host, std::string blockId)
                     answer += std::to_string(at->getOutputIndex()) + std::string(",\n");
                     answer += std::string(" \"signature\": ");
                     answer += std::string("\"") + at->getSignature() + std::string("\",\n");
-                    answer += std::string(" ""txid"": ");
-                    answer += std::string("\"") + at->getTxid() + std::string("\",\n");
+                    answer += std::string(" \"txid\": ");
+                    answer += std::string("\"") + at->getTxid() + std::string("\"\n");
 
                     if (at + 1 == tempInTx.end()) {
                         answer += std::string(" }\n");
@@ -165,11 +165,11 @@ bool FullNode::blockPost(std::string host, std::string blockId)
                     answer += std::string(" \"amount\": ");
                     answer += std::to_string(at->getAmount()) + std::string(",\n");
                     answer += std::string(" \"publicid\": ");
-                    answer += std::string("\"") + at->getPublicId() + std::string("\",\n");
+                    answer += std::string("\"") + at->getPublicId() + std::string("\"\n");
 
                     if (at + 1 == tempOutTx.end()) {
 
-                        answer += std::string(" }\n");
+                        answer += std::string(" }]\n");
                     }
                     else {
 
@@ -178,20 +178,22 @@ bool FullNode::blockPost(std::string host, std::string blockId)
                 }
 
                 if (ut + 1 == tempTx.end()) {
-                    answer += std::string("]\n");
+                    answer += std::string("}]\n");
                 }
                 else{
-                    answer += std::string("],\n");
+                    answer += std::string("},\n");
                 }
+
+
             }
+            answer += std::string("}");
+            commSend(host, std::string("eda_coin/send_block/"), answer);
+
+            return false;
         }
     }
 
-    answer += std::string("}");
-
-    commSend(host, std::string("eda_coin/send_block/"), answer);
-
-    return false;
+    return true;
 }
 
 bool FullNode::transactionPost(std::string publicKey, int amount, std::string host)
@@ -473,11 +475,11 @@ std::string FullNode::blockPostReceived(bool error, int result)
         
         if (result == 1) {
 
-            answer = std::string("{ \"status\": true,\n \"result\": 1 }");
+            answer = std::string("{ \"status\": false,\n \"result\": 1 }");
         }
         else {
 
-            answer = std::string("{ \"status\": true,\n \"result\": 2 }");
+            answer = std::string("{ \"status\": false,\n \"result\": 2 }");
         }
     }
     else {
@@ -496,11 +498,11 @@ std::string FullNode::transactionPostReceived(bool error, int result)
 
         if (result == 1) {
 
-            answer = std::string("{ \"status\": true,\n \"result\": 1 }");
+            answer = std::string("{ \"status\": false,\n \"result\": 1 }");
         }
         else {
 
-            answer = std::string("{ \"status\": true,\n \"result\": 2 }");
+            answer = std::string("{ \"status\": false,\n \"result\": 2 }");
         }
     }
     else {
@@ -519,11 +521,11 @@ std::string FullNode::filterPostReceived(bool error, int result)
 
         if (result == 1) {
 
-            answer = std::string("{ \"status\": true,\n \"result\": 1 }");
+            answer = std::string("{ \"status\": false,\n \"result\": 1 }");
         }
         else {
 
-            answer = std::string("{ \"status\": true,\n \"result\": 2 }");
+            answer = std::string("{ \"status\": false,\n \"result\": 2 }");
         }
     }
     else {
@@ -831,126 +833,134 @@ void FullNode::validateTransactionPost(bool& error, int& result, std::string msg
 
 void FullNode::validateBlockPost(bool& error, int& result, std::string msg)
 {
-
     json jsonFile;
 
-    std::string blockid = jsonFile["blockid"];
-    unsigned int height = jsonFile["height"];
-    std::string merkleroot = jsonFile["merkleroot"];
-    unsigned int nTx = jsonFile["nTx"];
-    int nonce = jsonFile["nonce"];
-    std::string previousblockid = jsonFile["previousblockid"];
-
-    Block blockSent(blockid, height, merkleroot, nTx, nonce, previousblockid);
-
-    for (int j = jsonFile["nTx"] - 1; j >= 0; j--)
+    try
     {
-        Tx auxTx(jsonFile["tx"][j]["txid"]);
-        for (int k = jsonFile["tx"][j]["nTxin"] - 1; k >= 0; k--)
+        jsonFile = json::parse(msg.c_str());
+
+        std::string blockid = jsonFile["blockid"];
+        unsigned int height = jsonFile["height"];
+        std::string merkleroot = jsonFile["merkleroot"];
+        unsigned int nTx = jsonFile["nTx"];
+        int nonce = jsonFile["nonce"];
+        std::string previousblockid = jsonFile["previousblockid"];
+
+        Block blockSent(blockid, height, merkleroot, nTx, nonce, previousblockid);
+
+        for (int j = jsonFile["nTx"] - 1; j >= 0; j--)
         {
-            InTx auxInTx(jsonFile["tx"][j]["vin"][k]["blockid"], jsonFile["tx"][j]["vin"][k]["txid"], jsonFile["tx"][j]["vin"][k]["signature"], jsonFile["tx"][j]["vin"][k]["outputIndex"]);
-            auxTx.push_vin(auxInTx);
+            Tx auxTx(jsonFile["tx"][j]["txid"]);
+            for (int k = jsonFile["tx"][j]["nTxin"] - 1; k >= 0; k--)
+            {
+                InTx auxInTx(jsonFile["tx"][j]["vin"][k]["blockid"], jsonFile["tx"][j]["vin"][k]["txid"], jsonFile["tx"][j]["vin"][k]["signature"], jsonFile["tx"][j]["vin"][k]["outputIndex"]);
+                auxTx.push_vin(auxInTx);
 
+            }
+
+            for (int k = jsonFile["tx"][j]["nTxout"] - 1; k >= 0; k--)
+            {
+                OutTx auxOutTx(jsonFile["tx"][j]["vout"][k]["publicid"], jsonFile["tx"][j]["vout"][k]["amount"]);
+                auxTx.push_vout(auxOutTx);
+            }
+
+            blockSent.push_transaction(auxTx);
         }
 
-        for (int k = jsonFile["tx"][j]["nTxout"] - 1; k >= 0; k--)
-        {
-            OutTx auxOutTx(jsonFile["tx"][j]["vout"][k]["publicid"], jsonFile["tx"][j]["vout"][k]["amount"]);
-            auxTx.push_vout(auxOutTx);
-        }
+        //Verificar que cumple con el challenge.
+        std::string tempString;
+        tempString = previousblockid + merkleroot + hexCodedAscii(nonce);
+        std::string tempString1 = hash32(tempString);
+        tempString = hash32(tempString1);
 
-        blockSent.push_transaction(auxTx);
-    }
-
-    //Verificar que cumple con el challenge.
-    std::string tempString;
-    tempString = previousblockid + merkleroot + hexCodedAscii(nonce);
-    std::string tempString1 = hash32(tempString);
-    tempString = hash32(tempString1);
-
-    if (tempString != blockid) {
-
-        error = true;
-        result = 2;
-        return;
-    }
-
-    tempString = blockid.substr(0, NUMBEROFZEROSCHALLENGE-1);
-    for (int i = 0; i < 10; i++) {
-
-        if (tempString[i] != '0') {
-            error = true;
-            result = 2;
-            return;
-        }
-    }
-
-    //El previous block hash coincide con el block hash del bloque anterior
-    if (previousblockid == "0000000000000000000000000000000000000000000000000000000000000000" && currentBlock!= 0) {
-
-        error = true;
-        result = 2;
-        return;
-    }
-    else if (previousblockid != (blockchain[currentBlock]).getId() ) {
-
-        error = true;
-        result = 2;
-        return;
-    }
-
-
-    //Tiene que verificar toda esta cosita
-    for (std::vector<Tx>::iterator it = (blockSent.getTxVector()).begin(); it != (blockSent.getTxVector()).end(); it++) {
-
-        
-        if (it->getId() != it->verifyTXID()) {
+        if (tempString != blockid) {
 
             error = true;
             result = 2;
             return;
         }
-        
 
-        std::string message;
-        std::string messageVOUT;
+        tempString = blockid.substr(0, NUMBEROFZEROSCHALLENGE - 1);
+        for (int i = 0; i < 10; i++) {
 
-        for (std::vector<OutTx>::iterator at = (it->getVout()).begin(); at != (it->getVout()).end(); at++) {
-
-            messageVOUT += hexCodedAscii(at->getAmount()) + at->getPublicId();
+            if (tempString[i] != '0') {
+                error = true;
+                result = 2;
+                return;
+            }
         }
 
-        for (std::vector<InTx>::iterator ut = (it->getVin()).begin(); ut != (it->getVin()).end(); ut++) {
+        //El previous block hash coincide con el block hash del bloque anterior
+        if (previousblockid == "0000000000000000000000000000000000000000000000000000000000000000" && currentBlock != 0) {
 
-            std::string blockid = ut->getBlockId();
-            std::string txID = ut->getTxid();
-            int outputIndex = ut->getOutputIndex();
+            error = true;
+            result = 2;
+            return;
+        }
+        else if (previousblockid != (blockchain[currentBlock]).getId()) {
 
-            message += ut->getBlockId() + hexCodedAscii(ut->getOutputIndex()) + ut->getTxid();
-            message += messageVOUT;
-            for (std::vector<UTXO>::iterator at = UTXOVector.begin(); at != UTXOVector.end(); at++) {
+            error = true;
+            result = 2;
+            return;
+        }
 
-                if (at->getBlockId() == blockid) {
 
-                    if (at->getTXId() == txID) {
+        //Tiene que verificar toda esta cosita
+        for (std::vector<Tx>::iterator it = (blockSent.getTxVector()).begin(); it != (blockSent.getTxVector()).end(); it++) {
 
-                        if (at->getOutputIndex() == outputIndex) {
 
-                            if (!(verifyMsg(message, ut->getSignature(), at->getPublicId()))) {
+            if (it->getId() != it->verifyTXID()) {
 
-                                error = true;
-                                result = 2;
-                                return;
+                error = true;
+                result = 2;
+                return;
+            }
+
+
+            std::string message;
+            std::string messageVOUT;
+
+            for (std::vector<OutTx>::iterator at = (it->getVout()).begin(); at != (it->getVout()).end(); at++) {
+
+                messageVOUT += hexCodedAscii(at->getAmount()) + at->getPublicId();
+            }
+
+            for (std::vector<InTx>::iterator ut = (it->getVin()).begin(); ut != (it->getVin()).end(); ut++) {
+
+                std::string blockid = ut->getBlockId();
+                std::string txID = ut->getTxid();
+                int outputIndex = ut->getOutputIndex();
+
+                message += ut->getBlockId() + hexCodedAscii(ut->getOutputIndex()) + ut->getTxid();
+                message += messageVOUT;
+                for (std::vector<UTXO>::iterator at = UTXOVector.begin(); at != UTXOVector.end(); at++) {
+
+                    if (at->getBlockId() == blockid) {
+
+                        if (at->getTXId() == txID) {
+
+                            if (at->getOutputIndex() == outputIndex) {
+
+                                if (!(verifyMsg(message, ut->getSignature(), at->getPublicId()))) {
+
+                                    error = true;
+                                    result = 2;
+                                    return;
+                                }
                             }
                         }
                     }
                 }
+                message.clear();
             }
-            message.clear();
         }
-    }
 
-    blockchain.push_back(blockSent);
+        blockchain.push_back(blockSent);
+    }
+    catch (const std::exception& e)
+    {
+        std::cerr << e.what() << std::endl;
+    }
 }
 
 void FullNode::validateFilterPost(bool& error, int& result, std::string msg)
