@@ -160,7 +160,7 @@ bool FullNode::blockPost(std::string host, std::string blockId)
 
                     if (at + 1 == tempOutTx.end()) {
 
-                        answer += std::string(" }\n");
+                        answer += std::string(" }]\n");
                     }
                     else {
 
@@ -169,20 +169,22 @@ bool FullNode::blockPost(std::string host, std::string blockId)
                 }
 
                 if (ut + 1 == tempTx.end()) {
-                    answer += std::string("]\n");
+                    answer += std::string("}]\n");
                 }
                 else{
-                    answer += std::string("],\n");
+                    answer += std::string("},\n");
                 }
+
+
             }
+            answer += std::string("}");
+            commSend(host, std::string("eda_coin/send_block/"), answer);
+
+            return false;
         }
     }
 
-    answer += std::string("}");
-
-    commSend(host, std::string("eda_coin/send_block/"), answer);
-
-    return false;
+    return true;
 }
 
 bool FullNode::transactionPost(std::string publicKey, int amount, std::string host)
