@@ -15,6 +15,7 @@
 #include <vector>
 #include <iostream>
 #include "../Block/UTXO.h"
+#include <cryptopp/eccrypto.h>
 
 typedef enum {IDLE = 0, RECEIVING, SENDING} node_state_t;
 
@@ -121,8 +122,13 @@ protected:
 	std::vector <Block> blockchain;		//blockchain con los datos
 	node_state_t state;	//Estado del nodo (recibió mensaje, manda mensaje, escucha, etc.)
 	std::string lastReClient;
+	std::vector<Tx> verifiedTxs;
 	std::vector <std::string> IPsSentList;
 	std::vector<UTXO> MyUTXO;		//Las UTXO que le pertenecen al nodo
 	UTXO lastSpentUTXO;
 	int currentBlock;
+
+	//Public y Private Key
+	CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PrivateKey privateKey1;
+	CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PublicKey publicKey1;
 };

@@ -35,6 +35,7 @@ public:
 	//POST HTTP	*********************************************************
 	bool blockPost(std::string host, std::string blockId);
 	bool transactionPost(std::string publicKey, int amount, std::string host);
+	bool transactionPost(std::string publicKey, int amount, std::string host);
 	bool merkleBlockPost(std::string blockId, int position, std::string host);
 
 	//*********************************************************//
@@ -71,6 +72,8 @@ public:
 
 	//*********************************************************//
 
+	std::string signMsg(std::string msg);
+
 protected:
 	
 	void validateTransactionPost(bool& error, int& result, std::string msg);
@@ -86,4 +89,6 @@ protected:
 	std::string myID;
 
 	std::vector<Tx> validatedTransactions;
+
+	CryptoPP::RandomNumberGenerator randomnumbers;
 };

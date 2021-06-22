@@ -7,6 +7,7 @@ BaseNode::BaseNode(boost::asio::io_context& ioContext, boost::function<std::stri
     client(msgReceivedCb, portNum + 1)
 {
     currentBlock = 0;
+    privateKey1.MakePublicKey(publicKey1);
 }
 
 void BaseNode::deleteBlockchain()

@@ -36,29 +36,33 @@ std::vector<OutTx> Tx::getVout(void)
 	return vout;
 }
 
-void Tx::calculateTXID()
+std::string Tx::calculateTXID()
 {
     std::string hashTest = hexCodedAscii((getVin()).size()) + hexCodedAscii((getVout()).size());   //Armo un string para verificar la txID
 
     /*La UTXO referenciada en el Input Transaction de la Tx debe pertenecer al arreglo de UTXOs o
     a las transacciones pendientes*/
-    for (std::vector<InTx>::iterator it = (getVin()).begin(); it != (getVin()).end(); it++) {
+    for (auto it : vin) {
 
         std::string blockid = it->getBlockId();
         std::string txID = it->getTxid();
         int outputIndex = it->getOutputIndex();
 
         hashTest += it->getBlockId() + hexCodedAscii(it->getOutputIndex()) + it->getSignature() + it->getTxid();
-    }
 
-    for (std::vector<OutTx>::iterator it = (getVout()).begin();  it != (getVout()).end(); it++) {
+    
+    for (auto it : vout) {
 
-        hashTest += hexCodedAscii(it->getAmount()) + it->getPublicId();
+    for (std::vector<OutTx>::iterator it = (getVout()).begin(); it != (getVout()).end(); it++) {
+
+        hashTest += hexCodedAscii(it.getAmount()) + it.getPublicId();
     }
 
 
     hashTest = hash32(hashTest);
     txid = hash32(hashTest);
+
+    return txid;
 }
 
 std::string Tx::dump2JSON()		//TODO: Implementar
