@@ -50,7 +50,6 @@ std::string Tx::calculateTXID()
         int outputIndex = it->getOutputIndex();
 
         hashTest += it->getBlockId() + hexCodedAscii(it->getOutputIndex()) + it->getSignature() + it->getTxid();
-
     }
 
     for (std::vector<OutTx>::iterator it = (getVout()).begin(); it != (getVout()).end(); it++) {
