@@ -130,11 +130,11 @@ std::string SPVNode::merkleBlockPostReceived(bool error, int result)
 
         if (result == 1) {
 
-            answer = std::string("{ \"status\": true,\n \"result\": 1 }");
+            answer = std::string("{ \"status\": false,\n \"result\": 1 }");
         }
         else {
 
-            answer = std::string("{ \"status\": true,\n \"result\": 2 }");
+            answer = std::string("{ \"status\": false,\n \"result\": 2 }");
         }
     }
     else {

@@ -30,6 +30,8 @@ private:
 	/*Callback para las comunicaciones*/
 	void readDataHandler(int recievedBytes, Connection::pointer thisCon, const boost::system::error_code& error);
 	void sendDataHandler(int sentBytes, Connection::pointer thisCon, const boost::system::error_code& error);
+
+	boost::asio::dynamic_string_buffer<char, std::char_traits<char>, std::allocator<char>> buffer;
 	
 	tcp::socket conSocket;
 
