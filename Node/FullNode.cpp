@@ -319,6 +319,11 @@ bool FullNode::transactionPost(std::string publicKey, int amount, std::string ho
     return false;
 }
 
+bool FullNode::transactionPost(Tx transaction, std::string host)
+{
+    return false;
+}
+
 bool FullNode::merkleBlockPost(std::string blockId, int position, std::string host)
 {
     std::string answer;
