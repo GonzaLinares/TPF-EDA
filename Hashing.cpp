@@ -2,6 +2,14 @@
 
 #include <cryptopp/hex.h>
 #include <cryptopp/sha.h>
+#include <cryptopp/asn.h>
+#include <cryptopp/oids.h>	// ASN1
+#include <cryptopp/cryptlib.h>
+#include <cryptopp/secblock.h>
+#include <cryptopp/filters.h>
+#include <cryptopp/integer.h>
+#include <cryptopp/osrng.h>
+#include <cryptopp/eccrypto.h>
 
 using namespace std;
 

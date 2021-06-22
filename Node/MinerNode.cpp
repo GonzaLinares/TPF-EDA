@@ -1,6 +1,10 @@
 #include "MinerNode.h"
 #include <chrono>
 
+#define BLOCKS_TILL_UPDATE 6
+#define DEFAULT_TARGET 3
+#define SECOND_PER_BLOCK 60
+
 MinerNode::MinerNode(boost::asio::io_context& ioContext, std::string port, std::string path2blockchain)
     : FullNode(ioContext, port, path2blockchain)
 {
@@ -34,7 +38,9 @@ bool MinerNode::poll()
     {
         if (mine())
         {
-
+            blockchain.push_back(block2mine);       //TODO: Que hago con el bloque minado?
+            block2mine.clear();
+            mining = false;
         }
     }
 
@@ -43,13 +49,73 @@ bool MinerNode::poll()
 
 void MinerNode::prepareBlock2mine()
 {
-
+    unsigned int newTarget;
 
     block2mine.setHeight(blockchain.size() + 1);
+    if (block2mine.getHeight() % BLOCKS_TILL_UPDATE == 0)
+    {
+        float avgTimeperBlock = 0;
+
+        for (int i = 0; i < BLOCKS_TILL_UPDATE; i++)
+        {
+            avgTimeperBlock += blockchain[blockchain.size() - 1 - i].getTimestamp() - blockchain[blockchain.size() - 2 - i].getTimestamp();
+        }
+        avgTimeperBlock /= 5.0F;
+        if (avgTimeperBlock < SECOND_PER_BLOCK - 10)
+        {
+            newTarget = blockchain[blockchain.size() - 1].getTarget() + 1;
+        }
+        else
+        {
+            newTarget = blockchain[blockchain.size() - 1].getTarget() - 1;
+        }
+    }
+    else if (blockchain.size())
+    {
+        newTarget = blockchain[blockchain.size() - 1].getTarget();
+    }
+    else
+    {
+        newTarget = DEFAULT_TARGET;
+    }
+    
+    for (auto it : tx2add)
+    {
+        block2mine.push_transaction(it);
+    }
+    OutTx rewardOut(privateKey, blockReward);
+    Tx reward;
+    reward.push_vout(rewardOut);
+    reward.calculateTXID();
+    block2mine.push_transaction(reward);
+    block2mine.calculateMerkleRoot();
+    if (blockchain.size() == 0)
+    {
+        block2mine.setPrevBlockId("00000000000000000000000000000000");
+    }
+    else
+    {
+        block2mine.setPrevBlockId(blockchain[blockchain.size() - 1].getId());
+    }
+    
 
 }
 
 bool MinerNode::mine()
 {
-    return false;
+    
+    block2mine.calculateHash();
+
+    for (unsigned int i = 0; i < block2mine.getTarget(); i++)
+    {
+        if (block2mine.getId()[i] != 0)
+        {
+            block2mine.setNonce(block2mine.getNonce() + 1);
+            return false;
+        }
+    }
+    auto now = std::chrono::system_clock::now();
+    block2mine.setTimestamp(std::chrono::duration_cast<std::chrono::seconds>(now.time_since_epoch()).count());
+
+    return true;
 }

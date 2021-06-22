@@ -28,6 +28,8 @@ public:
 	*=====================================================*/
 	Tx(std::string txid_);
 
+	Tx();
+
 
 	/*=====================================================
 	* Name: push_vin
@@ -63,6 +65,8 @@ public:
 	* Resulta:
 	*=====================================================*/
 	std::vector <OutTx> getVout(void);
+
+	void calculateTXID();
 
 	std::string dump2JSON();
 
