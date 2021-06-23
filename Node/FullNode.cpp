@@ -205,6 +205,8 @@ bool FullNode::transactionPost(std::string publicKey, float amount, std::string 
     std::string txIDPREHASH;
     int VinCount = 0;
     float totalAmountInOutput = 0;
+    bool error = false;
+    int result = 1;
 
     for (std::vector<UTXO>::iterator at = myUTXO.begin(); at != myUTXO.end() && totalAmountInOutput < amount; at++) {
 
@@ -330,13 +332,20 @@ bool FullNode::transactionPost(std::string publicKey, float amount, std::string 
 
     answer.replace(answer.find_first_of('&'), answer.find_first_of('%') - answer.find_first_of('&') + 1, txIDPREHASH);
 
-    commSend(host, std::string("eda_coin/send_tx/"), answer);
+
+    //I save the transaction in the list of verified transaction, and validate it
+    validateTransactionPost(error, result, answer);
+
+    if (error == false) {
+        commSend(host, std::string("eda_coin/send_tx/"), answer);
+    }
 
     return false;
 }
 
 bool FullNode::transactionPost(Tx transaction, std::string host)
 {
+
     std::string answer;
     int totalAmountInOutput = 0;
 
@@ -559,10 +568,12 @@ std::string FullNode::blockPostReceived(bool error, int result)
         if (result == 1) {
 
             answer = std::string("{ \"status\": false,\n \"result\": 1 }");
+            std::cout << "BLOQUE CON ERRORES DE FORMATO" << std::endl;
         }
         else {
 
             answer = std::string("{ \"status\": false,\n \"result\": 2 }");
+            std::cout << "BLOQUE CON ERRORES DE CONTENIDO" << std::endl;
         }
     }
     else {
@@ -582,10 +593,12 @@ std::string FullNode::transactionPostReceived(bool error, int result)
         if (result == 1) {
 
             answer = std::string("{ \"status\": false,\n \"result\": 1 }");
+            std::cout << "TRANSACCION CON ERRORES DE FORMATO" << std::endl;
         }
         else {
 
             answer = std::string("{ \"status\": false,\n \"result\": 2 }");
+            std::cout << "TRANSACCION CON ERRORES DE CONTENIDO" << std::endl;
         }
     }
     else {
