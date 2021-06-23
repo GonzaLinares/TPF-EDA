@@ -303,13 +303,13 @@ void Gui::showConnectBox(NodeFactory& nodes) {
 
 void Gui::showActionsBox(NodeFactory& nodes) {
 
-	ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 10.0f);
-
 	BaseNode* currentNode = nodes.getNodes()[currentNodeActive];
 	vector <pair<string, string>> neigh = currentNode->getNeighbours();
 	vector<string> actionList = currentNode->getActionList();
 	pair<string, string> aux;
 	vector<Tx> verifiedTxsList;
+
+	ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 10.0f);
 
 	if (currentNode->getVerifiedTxs().size() == 0) {
 		verifiedTxsList.push_back(Tx(string("Empty")));
@@ -431,23 +431,15 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 				}
 			}
 			else if (verifiedTrxSendActive) {
-				((FullNode*)currentNode)->transactionPost();
+				((FullNode*)currentNode)->transactionPost(verifiedTxsList[comboBoxVerifiedTxsIndex], neigh[comboBoxNodesIndex].first);
 			}
-<<<<<<< HEAD
-			else {
-				if (currentNode->getNodeType() == std::string("Full")) {
+			else{
+				if (currentNode->getNodeType() == std::string("Full") || currentNode->getNodeType() == std::string("Miner")) {
 					((FullNode*)currentNode)->transactionPost(actionGetBlockPublicKeyWritten, amountWritten, neigh[comboBoxNodesIndex].first);
 				}
 				else if (currentNode->getNodeType() == std::string("SPV")) {
 					((SPVNode*)currentNode)->transactionPost(actionGetBlockPublicKeyWritten, amountWritten, neigh[comboBoxNodesIndex].first);
 				}
-=======
-			else if (currentNode->getNodeType() == std::string("Miner")) {
-				((FullNode*)currentNode)->transactionPost(actionGetBlockPublicKeyWritten, amountWritten, neigh[comboBoxNodesIndex].first);
-			}
-			else if (currentNode->getNodeType() == std::string("SPV")) {
-				((SPVNode*)currentNode)->transactionPost(actionGetBlockPublicKeyWritten, amountWritten, neigh[comboBoxNodesIndex].first);
->>>>>>> db07f656fa07b9c4274e21682e922a55847f26c2
 			}
 		}
 	}

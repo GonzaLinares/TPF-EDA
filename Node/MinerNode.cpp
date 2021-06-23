@@ -54,7 +54,7 @@ void MinerNode::newUTXO(float amount, std::string blockId, std::string txId, std
 {
 
     UTXOVector.push_back( UTXO(amount, blockId, txId, publicId, outputIndex));
-    MyUTXO.push_back(UTXO(amount, blockId, txId, publicId, outputIndex));
+    myUTXO.push_back(UTXO(amount, blockId, txId, publicId, outputIndex));
 }
 
 void MinerNode::prepareBlock2mine()
