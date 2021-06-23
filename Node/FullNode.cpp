@@ -81,6 +81,15 @@ std::string FullNode::getNodeType()
     return std::string("Full");
 }
 
+UTXO FullNode::getLastSpentUTXO() {
+    if (!UTXOVector.empty()) {
+        return UTXOVector.back();
+    }
+    else {
+        return UTXO();
+    }
+}
+
 bool FullNode::blockPost(std::string host, std::string blockId)
 {
     std::string answer = "";
@@ -199,7 +208,7 @@ bool FullNode::transactionPost(std::string publicKey, float amount, std::string 
     bool error = false;
     int result = 1;
 
-    for (std::vector<UTXO>::iterator at = MyUTXO.begin(); at != MyUTXO.end() && totalAmountInOutput < amount; at++) {
+    for (std::vector<UTXO>::iterator at = myUTXO.begin(); at != myUTXO.end() && totalAmountInOutput < amount; at++) {
 
         totalAmountInOutput += at->getAmount();
         VinCount++;
@@ -239,7 +248,7 @@ bool FullNode::transactionPost(std::string publicKey, float amount, std::string 
     answer += std::string(" \"txid\": \"&000000000000000000000000000000%\",\n");    //TODO: Despues lo reemplazo
     //VIN
     answer += std::string(" \"vin\": [ \n ");
-    for (std::vector<UTXO>::iterator at = MyUTXO.begin(); at != MyUTXO.end() && totalAmountInOutput < amount; at++) {
+    for (std::vector<UTXO>::iterator at = myUTXO.begin(); at != myUTXO.end() && totalAmountInOutput < amount; at++) {
 
         answer += std::string(" {\n");
 

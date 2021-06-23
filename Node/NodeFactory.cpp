@@ -98,7 +98,7 @@ bool NodeFactory::pollAllNodes()
 
 	ioContext.poll();
 	for (auto it : nodes)
-	{
+	{ 
 		it->poll();
 	}
 

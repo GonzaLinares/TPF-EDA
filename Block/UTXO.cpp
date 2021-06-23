@@ -1,7 +1,11 @@
 #include "UTXO.h"
 
-UTXO::UTXO()
-{
+UTXO::UTXO() {
+	amount = -1;
+	blockId = "Empty";
+	txId = "Empty";
+	publicId = "Empty";
+	outputIndex = -1;
 }
 
 UTXO::UTXO(float amount, std::string blockId, std::string txId, std::string publicId, int outputIndex)
