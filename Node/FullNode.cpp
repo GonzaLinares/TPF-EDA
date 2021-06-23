@@ -221,13 +221,13 @@ bool FullNode::transactionPost(std::string publicKey, float amount, std::string 
     else if(totalAmountInOutput == amount){
 
         txIDPREHASH += hexCodedAscii(VinCount);
-        txIDPREHASH += "1";
+        txIDPREHASH += hexCodedAscii(1);
         totalAmountInOutput = 0; //La reinicio y empiezo de vuelta
     }
     else {
 
         txIDPREHASH += hexCodedAscii(VinCount);
-        txIDPREHASH += "2";
+        txIDPREHASH += hexCodedAscii(2);
         totalAmountInOutput = 0; //La reinicio y empiezo de vuelta
     }
 
@@ -331,8 +331,8 @@ bool FullNode::transactionPost(std::string publicKey, float amount, std::string 
 
     answer.replace(answer.find_first_of('&'), answer.find_first_of('%') - answer.find_first_of('&') + 1, txIDPREHASH);
 
-
     //I save the transaction in the list of verified transaction, and validate it
+
     validateTransactionPost(error, result, answer);
 
     if (error == false) {

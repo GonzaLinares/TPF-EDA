@@ -23,7 +23,6 @@ class FullNode : public BaseNode
 
 public:
 
-
 	FullNode(boost::asio::io_context& ioContext, std::string port, std::string path2blockchain);
 	FullNode(boost::asio::io_context& ioContext, std::string port);
 	// Inherited via BaseNode
@@ -86,11 +85,10 @@ protected:
 
 	static std::vector<std::string> actionsVector;
 	virtual std::vector<std::string> getActionList() override;	//Vector con los nombres de las acciones posibles
-	std::vector<UTXO> UTXOVector;	//Las UTXO de la blockchain
-	std::vector<UTXO> myUTXO;
 
 	std::string myID;
-
+	std::vector<UTXO> UTXOVector;	//Las UTXO de la blockchain
+	std::vector<UTXO> myUTXO;
 	std::vector<Tx> validatedTransactions;
 
 	CryptoPP::RandomNumberGenerator randomnumbers;

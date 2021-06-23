@@ -40,7 +40,8 @@ bool MinerNode::poll()
     {
         if (mine())
         {
-            blockchain.push_back(block2mine);       //TODO: Que hago con el bloque minado?
+            blockchain.push_back(block2mine); 
+            std::cout << "ID del bloque minado: " << block2mine.getId() << std::endl;
             newUTXO(blockReward, block2mine.getId(), block2mine.getTxVector().back().getId(), publicKeyString, 0);
             block2mine.clear();
             mining = false;
