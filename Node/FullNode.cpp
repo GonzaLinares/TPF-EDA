@@ -146,7 +146,7 @@ bool FullNode::blockPost(std::string host, std::string blockId)
                     answer += std::string(" \"txid\": ");
                     answer += std::string("\"") + at->getTxid() + std::string("\"\n");
 
-                    if (at + 1 == tempInTx.end()) {
+                    if (at + 1 == tempInTx.end()) { 
                         answer += std::string(" }\n");
                     }
                     else {
@@ -196,7 +196,7 @@ bool FullNode::blockPost(std::string host, std::string blockId)
     return true;
 }
 
-bool FullNode::transactionPost(std::string publicKey, int amount, std::string host)
+bool FullNode::transactionPost(std::string publicKey, float amount, std::string host)
 {
     std::string answer;
     std::string messageVOUT;
@@ -204,7 +204,7 @@ bool FullNode::transactionPost(std::string publicKey, int amount, std::string ho
     std::string signa;
     std::string txIDPREHASH;
     int VinCount = 0;
-    int totalAmountInOutput = 0;
+    float totalAmountInOutput = 0;
 
     for (std::vector<UTXO>::iterator at = myUTXO.begin(); at != myUTXO.end() && totalAmountInOutput < amount; at++) {
 
@@ -243,7 +243,7 @@ bool FullNode::transactionPost(std::string publicKey, int amount, std::string ho
     answer += std::to_string(VinCount);
     answer += std::string(",\n");
     answer += std::string(" \"nTxout\": |,\n"); //La cantidad de salidas va a ser siempre 2 o 1 por como hacemos las cosas
-    answer += std::string(" \"txid\": &000000000000000000000000000000%,\n");    //TODO: Despues lo reemplazo
+    answer += std::string(" \"txid\": \"&000000000000000000000000000000%\",\n");    //TODO: Despues lo reemplazo
     //VIN
     answer += std::string(" \"vin\": [ \n ");
     for (std::vector<UTXO>::iterator at = myUTXO.begin(); at != myUTXO.end() && totalAmountInOutput < amount; at++) {
@@ -262,24 +262,30 @@ bool FullNode::transactionPost(std::string publicKey, int amount, std::string ho
         txIDPREHASH += std::to_string(at->getOutputIndex());
         answer += ",\n";
 
-        answer += "\"signature\": \"";  
-        answer += "@234567signatureplaceholder567812345678123456782525252525263515¿";
-        answer += "\",\n";
-
-        answer += "\"txid\": \"";
-        answer += at->getTXId();
-        answer += "\",\n";
-
         message.clear();
         message += at->getBlockId() + hexCodedAscii(at->getOutputIndex()) + at->getTXId();
         message += messageVOUT;
         signa = signMsg(message);
-        answer.replace(answer.find_first_of('@'), answer.find_first_of('¿'), signa);
+
+        answer += "\"signature\": \"";  
+        answer += signa;
+        answer += "\",\n";
+
+        answer += "\"txid\": \"";
+        answer += at->getTXId();
+        answer += "\"\n";
 
         txIDPREHASH += signa;
         txIDPREHASH += at->getTXId();
-
-        answer += std::string(" },\n");
+        if (totalAmountInOutput >= amount)
+        {
+            answer += std::string(" }\n");
+        }
+        else
+        {
+            answer += std::string(" },\n");
+        }
+        
     }
 
     answer += std::string(" ],\n");
@@ -291,15 +297,15 @@ bool FullNode::transactionPost(std::string publicKey, int amount, std::string ho
     answer += std::to_string(amount) + std::string(",\n");
     txIDPREHASH += std::to_string(amount);
     answer += std::string(" \"publicid\": ");
-    answer += std::string("\"") + publicKey + std::string("\",\n");
+    answer += std::string("\"") + publicKey + std::string("\"\n");
     txIDPREHASH += publicKey;
     answer += std::string(" }\n");
-    answer += std::string("],\n");
+
 
     if (totalAmountInOutput > amount) {
-        answer += std::string(" {\n");
+        answer += std::string(" ,{\n");
         answer += std::string(" \"amount\": ");
-        answer += std::to_string(totalAmountInOutput-amount) + std::string(",\n");
+        answer += std::to_string(totalAmountInOutput - amount) + std::string(",\n");
         txIDPREHASH += std::to_string(totalAmountInOutput - amount);
         answer += std::string(" \"publicid\": ");
         answer += std::string("\"") + myID + std::string("\",\n");
@@ -311,6 +317,7 @@ bool FullNode::transactionPost(std::string publicKey, int amount, std::string ho
     }
     else {
 
+        answer += std::string("]\n");
         answer.replace(answer.find_first_of('|'),1,1,'1');
         txIDPREHASH += std::to_string(1);
     }
@@ -321,7 +328,83 @@ bool FullNode::transactionPost(std::string publicKey, int amount, std::string ho
     txIDPREHASH = hash32(txIDPREHASH);
     txIDPREHASH = hash32(txIDPREHASH);
 
-    answer.replace(answer.find_first_of('&'), answer.find_first_of('%'), txIDPREHASH);
+    answer.replace(answer.find_first_of('&'), answer.find_first_of('%') - answer.find_first_of('&') + 1, txIDPREHASH);
+
+    commSend(host, std::string("eda_coin/send_tx/"), answer);
+
+    return false;
+}
+
+bool FullNode::transactionPost(Tx transaction, std::string host)
+{
+    std::string answer;
+    int totalAmountInOutput = 0;
+
+    //answer += std::string(" \"tx\": [ \n ");  //esto no va aca.
+    answer += std::string(" {\n");
+    answer += std::string(" \"nTxin\": ");
+    answer += std::to_string(transaction.getVin().size());
+    answer += std::string(",\n");
+    answer += std::string(" \"nTxout\":");
+    answer += std::to_string(transaction.getVin().size()) + " ,\n"; 
+    answer += std::string(" \"txid\": &000000000000000000000000000000%,\n");    //TODO: Despues lo reemplazo
+    //VIN
+    answer += std::string(" \"vin\": [ \n ");
+    for (auto at : transaction.getVin()) {
+
+        answer += std::string(" {\n");
+
+        answer += "\"blockid\": \"";
+        answer += at.getBlockId();
+        answer += "\",\n";
+
+        answer += "\"outputIndex\": ";
+        answer += std::to_string(at.getOutputIndex());
+        answer += ",\n";
+
+        answer += "\"signature\": \"";
+        answer += at.getSignature();
+        answer += "\",\n";
+
+        answer += "\"txid\": \"";
+        answer += at.getTxid();
+        answer += "\",\n";
+
+        if (&at == &transaction.getVin().back()) {
+
+            answer += std::string(" }\n");
+        }
+        else {
+            answer += std::string(" },\n");
+        }
+    }
+
+    answer += std::string(" ],\n");
+
+    //VOUT
+    answer += std::string(" \"vout\": [ \n ");
+    for (auto at : transaction.getVout()) {
+
+        answer += std::string(" {\n");
+
+        answer += "\"amount\": \"";
+        answer += hexCodedAscii((at.getAmount()));
+        answer += "\",\n";
+
+        answer += "\"publicid\": ";
+        answer += at.getPublicId();
+        answer += " \n";
+
+        if (&at == &transaction.getVout().back()) {
+
+            answer += std::string(" }\n");
+        }
+        else {
+            answer += std::string(" },\n");
+        }
+    }
+
+    answer += std::string("}\n");
 
     commSend(host, std::string("eda_coin/send_tx/"), answer);
 
@@ -705,130 +788,139 @@ std::string FullNode::getBlocksReceived(std::string blockID, int count)
 }
 
 void FullNode::validateTransactionPost(bool& error, int& result, std::string msg)
-{   
-    json jsonFile(msg);
-    Tx tempTx(jsonFile["txid"]);
-     
-    for (int k = jsonFile["nTxin"] - 1; k >= 0; k--)
+{      
+    json jsonFile;
+    try
     {
-        InTx auxInTx(jsonFile["vin"][k]["blockid"], jsonFile["vin"][k]["txid"], jsonFile["vin"][k]["signature"], jsonFile["vin"][k]["outputIndex"]);
-        tempTx.push_vin(auxInTx);
-    }
-    
-    for (int k = jsonFile["nTxout"] - 1; k >= 0; k--)
-    {
-        OutTx auxOutTx(jsonFile["vout"][k]["publicid"], jsonFile["vout"][k]["amount"]);
-        tempTx.push_vout(auxOutTx);
-    }
+        jsonFile = json::parse(msg);
 
-    bool loEncontre = false;
-    int totalAmountInUTXO = 0;
-    int totalAmountInOutput = 0;
+        Tx tempTx(jsonFile["txid"]);
 
-    //El HashID debe verificar  
-    std::string hashTest = hexCodedAscii((tempTx.getVin()).size()) + hexCodedAscii((tempTx.getVout()).size());   //Armo un string para verificar la txID
+        for (int k = jsonFile["nTxin"] - 1; k >= 0; k--)
+        {
+            InTx auxInTx(jsonFile["vin"][k]["blockid"], jsonFile["vin"][k]["txid"], jsonFile["vin"][k]["signature"], jsonFile["vin"][k]["outputIndex"]);
+            tempTx.push_vin(auxInTx);
+        }
 
-    /*La UTXO referenciada en el Input Transaction de la Tx debe pertenecer al arreglo de UTXOs o 
-    a las transacciones pendientes*/
-    for (std::vector<InTx>::iterator it = (tempTx.getVin()).begin(); it != (tempTx.getVin()).end(); it++) {
+        for (int k = jsonFile["nTxout"] - 1; k >= 0; k--)
+        {
+            OutTx auxOutTx(jsonFile["vout"][k]["publicid"], jsonFile["vout"][k]["amount"]);
+            tempTx.push_vout(auxOutTx);
+        }
 
-        std::string blockid = it->getBlockId();
-        std::string txID = it->getTxid();
-        int outputIndex = it->getOutputIndex();
+        bool loEncontre = false;
+        int totalAmountInUTXO = 0;
+        int totalAmountInOutput = 0;
 
-        hashTest += it->getBlockId() + hexCodedAscii(it->getOutputIndex()) + it->getSignature() + it->getTxid();
+        //El HashID debe verificar  
+        std::string hashTest = hexCodedAscii((tempTx.getVin()).size()) + hexCodedAscii((tempTx.getVout()).size());   //Armo un string para verificar la txID
 
-        //Le bailo rico a todas las inputs a ver si estan en el arreglo de UTXO, sino, a casona por cheater
-        for (std::vector<UTXO>::iterator at = UTXOVector.begin(); at != UTXOVector.end() && loEncontre == false; at++) {
+        /*La UTXO referenciada en el Input Transaction de la Tx debe pertenecer al arreglo de UTXOs o
+        a las transacciones pendientes*/
+        for (auto it : tempTx.getVin()) {
 
-            if (at->getBlockId() == blockid) {
+            std::string blockid = it.getBlockId();
+            std::string txID = it.getTxid();
+            int outputIndex = it.getOutputIndex();
 
-                if (at->getTXId() == txID) {
+            hashTest += it.getBlockId() + hexCodedAscii(it.getOutputIndex()) + it.getSignature() + it.getTxid();
 
-                    if (at->getOutputIndex() == outputIndex) {
+            //Le bailo rico a todas las inputs a ver si estan en el arreglo de UTXO, sino, a casona por cheater
+            for (std::vector<UTXO>::iterator at = UTXOVector.begin(); at != UTXOVector.end() && loEncontre == false; at++) {
 
-                        loEncontre = true;
-                        totalAmountInUTXO += at->getAmount();
+                if (at->getBlockId() == blockid) {
+
+                    if (at->getTXId() == txID) {
+
+                        if (at->getOutputIndex() == outputIndex) {
+
+                            loEncontre = true;
+                            totalAmountInUTXO += at->getAmount();
+                        }
                     }
                 }
             }
+            if (loEncontre == false) {
+
+                error = true;
+                result = 2;
+                return;
+            }
         }
-        if (loEncontre == false) {
+
+        /*La suma de los montos de EDACoin de los UTXOs referenciados en los
+        Input Transactions tiene que coincidir con la suma de los montos de
+        EDACoin referenciados en los Output Transactions.*/
+
+        for (auto it : tempTx.getVout()) {
+
+            totalAmountInOutput += it.getAmount();
+            hashTest += hexCodedAscii(it.getAmount()) + it.getPublicId();
+        }
+
+        if (totalAmountInOutput != totalAmountInUTXO) {
 
             error = true;
             result = 2;
             return;
         }
-    }
 
-    /*La suma de los montos de EDACoin de los UTXOs referenciados en los
-    Input Transactions tiene que coincidir con la suma de los montos de
-    EDACoin referenciados en los Output Transactions.*/
+        std::string hashTest1 = hash32(hashTest);
 
-    for (std::vector<OutTx>::iterator it = (tempTx.getVout()).begin(); it != (tempTx.getVout()).end(); it++) {
+        if (hash32(hashTest1) != tempTx.getId()) {
 
-        totalAmountInOutput += it->getAmount();
-        hashTest += hexCodedAscii(it->getAmount()) + it->getPublicId();
-    }
+            error = true;
+            result = 2;
+            return;
+        }
 
-    if (totalAmountInOutput != totalAmountInUTXO) {
+        /*Los unlocking scripts referidos en cada Input Transaction deben
+        efectivamente desbloquear los UTXO referidos en cada una de ellas*/
 
-        error = true;
-        result = 2;
-        return;
-    }
+        std::string message;
+        std::string messageVOUT;
 
-    std::string hashTest1 = hash32(hashTest);
+        for (auto it : tempTx.getVout()) {
 
-    if (hash32(hashTest1) != tempTx.getId()) {
+            messageVOUT += hexCodedAscii(it.getAmount()) + it.getPublicId();
+        }
 
-        error = true;
-        result = 2;
-        return;
-    }
+        for (auto it : tempTx.getVin()) {
 
-    /*Los unlocking scripts referidos en cada Input Transaction deben
-    efectivamente desbloquear los UTXO referidos en cada una de ellas*/
+            std::string blockid = it.getBlockId();
+            std::string txID = it.getTxid();
+            int outputIndex = it.getOutputIndex();
 
-    std::string message;
-    std::string messageVOUT;
+            message += it.getBlockId() + hexCodedAscii(it.getOutputIndex()) + it.getTxid();
+            message += messageVOUT;
+            for (auto at : UTXOVector) {
 
-    for (std::vector<OutTx>::iterator it = (tempTx.getVout()).begin(); it != (tempTx.getVout()).end(); it++) {
+                if (at.getBlockId() == blockid) {
 
-        messageVOUT += hexCodedAscii(it->getAmount()) + it->getPublicId();
-    }
+                    if (at.getTXId() == txID) {
 
-    for (std::vector<InTx>::iterator it = (tempTx.getVin()).begin(); it != (tempTx.getVin()).end(); it++) {
+                        if (at.getOutputIndex() == outputIndex) {
 
-        std::string blockid = it->getBlockId();
-        std::string txID = it->getTxid();
-        int outputIndex = it->getOutputIndex();
+                            if (!(verifyMsg(message, it.getSignature(), at.getPublicId()))) {
 
-        message += it->getBlockId() + hexCodedAscii(it->getOutputIndex()) + it->getTxid();
-        message += messageVOUT;
-        for (std::vector<UTXO>::iterator at = UTXOVector.begin(); at != UTXOVector.end() && loEncontre == false; at++) {
-
-            if (at->getBlockId() == blockid) {
-
-                if (at->getTXId() == txID) {
-
-                    if (at->getOutputIndex() == outputIndex) {
-
-                        if (! (verifyMsg( message, it->getSignature(), at->getPublicId() ))){
-
-                            error = true;
-                            result = 2;
-                            return;
+                                error = true;
+                                result = 2;
+                                return;
+                            }
                         }
                     }
                 }
             }
+            message.clear();
         }
-        message.clear();
-    }
 
-    //TODO:Si todo esto salió bien tengo que añadir esta transacción a la siguiente minación. Creo que asi quedaria. Habria que ver de mandarla a minero
-    verifiedTxs.push_back(tempTx);
+        //TODO:Si todo esto salió bien tengo que añadir esta transacción a la siguiente minación. Creo que asi quedaria. Habria que ver de mandarla a minero
+        verifiedTxs.push_back(tempTx);
+    }
+    catch (const std::exception& e)
+    {
+        e.what();
+    }
 }
 
 void FullNode::validateBlockPost(bool& error, int& result, std::string msg)
@@ -906,10 +998,10 @@ void FullNode::validateBlockPost(bool& error, int& result, std::string msg)
 
 
         //Tiene que verificar toda esta cosita
-        for (std::vector<Tx>::iterator it = (blockSent.getTxVector()).begin(); it != (blockSent.getTxVector()).end(); it++) {
+        for (auto it : blockSent.getTxVector()) {
 
 
-            if (it->getId() != it->verifyTXID()) {
+            if (it.getId() != it.verifyTXID()) {
 
                 error = true;
                 result = 2;
@@ -920,28 +1012,28 @@ void FullNode::validateBlockPost(bool& error, int& result, std::string msg)
             std::string message;
             std::string messageVOUT;
 
-            for (std::vector<OutTx>::iterator at = (it->getVout()).begin(); at != (it->getVout()).end(); at++) {
+            for (auto at : it.getVout()) {
 
-                messageVOUT += hexCodedAscii(at->getAmount()) + at->getPublicId();
+                messageVOUT += hexCodedAscii(at.getAmount()) + at.getPublicId();
             }
 
-            for (std::vector<InTx>::iterator ut = (it->getVin()).begin(); ut != (it->getVin()).end(); ut++) {
+            for (auto ut : it.getVin()) {
 
-                std::string blockid = ut->getBlockId();
-                std::string txID = ut->getTxid();
-                int outputIndex = ut->getOutputIndex();
+                std::string blockid = ut.getBlockId();
+                std::string txID = ut.getTxid();
+                int outputIndex = ut.getOutputIndex();
 
-                message += ut->getBlockId() + hexCodedAscii(ut->getOutputIndex()) + ut->getTxid();
+                message += ut.getBlockId() + hexCodedAscii(ut.getOutputIndex()) + ut.getTxid();
                 message += messageVOUT;
-                for (std::vector<UTXO>::iterator at = UTXOVector.begin(); at != UTXOVector.end(); at++) {
+                for (auto at : UTXOVector) {
 
-                    if (at->getBlockId() == blockid) {
+                    if (at.getBlockId() == blockid) {
 
-                        if (at->getTXId() == txID) {
+                        if (at.getTXId() == txID) {
 
-                            if (at->getOutputIndex() == outputIndex) {
+                            if (at.getOutputIndex() == outputIndex) {
 
-                                if (!(verifyMsg(message, ut->getSignature(), at->getPublicId()))) {
+                                if (!(verifyMsg(message, ut.getSignature(), at.getPublicId()))) {
 
                                     error = true;
                                     result = 2;
@@ -1090,8 +1182,7 @@ std::string FullNode::signMsg(std::string msg) {
 
     size_t siglen = signer.MaxSignatureLength();
     std::string signature(siglen, 0x00);
-
-    signer.SignMessage(randomnumbers, (CryptoPP::byte*)msg.data(), msg.size(), (CryptoPP::byte*)signature.data());
+    signer.SignMessage(dynamic_cast<CryptoPP::RandomNumberGenerator&>(rndNumGen), (CryptoPP::byte*)msg.data(), msg.size(), (CryptoPP::byte*)signature.data());
     signature.resize(siglen);
 
     std::string signStr;

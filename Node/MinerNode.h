@@ -14,6 +14,8 @@ public:
 
 	virtual bool poll() override;
 
+	void newUTXO(float amount, std::string blockId, std::string txId, std::string publicId, int outputIndex);
+
 private:
     
 	void prepareBlock2mine();

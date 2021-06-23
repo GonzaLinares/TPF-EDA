@@ -29,12 +29,18 @@ int main(int argc, char** argv) {
 	NodeFactory nodes(contexto);
 
 	////NODOS PARA DEBUGGING
-	nodes.createFullNode(std::to_string(25676));
-	nodes.createSPVNode(std::to_string(25678));
-	nodes.createFullNode(std::to_string(25672) ,std::string("blockchain_sample_0.json"));
+	//nodes.createFullNode(std::to_string(25676));
+	//nodes.createSPVNode(std::to_string(25678));
+	//nodes.createFullNode(std::to_string(25672) ,std::string("blockchain_sample_0.json"));
 	
-	nodes.getNodes()[2]->addNeighbour("127.0.0.1:25676", std::string("Full"));
-	nodes.getNodes()[1]->addNeighbour("127.0.0.1:25672", std::string("Full"));
+	//nodes.getNodes()[2]->addNeighbour("127.0.0.1:25676", std::string("Full"));
+	//nodes.getNodes()[1]->addNeighbour("127.0.0.1:25672", std::string("Full"));
+	// 
+	
+	nodes.createMinerNode(std::to_string(25616));
+	nodes.createFullNode(std::to_string(25618));
+	nodes.getNodes()[0]->addNeighbour("127.0.0.1:25618", std::string("Full"));
+
 	////*****************************************************
 
 	while (menu.getState() == RUNNING) {

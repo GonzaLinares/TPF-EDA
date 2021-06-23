@@ -96,8 +96,9 @@ public:
 	virtual bool hasNeighbours();
 	virtual std::string getLastReceivedClient();
 	virtual std::vector<Tx> getVerifiedTxs();
-
 	virtual bool poll();
+
+	std::string getPublicKey(void);
 
 protected:
 
@@ -121,7 +122,7 @@ protected:
 
 	Client client;
 	Server server;
-	std::string privateKey;
+	std::string publicKeyString;
 	std::vector <Block> blockchain;		//blockchain con los datos
 	node_state_t state;	//Estado del nodo (recibió mensaje, manda mensaje, escucha, etc.)
 	std::string lastReClient;

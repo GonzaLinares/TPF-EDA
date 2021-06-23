@@ -1,15 +1,20 @@
 #include "BaseNode.h"
-
+#include <cryptopp/hex.h>
 
 BaseNode::BaseNode(boost::asio::io_context& ioContext, boost::function<std::string(std::string, std::string)> msgReceivedCb, int portNum)
     : server(ioContext, msgReceivedCb, portNum),
     state(IDLE),
     client(msgReceivedCb, portNum + 1),
-    rndNumGen(portNum)
+    rndNumGen()
 {
     currentBlock = 0;
     privateKey1.Initialize(rndNumGen, CryptoPP::ASN1::secp256k1());
+    //privateKey1.Validate(rndNumGen, 3);
     privateKey1.MakePublicKey(publicKey1);
+    publicKey1.AccessGroupParameters().SetPointCompression(true);   // Clave comprimida
+
+    publicKey1.Save(CryptoPP::HexEncoder(new CryptoPP::StringSink(publicKeyString)).Ref());  // Para almacenarlo en ASCII
+    
 }
 
 void BaseNode::deleteBlockchain()
@@ -156,5 +161,10 @@ bool BaseNode::poll()
     client.poll();
 
     return true;        //todo: Chequear devolucion
+}
+
+std::string BaseNode::getPublicKey(void)
+{
+    return publicKeyString;
 }
 

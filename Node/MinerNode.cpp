@@ -4,7 +4,7 @@
 #define BLOCKS_TILL_UPDATE 6
 #define DEFAULT_TARGET 2
 #define SECOND_PER_BLOCK 60
-
+#define BLOCKREWARD 1
 MinerNode::MinerNode(boost::asio::io_context& ioContext, std::string port, std::string path2blockchain)
     : FullNode(ioContext, port, path2blockchain)
 {
@@ -13,12 +13,14 @@ MinerNode::MinerNode(boost::asio::io_context& ioContext, std::string port, std::
         this->createBlockchainFromFile(path2blockchain);
     }
     mining = false;
+    blockReward = BLOCKREWARD;
 }
 
 MinerNode::MinerNode(boost::asio::io_context& ioContext, std::string port)
     : FullNode(ioContext, port) 
 {
     mining = false;
+    blockReward = BLOCKREWARD;
 }
 
 
@@ -39,12 +41,20 @@ bool MinerNode::poll()
         if (mine())
         {
             blockchain.push_back(block2mine);       //TODO: Que hago con el bloque minado?
+            newUTXO(blockReward, block2mine.getId(), block2mine.getTxVector().back().getId(), publicKeyString, 0);
             block2mine.clear();
             mining = false;
         }
     }
 
     return FullNode::poll();
+}
+
+void MinerNode::newUTXO(float amount, std::string blockId, std::string txId, std::string publicId, int outputIndex)
+{
+
+    UTXOVector.push_back( UTXO(amount, blockId, txId, publicId, outputIndex));
+    MyUTXO.push_back(UTXO(amount, blockId, txId, publicId, outputIndex));
 }
 
 void MinerNode::prepareBlock2mine()
@@ -84,12 +94,13 @@ void MinerNode::prepareBlock2mine()
     {
         block2mine.push_transaction(it);
     }
-    OutTx rewardOut(privateKey, blockReward);
+    OutTx rewardOut(publicKeyString, blockReward);   //Es el publicId, no la privateKey
     Tx reward;
     reward.push_vout(rewardOut);
     reward.calculateTXID();
     block2mine.push_transaction(reward);
     block2mine.calculateMerkleRoot();
+
     if (blockchain.size() == 0)
     {
         block2mine.setPrevBlockId("00000000000000000000000000000000");

@@ -8,6 +8,15 @@ UTXO::UTXO() {
 	outputIndex = -1;
 }
 
+UTXO::UTXO(float amount, std::string blockId, std::string txId, std::string publicId, int outputIndex)
+{
+	this->amount = amount;
+	this->blockId = blockId;
+	this->txId = txId;
+	this->publicId = publicId;
+	this->outputIndex = outputIndex;
+}
+
 std::string UTXO::getBlockId(void)
 {
 	return blockId;
@@ -28,7 +37,7 @@ int UTXO::getOutputIndex(void)
 	return outputIndex;
 }
 
-int UTXO::getAmount()
+float UTXO::getAmount()
 {
 	return amount;
 }
