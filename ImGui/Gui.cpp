@@ -346,6 +346,7 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 		ImGui::EndCombo();
 	}
 
+
 	ImGui::Text("Message:");
 	ImGui::SameLine(); 
 	ImGui::SetNextItemWidth(200.0f);
