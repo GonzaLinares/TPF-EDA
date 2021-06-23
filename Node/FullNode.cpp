@@ -326,6 +326,82 @@ bool FullNode::transactionPost(std::string publicKey, int amount, std::string ho
     return false;
 }
 
+bool FullNode::transactionPost(Tx transaction, std::string host)
+{
+    std::string answer;
+    int totalAmountInOutput = 0;
+
+    //answer += std::string(" \"tx\": [ \n ");  //esto no va aca.
+    answer += std::string(" {\n");
+    answer += std::string(" \"nTxin\": ");
+    answer += std::to_string(transaction.getVin().size());
+    answer += std::string(",\n");
+    answer += std::string(" \"nTxout\":");
+    answer += std::to_string(transaction.getVin().size()) + " ,\n"; 
+    answer += std::string(" \"txid\": &000000000000000000000000000000%,\n");    //TODO: Despues lo reemplazo
+    //VIN
+    answer += std::string(" \"vin\": [ \n ");
+    for (std::vector<InTx>::iterator at = transaction.getVin().begin(); at != transaction.getVin().end(); at++) {
+
+        answer += std::string(" {\n");
+
+        answer += "\"blockid\": \"";
+        answer += at->getBlockId();
+        answer += "\",\n";
+
+        answer += "\"outputIndex\": ";
+        answer += std::to_string(at->getOutputIndex());
+        answer += ",\n";
+
+        answer += "\"signature\": \"";
+        answer += at->getSignature();
+        answer += "\",\n";
+
+        answer += "\"txid\": \"";
+        answer += at->getTxid();
+        answer += "\",\n";
+
+        if (at == transaction.getVin().end()) {
+
+            answer += std::string(" }\n");
+        }
+        else {
+            answer += std::string(" },\n");
+        }
+    }
+
+    answer += std::string(" ],\n");
+
+    //VOUT
+    answer += std::string(" \"vout\": [ \n ");
+    for (std::vector<OutTx>::iterator at = transaction.getVout().begin(); at != transaction.getVout().end(); at++) {
+
+        answer += std::string(" {\n");
+
+        answer += "\"amount\": \"";
+        answer += hexCodedAscii((at->getAmount()));
+        answer += "\",\n";
+
+        answer += "\"publicid\": ";
+        answer += at->getPublicId();
+        answer += " \n";
+
+        if (at == transaction.getVout().end()) {
+
+            answer += std::string(" }\n");
+        }
+        else {
+            answer += std::string(" },\n");
+        }
+    }
+
+    answer += std::string("}\n");
+
+    commSend(host, std::string("eda_coin/send_tx/"), answer);
+
+    return false;
+}
+
 bool FullNode::merkleBlockPost(std::string blockId, int position, std::string host)
 {
     std::string answer;
