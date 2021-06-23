@@ -79,7 +79,7 @@ public:
 protected:
 	
 	void validateTransactionPost(bool& error, int& result, std::string msg);
-	void validateBlockPost(bool& error, int& result, std::string msg);
+	void validateBlockPost(bool& error, int& result, std::string msg); 
 	void validateFilterPost(bool& error, int& result, std::string msg);
 
 	std::string receivedMsgCB(std::string client, std::string msg);

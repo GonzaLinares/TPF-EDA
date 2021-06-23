@@ -33,7 +33,7 @@ bool MinerNode::poll()
     if (!mining)
     {
         prepareBlock2mine();
-    }
+    } 
     else
     {
         if (mine())

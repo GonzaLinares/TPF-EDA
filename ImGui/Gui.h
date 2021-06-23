@@ -69,7 +69,7 @@ private:
 	int comboBoxNodesIndex;
 	int comboBoxActionNodesIndex;
 	int comboBoxVerifiedTxsIndex;
-	int amountWritten;			//Entero donde se guarda la cantidad ingresada
+	float amountWritten;			//Entero donde se guarda la cantidad ingresada
 	int blockQuantityWritten;	//Entero donde se guarda la cantidad de bloques ingresada
 	int positionWritten;		//Entero donde se guarda la posicion ingresada
 	std::string nodePort;		//Puerto ingresado por la GUI

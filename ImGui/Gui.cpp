@@ -18,6 +18,7 @@ Gui::Gui() {
 	comboBoxNodesIndex = 0;
 	comboBoxVerifiedTxsIndex = 0;
 	comboBoxActionNodesIndex = 0;
+	amountWritten = 0.0f;
 	filename = "";
 	nodeIp = "";
 	nodePort = "";
@@ -405,12 +406,12 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 			ImGui::SameLine();
 			ImGui::Text("Amount: ");
 			ImGui::SameLine();
-			ImGui::InputInt("###Amount:", &amountWritten);
+			ImGui::InputFloat("###Amount:", &amountWritten);
 		}
 
 		if (falseActionActive && currentNode->getNodeType() == "Full") {
 			UTXO lastUTXO = ((FullNode*)currentNode)->getLastSpentUTXO();
-			string aux = "";
+			string aux = ""; 
 			if (lastUTXO.getBlockId() != "Empty") {
 				aux = "ID: " + lastUTXO.getBlockId() + "- Amount: " + to_string(lastUTXO.getAmount());
 				ImGui::Text("Last UTXO Spent: ");
@@ -422,17 +423,23 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 		nSpacing(5);
 		if (ImGui::Button("Send Message") && neigh[0].first != "Empty") {
 
-			int lastNumOfTxs = currentNode->getVerifiedTxs().size();
+			if (falseActionActive) {
+				int lastNumOfTxs = currentNode->getVerifiedTxs().size();
 
-			if (currentNode->getNodeType() == std::string("Full") ) {
-				((FullNode*)currentNode)->transactionPost(actionGetBlockPublicKeyWritten, amountWritten, neigh[comboBoxNodesIndex].first);
+				if (lastNumOfTxs == currentNode->getVerifiedTxs().size()) {
+					cout << "Se envio una trx falsa" << endl;
+				}
 			}
-			else if (currentNode->getNodeType() == std::string("SPV")) {
-				((SPVNode*)currentNode)->transactionPost(actionGetBlockPublicKeyWritten, amountWritten, neigh[comboBoxNodesIndex].first);
+			else if (verifiedTrxSendActive) {
+				((FullNode*)currentNode)->transactionPost();
 			}
-
-			if (lastNumOfTxs == currentNode->getVerifiedTxs().size()) {
-				cout << "Se envio una trx falsa" << endl;
+			else {
+				if (currentNode->getNodeType() == std::string("Full")) {
+					((FullNode*)currentNode)->transactionPost(actionGetBlockPublicKeyWritten, amountWritten, neigh[comboBoxNodesIndex].first);
+				}
+				else if (currentNode->getNodeType() == std::string("SPV")) {
+					((SPVNode*)currentNode)->transactionPost(actionGetBlockPublicKeyWritten, amountWritten, neigh[comboBoxNodesIndex].first);
+				}
 			}
 		}
 	}
