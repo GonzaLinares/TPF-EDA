@@ -22,13 +22,13 @@ public:
 	* Entra: Recibe los datos con los que va a llenar el bloque
 	* Resulta: -
 	*=====================================================*/
-	OutTx(std::string publicId_, int amount_);
+	OutTx(std::string publicId_, float amount_);
 
 	std::string getPublicId(void);
-	int getAmount(void);
+	float getAmount(void);
 
 private:
 	std::string publicId;
-	int amount;
+	float amount;
 };
 

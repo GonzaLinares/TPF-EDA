@@ -14,7 +14,7 @@ public:
 
 	virtual bool poll() override;
 
-	void newUTXO(int amount, std::string blockId, std::string txId, std::string publicId, int outputIndex);
+	void newUTXO(float amount, std::string blockId, std::string txId, std::string publicId, int outputIndex);
 
 private:
     

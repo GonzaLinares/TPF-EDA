@@ -86,5 +86,5 @@ std::string Tx::verifyTXID()
 
 std::string Tx::dump2JSON()		
 {
-    return "se implementará en la version 2.0"
+    return "se implementará en la version 2.0";
 }

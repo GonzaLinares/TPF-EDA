@@ -187,7 +187,7 @@ bool FullNode::blockPost(std::string host, std::string blockId)
     return true;
 }
 
-bool FullNode::transactionPost(std::string publicKey, int amount, std::string host)
+bool FullNode::transactionPost(std::string publicKey, float amount, std::string host)
 {
     std::string answer;
     std::string messageVOUT;
@@ -195,7 +195,7 @@ bool FullNode::transactionPost(std::string publicKey, int amount, std::string ho
     std::string signa;
     std::string txIDPREHASH;
     int VinCount = 0;
-    int totalAmountInOutput = 0;
+    float totalAmountInOutput = 0;
 
     for (std::vector<UTXO>::iterator at = MyUTXO.begin(); at != MyUTXO.end() && totalAmountInOutput < amount; at++) {
 
@@ -341,27 +341,27 @@ bool FullNode::transactionPost(Tx transaction, std::string host)
     answer += std::string(" \"txid\": &000000000000000000000000000000%,\n");    //TODO: Despues lo reemplazo
     //VIN
     answer += std::string(" \"vin\": [ \n ");
-    for (std::vector<InTx>::iterator at = transaction.getVin().begin(); at != transaction.getVin().end(); at++) {
+    for (auto at : transaction.getVin()) {
 
         answer += std::string(" {\n");
 
         answer += "\"blockid\": \"";
-        answer += at->getBlockId();
+        answer += at.getBlockId();
         answer += "\",\n";
 
         answer += "\"outputIndex\": ";
-        answer += std::to_string(at->getOutputIndex());
+        answer += std::to_string(at.getOutputIndex());
         answer += ",\n";
 
         answer += "\"signature\": \"";
-        answer += at->getSignature();
+        answer += at.getSignature();
         answer += "\",\n";
 
         answer += "\"txid\": \"";
-        answer += at->getTxid();
+        answer += at.getTxid();
         answer += "\",\n";
 
-        if (at == transaction.getVin().end()) {
+        if (&at == &transaction.getVin().back()) {
 
             answer += std::string(" }\n");
         }
@@ -374,19 +374,19 @@ bool FullNode::transactionPost(Tx transaction, std::string host)
 
     //VOUT
     answer += std::string(" \"vout\": [ \n ");
-    for (std::vector<OutTx>::iterator at = transaction.getVout().begin(); at != transaction.getVout().end(); at++) {
+    for (auto at : transaction.getVout()) {
 
         answer += std::string(" {\n");
 
         answer += "\"amount\": \"";
-        answer += hexCodedAscii((at->getAmount()));
+        answer += hexCodedAscii((at.getAmount()));
         answer += "\",\n";
 
         answer += "\"publicid\": ";
-        answer += at->getPublicId();
+        answer += at.getPublicId();
         answer += " \n";
 
-        if (at == transaction.getVout().end()) {
+        if (&at == &transaction.getVout().back()) {
 
             answer += std::string(" }\n");
         }
@@ -843,10 +843,10 @@ void FullNode::validateTransactionPost(bool& error, int& result, std::string msg
         Input Transactions tiene que coincidir con la suma de los montos de
         EDACoin referenciados en los Output Transactions.*/
 
-        for (std::vector<OutTx>::iterator it = (tempTx.getVout()).begin(); it != (tempTx.getVout()).end(); it++) {
+        for (auto it : tempTx.getVout()) {
 
-            totalAmountInOutput += it->getAmount();
-            hashTest += hexCodedAscii(it->getAmount()) + it->getPublicId();
+            totalAmountInOutput += it.getAmount();
+            hashTest += hexCodedAscii(it.getAmount()) + it.getPublicId();
         }
 
         if (totalAmountInOutput != totalAmountInUTXO) {
@@ -871,28 +871,28 @@ void FullNode::validateTransactionPost(bool& error, int& result, std::string msg
         std::string message;
         std::string messageVOUT;
 
-        for (std::vector<OutTx>::iterator it = (tempTx.getVout()).begin(); it != (tempTx.getVout()).end(); it++) {
+        for (auto it : tempTx.getVout()) {
 
-            messageVOUT += hexCodedAscii(it->getAmount()) + it->getPublicId();
+            messageVOUT += hexCodedAscii(it.getAmount()) + it.getPublicId();
         }
 
-        for (std::vector<InTx>::iterator it = (tempTx.getVin()).begin(); it != (tempTx.getVin()).end(); it++) {
+        for (auto it : tempTx.getVin()) {
 
-            std::string blockid = it->getBlockId();
-            std::string txID = it->getTxid();
-            int outputIndex = it->getOutputIndex();
+            std::string blockid = it.getBlockId();
+            std::string txID = it.getTxid();
+            int outputIndex = it.getOutputIndex();
 
-            message += it->getBlockId() + hexCodedAscii(it->getOutputIndex()) + it->getTxid();
+            message += it.getBlockId() + hexCodedAscii(it.getOutputIndex()) + it.getTxid();
             message += messageVOUT;
-            for (std::vector<UTXO>::iterator at = UTXOVector.begin(); at != UTXOVector.end() && loEncontre == false; at++) {
+            for (auto at : UTXOVector) {
 
-                if (at->getBlockId() == blockid) {
+                if (at.getBlockId() == blockid) {
 
-                    if (at->getTXId() == txID) {
+                    if (at.getTXId() == txID) {
 
-                        if (at->getOutputIndex() == outputIndex) {
+                        if (at.getOutputIndex() == outputIndex) {
 
-                            if (!(verifyMsg(message, it->getSignature(), at->getPublicId()))) {
+                            if (!(verifyMsg(message, it.getSignature(), at.getPublicId()))) {
 
                                 error = true;
                                 result = 2;
@@ -989,10 +989,10 @@ void FullNode::validateBlockPost(bool& error, int& result, std::string msg)
 
 
         //Tiene que verificar toda esta cosita
-        for (std::vector<Tx>::iterator it = (blockSent.getTxVector()).begin(); it != (blockSent.getTxVector()).end(); it++) {
+        for (auto it : blockSent.getTxVector()) {
 
 
-            if (it->getId() != it->verifyTXID()) {
+            if (it.getId() != it.verifyTXID()) {
 
                 error = true;
                 result = 2;
@@ -1003,28 +1003,28 @@ void FullNode::validateBlockPost(bool& error, int& result, std::string msg)
             std::string message;
             std::string messageVOUT;
 
-            for (std::vector<OutTx>::iterator at = (it->getVout()).begin(); at != (it->getVout()).end(); at++) {
+            for (auto at : it.getVout()) {
 
-                messageVOUT += hexCodedAscii(at->getAmount()) + at->getPublicId();
+                messageVOUT += hexCodedAscii(at.getAmount()) + at.getPublicId();
             }
 
-            for (std::vector<InTx>::iterator ut = (it->getVin()).begin(); ut != (it->getVin()).end(); ut++) {
+            for (auto ut : it.getVin()) {
 
-                std::string blockid = ut->getBlockId();
-                std::string txID = ut->getTxid();
-                int outputIndex = ut->getOutputIndex();
+                std::string blockid = ut.getBlockId();
+                std::string txID = ut.getTxid();
+                int outputIndex = ut.getOutputIndex();
 
-                message += ut->getBlockId() + hexCodedAscii(ut->getOutputIndex()) + ut->getTxid();
+                message += ut.getBlockId() + hexCodedAscii(ut.getOutputIndex()) + ut.getTxid();
                 message += messageVOUT;
-                for (std::vector<UTXO>::iterator at = UTXOVector.begin(); at != UTXOVector.end(); at++) {
+                for (auto at : UTXOVector) {
 
-                    if (at->getBlockId() == blockid) {
+                    if (at.getBlockId() == blockid) {
 
-                        if (at->getTXId() == txID) {
+                        if (at.getTXId() == txID) {
 
-                            if (at->getOutputIndex() == outputIndex) {
+                            if (at.getOutputIndex() == outputIndex) {
 
-                                if (!(verifyMsg(message, ut->getSignature(), at->getPublicId()))) {
+                                if (!(verifyMsg(message, ut.getSignature(), at.getPublicId()))) {
 
                                     error = true;
                                     result = 2;

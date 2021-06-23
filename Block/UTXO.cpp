@@ -4,7 +4,7 @@ UTXO::UTXO()
 {
 }
 
-UTXO::UTXO(int amount, std::string blockId, std::string txId, std::string publicId, int outputIndex)
+UTXO::UTXO(float amount, std::string blockId, std::string txId, std::string publicId, int outputIndex)
 {
 	this->amount = amount;
 	this->blockId = blockId;
@@ -33,7 +33,7 @@ int UTXO::getOutputIndex(void)
 	return outputIndex;
 }
 
-int UTXO::getAmount()
+float UTXO::getAmount()
 {
 	return amount;
 }
