@@ -327,6 +327,7 @@ bool FullNode::transactionPost(std::string publicKey, float amount, std::string 
     answer += std::string("}\n");
 
     //Ahora calculo la txid del comienzo
+
     txIDPREHASH = hash32(txIDPREHASH);
     txIDPREHASH = hash32(txIDPREHASH);
 
