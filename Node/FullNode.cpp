@@ -220,13 +220,13 @@ bool FullNode::transactionPost(std::string publicKey, float amount, std::string 
     }
     else if(totalAmountInOutput == amount){
 
-        txIDPREHASH += std::to_string(VinCount);
+        txIDPREHASH += hexCodedAscii(VinCount);
         txIDPREHASH += "1";
         totalAmountInOutput = 0; //La reinicio y empiezo de vuelta
     }
     else {
 
-        txIDPREHASH += std::to_string(VinCount);
+        txIDPREHASH += hexCodedAscii(VinCount);
         txIDPREHASH += "2";
         totalAmountInOutput = 0; //La reinicio y empiezo de vuelta
     }
@@ -261,7 +261,7 @@ bool FullNode::transactionPost(std::string publicKey, float amount, std::string 
 
         answer += "\"outputIndex\": ";
         answer += std::to_string(at->getOutputIndex());
-        txIDPREHASH += std::to_string(at->getOutputIndex());
+        txIDPREHASH += hexCodedAscii(at->getOutputIndex());
         answer += ",\n";
 
         message.clear();
@@ -297,7 +297,7 @@ bool FullNode::transactionPost(std::string publicKey, float amount, std::string 
     answer += std::string(" {\n");
     answer += std::string(" \"amount\": ");
     answer += std::to_string(amount) + std::string(",\n");
-    txIDPREHASH += std::to_string(amount);
+    txIDPREHASH += hexCodedAscii(amount);
     answer += std::string(" \"publicid\": ");
     answer += std::string("\"") + publicKey + std::string("\"\n");
     txIDPREHASH += publicKey;
@@ -308,20 +308,18 @@ bool FullNode::transactionPost(std::string publicKey, float amount, std::string 
         answer += std::string(" ,{\n");
         answer += std::string(" \"amount\": ");
         answer += std::to_string(totalAmountInOutput - amount) + std::string(",\n");
-        txIDPREHASH += std::to_string(totalAmountInOutput - amount);
+        txIDPREHASH += hexCodedAscii(totalAmountInOutput - amount);
         answer += std::string(" \"publicid\": ");
         answer += std::string("\"") + myID + std::string("\",\n");
         txIDPREHASH += myID;
         answer += std::string(" }\n");
         answer += std::string("]\n");
         answer.replace(answer.find_first_of('|'), 1, 1, '2');
-        txIDPREHASH += std::to_string(2);
     }
     else {
 
         answer += std::string("]\n");
         answer.replace(answer.find_first_of('|'),1,1,'1');
-        txIDPREHASH += std::to_string(1);
     }
 
     answer += std::string("}\n");
