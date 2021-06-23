@@ -79,9 +79,8 @@ std::string Tx::verifyTXID()
 
 
     hashTest = hash32(hashTest);
-    std::string txid111 = hash32(hashTest);
 
-    return txid111;
+    return hash32(hashTest);
 }
 
 std::string Tx::dump2JSON()		

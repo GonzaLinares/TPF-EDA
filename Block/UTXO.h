@@ -7,16 +7,16 @@ class UTXO
 public:
 
 	UTXO();
-	UTXO(int amount, std::string blockId, std::string txId, std::string publicId, int outputIndex);
+	UTXO(float amount, std::string blockId, std::string txId, std::string publicId, int outputIndex);
 	std::string getBlockId(void);
 	std::string getTXId(void);
 	std::string getPublicId(void);
 	int getOutputIndex(void);
-	int getAmount();
+	float getAmount();
 
 private:
 	
-	int amount;
+	float amount;
 	std::string blockId;
 	std::string txId;
 	std::string publicId;

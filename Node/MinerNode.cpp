@@ -50,7 +50,7 @@ bool MinerNode::poll()
     return FullNode::poll();
 }
 
-void MinerNode::newUTXO(int amount, std::string blockId, std::string txId, std::string publicId, int outputIndex)
+void MinerNode::newUTXO(float amount, std::string blockId, std::string txId, std::string publicId, int outputIndex)
 {
 
     UTXOVector.push_back( UTXO(amount, blockId, txId, publicId, outputIndex));
