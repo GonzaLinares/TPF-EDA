@@ -43,7 +43,6 @@ void Connection::readDataHandler( int recievedBytes, Connection::pointer thisCon
 {
 	if (!error)
 	{
-		std::string* p2str = &receivedMsg;
 		elaborateMessage(conSocket.remote_endpoint().address().to_string() + ":" + std::to_string(conSocket.remote_endpoint().port()));	//Parseo la entrada de datos y creo una respuesta en toSendMesage
 
 		//Se envia el mensaje de respuesta
