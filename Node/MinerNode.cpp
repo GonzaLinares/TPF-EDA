@@ -91,10 +91,11 @@ void MinerNode::prepareBlock2mine()
         newTarget = DEFAULT_TARGET;
     }
     block2mine.setTarget(newTarget);
-    for (auto it : tx2add)
+    for (auto it : verifiedTxs)
     {
         block2mine.push_transaction(it);
     }
+    verifiedTxs.clear();
     OutTx rewardOut(publicKeyString, blockReward);   //Es el publicId, no la privateKey
     Tx reward;
     reward.push_vout(rewardOut);

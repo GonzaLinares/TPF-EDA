@@ -931,7 +931,7 @@ void FullNode::validateTransactionPost(bool& error, int& result, std::string msg
     }
     catch (const std::exception& e)
     {
-        e.what();
+        std::cerr << e.what() << std::endl;
     }
 }
 

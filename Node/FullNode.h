@@ -89,7 +89,6 @@ protected:
 	std::string myID;
 	std::vector<UTXO> UTXOVector;	//Las UTXO de la blockchain
 	std::vector<UTXO> myUTXO;
-	std::vector<Tx> validatedTransactions;
 
 	CryptoPP::RandomNumberGenerator randomnumbers;
 };
