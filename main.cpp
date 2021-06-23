@@ -37,9 +37,9 @@ int main(int argc, char** argv) {
 	//nodes.getNodes()[1]->addNeighbour("127.0.0.1:25672", std::string("Full"));
 	// 
 	
-	nodes.createMinerNode(std::to_string(25676));
-	nodes.createFullNode(std::to_string(25678));
-	nodes.getNodes()[0]->addNeighbour("127.0.0.1:25678", std::string("Full"));
+	nodes.createMinerNode(std::to_string(25670));
+	nodes.createFullNode(std::to_string(25672));
+	nodes.getNodes()[0]->addNeighbour("127.0.0.1:25672", std::string("Full"));
 
 	////*****************************************************
 

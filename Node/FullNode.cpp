@@ -105,6 +105,8 @@ bool FullNode::blockPost(std::string host, std::string blockId)
 
             answer += std::string(" { \"blockid\": ");
             answer += std::string("\"") + it->getId() + std::string("\",\n");
+            answer += std::string(" \"target\": ");
+            answer += std::string("") + std::to_string(it->getTarget()) + std::string(",\n");
             answer += std::string(" \"height\": ");
             answer += std::to_string(it->getHeight()) + std::string(",\n");
             answer += std::string(" \"merkleroot\": ");
@@ -183,8 +185,6 @@ bool FullNode::blockPost(std::string host, std::string blockId)
                 else{
                     answer += std::string("},\n");
                 }
-
-
             }
             answer += std::string("}");
             commSend(host, std::string("eda_coin/send_block/"), answer);
@@ -984,8 +984,8 @@ void FullNode::validateBlockPost(bool& error, int& result, std::string msg)
             return;
         }
 
-        tempString = blockid.substr(0,  - 1);
-        for (int i = 0; i < 10; i++) {
+        tempString = blockid.substr(0, jsonFile["target"]);
+        for (int i = 0; i < jsonFile["target"]; i++) {
 
             if (tempString[i] != '0') {
                 error = true;
