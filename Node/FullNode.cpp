@@ -826,16 +826,16 @@ void FullNode::validateTransactionPost(bool& error, int& result, std::string msg
             hashTest += it.getBlockId() + hexCodedAscii(it.getOutputIndex()) + it.getSignature() + it.getTxid();
 
             //Le bailo rico a todas las inputs a ver si estan en el arreglo de UTXO, sino, a casona por cheater
-            for (std::vector<UTXO>::iterator at = UTXOVector.begin(); at != UTXOVector.end() && loEncontre == false; at++) {
+            for (auto at : UTXOVector) {
 
-                if (at->getBlockId() == blockid) {
+                if (at.getBlockId() == blockid) {
 
-                    if (at->getTXId() == txID) {
+                    if (at.getTXId() == txID) {
 
-                        if (at->getOutputIndex() == outputIndex) {
+                        if (at.getOutputIndex() == outputIndex) {
 
                             loEncontre = true;
-                            totalAmountInUTXO += at->getAmount();
+                            totalAmountInUTXO += at.getAmount();
                         }
                     }
                 }
