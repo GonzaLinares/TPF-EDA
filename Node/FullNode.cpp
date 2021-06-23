@@ -984,7 +984,7 @@ void FullNode::validateBlockPost(bool& error, int& result, std::string msg)
             return;
         }
 
-        tempString = blockid.substr(0, NUMBEROFZEROSCHALLENGE - 1);
+        tempString = blockid.substr(0,  - 1);
         for (int i = 0; i < 10; i++) {
 
             if (tempString[i] != '0') {
@@ -1001,12 +1001,14 @@ void FullNode::validateBlockPost(bool& error, int& result, std::string msg)
             result = 2;
             return;
         }
+        /*
         else if (previousblockid != (blockchain[currentBlock]).getId()) {
 
             error = true;
             result = 2;
             return;
         }
+        */
 
 
         //Tiene que verificar toda esta cosita
