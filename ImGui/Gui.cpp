@@ -411,7 +411,7 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 
 		if (falseActionActive && currentNode->getNodeType() == "Full") {
 			UTXO lastUTXO = ((FullNode*)currentNode)->getLastSpentUTXO();
-			string aux = ""; 
+			string aux = "";
 			if (lastUTXO.getBlockId() != "Empty") {
 				aux = "ID: " + lastUTXO.getBlockId() + "- Amount: " + to_string(lastUTXO.getAmount());
 				ImGui::Text("Last UTXO Spent: ");
@@ -433,6 +433,7 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 			else if (verifiedTrxSendActive) {
 				((FullNode*)currentNode)->transactionPost();
 			}
+<<<<<<< HEAD
 			else {
 				if (currentNode->getNodeType() == std::string("Full")) {
 					((FullNode*)currentNode)->transactionPost(actionGetBlockPublicKeyWritten, amountWritten, neigh[comboBoxNodesIndex].first);
@@ -440,6 +441,13 @@ void Gui::showActionsBox(NodeFactory& nodes) {
 				else if (currentNode->getNodeType() == std::string("SPV")) {
 					((SPVNode*)currentNode)->transactionPost(actionGetBlockPublicKeyWritten, amountWritten, neigh[comboBoxNodesIndex].first);
 				}
+=======
+			else if (currentNode->getNodeType() == std::string("Miner")) {
+				((FullNode*)currentNode)->transactionPost(actionGetBlockPublicKeyWritten, amountWritten, neigh[comboBoxNodesIndex].first);
+			}
+			else if (currentNode->getNodeType() == std::string("SPV")) {
+				((SPVNode*)currentNode)->transactionPost(actionGetBlockPublicKeyWritten, amountWritten, neigh[comboBoxNodesIndex].first);
+>>>>>>> db07f656fa07b9c4274e21682e922a55847f26c2
 			}
 		}
 	}
